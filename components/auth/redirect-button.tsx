@@ -8,7 +8,12 @@ interface RedirectButtonProps {
   path: string;
 }
 
-export const RedirectButton = ({ children, mode, asChild , path }: RedirectButtonProps) => {
+export const RedirectButton = ({
+  children,
+  mode,
+  asChild,
+  path,
+}: RedirectButtonProps) => {
   const router = useRouter();
 
   const onClick = () => {

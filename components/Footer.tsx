@@ -8,8 +8,8 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white w-full mt-10 py-20 px-10">
-      <div className="container flex items-start justify-between max-sm:flex-col max-sm:items-center max-sm:gap-5">
+    <footer className="bg-black text-white w-full py-20 px-10">
+      <div className="container flex items-start justify-between max-sm:flex-col max-sm:items-center max-sm:gap-5 max-sm:p-0">
         <div className="text-right max-sm:text-center">
           <h2 className="font-bold text-3xl">رياضة الهجن الأردنية</h2>
           <p>البطولات المحلية في الاردن لسباق الهجن</p>
@@ -70,7 +70,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="container flex items-center mt-5">
+      <div className="container flex items-center mt-5 max-sm:p-0">
         <span className="w-full border border-1 border-white h-[1px] max-sm:hidden" />
         <p className="whitespace-nowrap mx-2 max-sm:text-center max-sm:w-full">
           جميع الحقوق محفوظة &copy; 2024
