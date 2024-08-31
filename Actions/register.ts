@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { RegisterSchema } from "@/schemas";
 import { getUserByEmail } from "@/data/user";
 import { redirect } from "next/navigation";
-import bcryptjs from 'bcryptjs';
+import bcryptjs from "bcryptjs";
 
 export const register = async (values: z.infer<typeof RegisterSchema>) => {
   console.log(values);
@@ -50,7 +50,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     },
   });
 
-  redirect("/profile");
+  redirect("/auth/login");
 
   return {
     success: "! تم انشاء الحساب",

@@ -18,12 +18,14 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "@/Actions/login";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
-  const [error, setErros] = useState<string | undefined>("");
+  const [error, setErrors] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
+  const router = useRouter(); // For client-side navigation
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -34,13 +36,15 @@ export const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setErros("");
+    setErrors("");
     setSuccess("");
-    startTransition(() => {
-      login(values).then((data) => {
-        setErros(data.error);
-        setSuccess(data.success);
-      });
+    startTransition(async () => {
+      const data = await login(values);
+      setErrors(data.error || "");
+      setSuccess(data.success || "");
+      if (data.token) {
+        router.push("/profile");
+      }
     });
   };
 
@@ -52,10 +56,8 @@ export const LoginForm = () => {
       backButtonHref="/auth/register"
       showSocial
     >
-      <Form
-        {...form}
-      >
-        <form onSubmit={form.handleSubmit(onSubmit)}  className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4 text-right">
             <FormField
               control={form.control}

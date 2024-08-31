@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 interface Props {
   className?: string;
   enablescroll?: () => void;
@@ -6,10 +8,16 @@ interface Props {
 const NavLinks = ({ className, enablescroll }: Props) => {
   return (
     <ul className={className || `flex items-center gap-5 max-lg:hidden`}>
-      <li onClick={enablescroll}>تواصل معنا</li>
-      <li onClick={enablescroll}>رؤية الهجن</li>
+      <li onClick={enablescroll}>
+        <Link href="mailto:info@jocrc.com">تواصل معنا</Link>
+      </li>
+      <li onClick={enablescroll}>
+        <Link href="/profile">المطايا الخاصة بي </Link>
+      </li>
       <li onClick={enablescroll}>اضافة هجن</li>
-      <li onClick={enablescroll}>الملف الشخصي</li>
+      <li onClick={enablescroll}>
+        <Link href="/profile">الملف الشخصي</Link>
+      </li>
     </ul>
   );
 };

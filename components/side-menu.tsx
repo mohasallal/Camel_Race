@@ -29,7 +29,7 @@ const SideMenuButton = ({ children }: Props) => {
   const enablescrolling = () => {
     document.body.style.overflowY = "auto";
     document.body.style.touchAction = "auto";
-  }
+  };
 
   return (
     <div
@@ -38,9 +38,15 @@ const SideMenuButton = ({ children }: Props) => {
     >
       {children}
       {isOpned && (
-        <div className="top-0 right-0 left-0 bottom-0 absolute bg-white w-full h-screen flex flex-col items-center justify-center backdrop-blur-3xl">
-          <NavLinks enablescroll={enablescrolling} className=" flex flex-col items-center hover:cursor-default justify-center gap-5 text-2xl p-4 w-full" />
-          <NavButtons enablescroll={enablescrolling} className="flex flex-col gap-5" />
+        <div className="top-0 right-0 left-0 bottom-0 absolute z-50 bg-white w-full h-screen flex flex-col items-center justify-center backdrop-blur-3xl">
+          <NavLinks
+            enablescroll={enablescrolling}
+            className=" flex flex-col items-center hover:cursor-default justify-center gap-5 relative text-2xl p-4 w-full z-50"
+          />
+          <NavButtons
+            enablescroll={enablescrolling}
+            className="flex flex-col relative gap-5"
+          />
         </div>
       )}
     </div>
