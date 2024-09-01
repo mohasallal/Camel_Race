@@ -8,10 +8,18 @@ interface BackButtonProps {
   children?: React.ReactNode;
 }
 
-export const BackButton = ({ label, href , className, children }: BackButtonProps) => {
+export const BackButton = ({
+  label,
+  href,
+  className,
+  children,
+}: BackButtonProps) => {
   return (
     <Button variant="link" asChild size="sm" className="font-normal w-full">
-      <Link href={href} className={className} >{children}{label}</Link>
+      <Link href={href} className={className}>
+        {children}
+        {label}
+      </Link>
     </Button>
   );
 };

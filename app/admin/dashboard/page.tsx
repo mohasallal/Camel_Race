@@ -1,5 +1,7 @@
+import { AdminDashboard } from "@/components/admin/ASide";
+
 const Dashboard = () => {
-  return <div>page</div>;
+  return <AdminDashboard />;
 };
 
 export default Dashboard;
