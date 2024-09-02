@@ -40,6 +40,7 @@ export const RegisterForm = () => {
       BDate: new Date(),
       MobileNumber: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -47,10 +48,22 @@ export const RegisterForm = () => {
     setErrors("");
     setSuccess("");
     startTransition(() => {
-      register(values).then((data) => {
-        setErrors(data.error);
-        setSuccess(data.success);
-      });
+      register(values)
+        .then((data) => {
+          if (data && typeof data === "object") {
+            if (data.error) {
+              setErrors(data.error);
+            } else if (data.success) {
+              setSuccess(data.success);
+            }
+          } else {
+            setErrors("Unexpected response from the server.");
+          }
+        })
+        .catch((err) => {
+          console.error("Registration error:", err);
+          setErrors("An error occurred while registering. Please try again.");
+        });
     });
   };
 
@@ -190,11 +203,18 @@ export const RegisterForm = () => {
                       type="date"
                       {...field}
                       value={
-                        field.value
-                          ? field.value.toISOString().split("T")[0]
+                        field.value && !isNaN(new Date(field.value).getTime())
+                          ? new Date(field.value).toISOString().split("T")[0]
                           : ""
                       }
-                      onChange={(e) => field.onChange(new Date(e.target.value))}
+                      onChange={(e) => {
+                        const newDate = new Date(e.target.value);
+                        if (!isNaN(newDate.getTime())) {
+                          field.onChange(newDate);
+                        } else {
+                          console.error("Invalid date value");
+                        }
+                      }}
                       placeholder="تاريخ الولادة"
                       className="outline-none border-t-0 border-r-0 border-l-0 flex items-center justify-end focus:outline-none focus:ring-0 focus:border-transparent"
                     />
@@ -293,14 +313,14 @@ export const RegisterForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex items-center justify-end">
-                    : تأكيد السر
+                    : تأكيد كلمة السر
                   </FormLabel>
                   <FormControl>
                     <Input
                       disabled={isPending}
                       type="password"
                       {...field}
-                      placeholder="كلمة المرور"
+                      placeholder="تأكيد كلمة المرور"
                       className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
                     />
                   </FormControl>
@@ -309,15 +329,14 @@ export const RegisterForm = () => {
               )}
             />
           </div>
+
+          <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
+            <Button disabled={isPending} type="submit" className="w-full">
+              تسجيل
+            </Button>
+          </div>
           <FormError message={error} />
           <FormSuccess message={success} />
-          <Button
-            disabled={isPending}
-            type="submit"
-            className="rounded-md w-full"
-          >
-            انشاء حساب
-          </Button>
         </form>
       </Form>
     </CardWrapper>

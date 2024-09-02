@@ -78,6 +78,7 @@ export const RegisterSchema = z
       .regex(/^\+?[0-9]\d{1,14}$/, {
         message: "صيغة رقم الهاتف غير صحيحة",
       }),
+    role: z.enum(["USER", "ADMIN", "SUPERVISOR"]).default("USER"),
     password: z.string().min(6, {
       message: "الطول 6 حروف على الاقل",
     }),

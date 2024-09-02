@@ -24,6 +24,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     NationalID,
     BDate,
     MobileNumber,
+    role,
     password,
   } = validatedFields.data;
 
@@ -46,11 +47,12 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       NationalID,
       BDate,
       MobileNumber,
+      role,
       password: hashedPassword,
     },
   });
 
-  redirect("/auth/login");
+  redirect("/admin/dashboard");
 
   return {
     success: "! تم انشاء الحساب",
