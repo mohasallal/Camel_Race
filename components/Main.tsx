@@ -18,14 +18,14 @@ const Main = () => {
             <p className="text-2xl max-lg:text-xl max-md:text-lg max-sm:text-base">
               ! ابدا رحلتك الآن
             </p>
-            <RedirectButton path="register">
+            {/* <RedirectButton path="/auth/register">
               <Button
                 size="lg"
                 className="rounded-xl bg-gray-200 opacity-60 text-black font-black hover:bg-gray-100 duration-200 w-[10rem] relative"
               >
                 سجل اللآن
               </Button>
-            </RedirectButton>
+            </RedirectButton> */}
           </div>
         </div>
         <div>

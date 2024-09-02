@@ -31,17 +31,19 @@ interface UserProfile {
 }
 
 const Profile = () => {
+  const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
+    console.log("profile component is mounted");
     async function fetchUserProfile() {
       const token = localStorage.getItem("authToken");
 
       if (!token) {
+        console.log("No token found, redirecting to login");
         setError("! توكن مفقود ، الرجاء تسجيل الدخول");
-        router.push("/login"); // Redirect to login page if no token
+        router.push("/auth/login");
         return;
       }
 
@@ -66,7 +68,7 @@ const Profile = () => {
     }
 
     fetchUserProfile();
-  }, []); // Adding the dependency array to ensure the effect runs only once on mount
+  }, [router]);
 
   if (error) {
     return <p>Error: {error}</p>;

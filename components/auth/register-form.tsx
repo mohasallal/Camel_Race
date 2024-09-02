@@ -18,6 +18,8 @@ import { Button } from "../ui/button";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { register } from "@/Actions/register";
+import { RedirectButton } from "./redirect-button";
+import { IconArrowBack } from "@tabler/icons-react";
 
 export const RegisterForm = () => {
   const [error, setErrors] = useState<string | undefined>("");
@@ -46,7 +48,7 @@ export const RegisterForm = () => {
     setSuccess("");
     startTransition(() => {
       register(values).then((data) => {
-        setErrors(data.error); 
+        setErrors(data.error);
         setSuccess(data.success);
       });
     });
@@ -60,6 +62,12 @@ export const RegisterForm = () => {
       backButtonHref="/auth/login"
       showSocial
     >
+      <RedirectButton
+        className="cursor-pointer absolute top-2 left-2"
+        path="/admin/dashboard"
+      >
+        <IconArrowBack />
+      </RedirectButton>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4 text-right">
@@ -158,7 +166,7 @@ export const RegisterForm = () => {
                   <FormControl>
                     <Input
                       disabled={isPending}
-                      type="text" 
+                      type="text"
                       {...field}
                       placeholder="الرقم الوطني"
                       className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"

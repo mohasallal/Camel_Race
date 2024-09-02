@@ -6,6 +6,7 @@ interface RedirectButtonProps {
   mode?: "modal" | "redirect";
   asChild?: boolean;
   path: string;
+  className?: string;
 }
 
 export const RedirectButton = ({
@@ -13,11 +14,12 @@ export const RedirectButton = ({
   mode,
   asChild,
   path,
+  className,
 }: RedirectButtonProps) => {
   const router = useRouter();
 
   const onClick = () => {
-    router.push(`/auth/${path}`);
+    router.push(`${path}`);
   };
 
   if (mode === "modal") {
@@ -25,7 +27,7 @@ export const RedirectButton = ({
   }
 
   return (
-    <span onClick={onClick} className="cursor-pointer relative">
+    <span onClick={onClick} className={className || `cursor-pointer relative`}>
       {children}
     </span>
   );

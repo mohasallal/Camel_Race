@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../side-bar";
 import {
   IconArrowLeft,
@@ -15,8 +15,76 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
 import { RedirectButton } from "../auth/redirect-button";
+import { useRouter } from "next/navigation";
+
+interface UserProfile {
+  id: string;
+  FirstName: string;
+  FatherName: string;
+  GrandFatherName: string;
+  FamilyName: string;
+  username: string;
+  email: string;
+  NationalID: string;
+  BDate: string;
+  MobileNumber: string;
+  image?: string;
+  role: string;
+}
 
 export function AdminDashboard() {
+  const router = useRouter();
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    console.log("profile component is mounted");
+    async function fetchUserProfile() {
+      const token = localStorage.getItem("authToken");
+
+      if (!token) {
+        console.log("No token found, redirecting to login");
+        setError("! توكن مفقود ، الرجاء تسجيل الدخول");
+        router.push("/auth/login");
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || "Failed to fetch user profile.");
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+        setError("An unexpected error occurred.");
+      }
+    }
+
+    fetchUserProfile();
+  }, [router]);
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
+  if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {
+    router.push("/error");
+  }
+
   const links = [
     {
       label: "اللائحة",
@@ -47,7 +115,6 @@ export function AdminDashboard() {
       ),
     },
   ];
-  const [open, setOpen] = useState(false);
   return (
     <div
       className={cn(
@@ -116,7 +183,6 @@ export const LogoIcon = () => {
   );
 };
 
-// Dummy dashboard component with content
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
@@ -148,7 +214,7 @@ const Dashboard = () => {
         <div className="flex gap-2 flex-1 max-lg:flex-col">
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
-              <RedirectButton path="register">
+              <RedirectButton path="/auth/register">
                 <Button>
                   <FaPlus />
                   انشاء مستخدم

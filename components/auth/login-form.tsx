@@ -19,6 +19,8 @@ import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
 import { login } from "@/Actions/login";
 import { useRouter } from "next/navigation";
+import { RedirectButton } from "./redirect-button";
+import { IconArrowBack } from "@tabler/icons-react";
 
 export const LoginForm = () => {
   const [error, setErrors] = useState<string | undefined>("");
@@ -56,6 +58,9 @@ export const LoginForm = () => {
       backButtonHref="/auth/register"
       showSocial
     >
+      <RedirectButton className="cursor-pointer absolute top-2 left-2" path="/">
+        <IconArrowBack />
+      </RedirectButton>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4 text-right">
