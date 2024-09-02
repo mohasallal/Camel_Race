@@ -39,3 +39,20 @@ export const getUsers = async (): Promise<User[]> => {
     throw error;
   }
 };
+
+export const getUserRoles = async (): Promise<
+  { id: string; role: string }[]
+> => {
+  try {
+    const users = await db.user.findMany({
+      select: {
+        id: true,
+        role: true,
+      },
+    });
+
+    return users; 
+  } catch (error) {
+    throw new Error(`Failed to retrieve user roles: ${error}`);
+  }
+};

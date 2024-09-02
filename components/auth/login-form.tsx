@@ -25,8 +25,7 @@ export const LoginForm = () => {
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
-  const router = useRouter(); // For client-side navigation
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -43,6 +42,7 @@ export const LoginForm = () => {
       setErrors(data.error || "");
       setSuccess(data.success || "");
       if (data.token) {
+        localStorage.setItem("authToken", data.token);
         router.push("/profile");
       }
     });

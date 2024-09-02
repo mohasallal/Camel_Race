@@ -18,14 +18,14 @@ const NavButtons = ({ className, enablescroll }: Props) => {
           تسجيل الدخول
         </Button>
       </RedirectButton>
-      <RedirectButton path="register">
+      {/* <RedirectButton path="register">
         <Button
           onClick={enablescroll}
           className="rounded-xl bg-gray-200 opacity-60 text-black font-black hover:bg-gray-300 duration-200"
         >
           انشاء حساب
         </Button>
-      </RedirectButton>
+      </RedirectButton> */}
     </div>
   );
 };

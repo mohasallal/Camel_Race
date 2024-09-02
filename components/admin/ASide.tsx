@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
+import { RedirectButton } from "../auth/redirect-button";
 
 export function AdminDashboard() {
   const links = [
@@ -147,10 +148,12 @@ const Dashboard = () => {
         <div className="flex gap-2 flex-1 max-lg:flex-col">
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
-              <Button>
-                <FaPlus />
-                أضف مستخدم
-              </Button>
+              <RedirectButton path="register">
+                <Button>
+                  <FaPlus />
+                  انشاء مستخدم
+                </Button>
+              </RedirectButton>
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
                 : المستخدمين
               </h2>
