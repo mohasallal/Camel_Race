@@ -3,7 +3,7 @@ import { CardWrapper } from "./card-wrapper";
 import * as z from "zod";
 import { RegisterSchema } from "@/schemas";
 import { useForm } from "react-hook-form";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -28,12 +28,35 @@ import { register } from "@/Actions/register";
 import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
 
+interface UserProfile {
+  role: string;
+}
+
 export const RegisterForm = () => {
   const [error, setErrors] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
   const [isPending, startTransition] = useTransition();
+  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    setToken(storedToken);
 
+    if (storedToken) {
+      fetch("/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${storedToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setUser(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching user profile:", error);
+        });
+    }
+  }, []);
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -279,40 +302,42 @@ export const RegisterForm = () => {
                 )}
               />
             </div>
-            <FormField
-              control={form.control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>: دور المستخدم</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger className="flex flex-row-reverse">
-                        <SelectValue placeholder="اختار دور المستخدم" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem
-                        className="flex flex-row-reverse"
-                        value="SUPERVISOR"
-                      >
-                        مسؤول
-                      </SelectItem>
-                      <SelectItem
-                        className="flex flex-row-reverse"
-                        value="‘ٌٍُ"
-                      >
-                        مستخدم
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {user?.role === "ADMIN" && (
+              <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>: دور المستخدم</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="flex flex-row-reverse">
+                          <SelectValue placeholder="اختار دور المستخدم" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem
+                          className="flex flex-row-reverse"
+                          value="SUPERVISOR"
+                        >
+                          مسؤول
+                        </SelectItem>
+                        <SelectItem
+                          className="flex flex-row-reverse"
+                          value="‘ٌٍُ"
+                        >
+                          مستخدم
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <FormField
               control={form.control}
               name="email"

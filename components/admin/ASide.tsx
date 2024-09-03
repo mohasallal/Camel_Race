@@ -16,7 +16,8 @@ import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
 import { RedirectButton } from "../auth/redirect-button";
 import { useRouter } from "next/navigation";
-import ShowUsers from "../users";
+import { ShowUsers } from "../users";
+import { ShowSupers } from "../getSuper";
 
 interface UserProfile {
   id: string;
@@ -217,7 +218,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
                 </h2>
               </div>
               <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
-                <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
+                <ShowSupers />
               </div>
             </div>
           </div>

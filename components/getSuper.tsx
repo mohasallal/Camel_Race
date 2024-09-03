@@ -16,12 +16,12 @@ interface User {
   role: string;
 }
 
-export const ShowUsers = () => {
+export const ShowSupers = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/users/getUsers")
+    fetch("/api/users/getSuper")
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
