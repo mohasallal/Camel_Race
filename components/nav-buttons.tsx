@@ -8,9 +8,10 @@ import { signOut } from "@/lib/auth";
 interface Props {
   className?: string;
   enablescroll?: () => void;
+  onSignOut?: () => void;
 }
 
-const NavButtons = ({ className, enablescroll }: Props) => {
+const NavButtons = ({ className, enablescroll, onSignOut }: Props) => {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
 
@@ -24,6 +25,9 @@ const NavButtons = ({ className, enablescroll }: Props) => {
       await signOut();
       localStorage.removeItem("authToken");
       setToken(null);
+      if (onSignOut) {
+        onSignOut(); 
+      }
       router.push("/");
     } catch (error) {
       console.error("Failed to sign out:", error);

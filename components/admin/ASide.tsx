@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Sidebar, SidebarBody, SidebarLink } from "../side-bar";
 import {
   IconArrowLeft,
@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { FaPlus } from "react-icons/fa";
 import { RedirectButton } from "../auth/redirect-button";
 import { useRouter } from "next/navigation";
+import ShowUsers from "../users";
 
 interface UserProfile {
   id: string;
@@ -39,12 +40,10 @@ export function AdminDashboard() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    console.log("profile component is mounted");
     async function fetchUserProfile() {
       const token = localStorage.getItem("authToken");
 
       if (!token) {
-        console.log("No token found, redirecting to login");
         setError("! توكن مفقود ، الرجاء تسجيل الدخول");
         router.push("/auth/login");
         return;
@@ -83,6 +82,7 @@ export function AdminDashboard() {
 
   if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {
     router.push("/error");
+    return null;
   }
 
   const links = [
@@ -115,6 +115,7 @@ export function AdminDashboard() {
       ),
     },
   ];
+
   return (
     <div
       className={cn(
@@ -151,10 +152,11 @@ export function AdminDashboard() {
           </div>
         </SidebarBody>
       </Sidebar>
-      <Dashboard />
+      <Dashboard role={user.role} />
     </div>
   );
 }
+
 export const Logo = () => {
   return (
     <Link
@@ -172,6 +174,7 @@ export const Logo = () => {
     </Link>
   );
 };
+
 export const LogoIcon = () => {
   return (
     <Link
@@ -183,59 +186,61 @@ export const LogoIcon = () => {
   );
 };
 
-const Dashboard = () => {
+interface DashboardProps {
+  role: string;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   return (
     <div className="flex flex-1">
       <div className="p-2 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full overflow-y-scroll">
         <div className="flex">
           <div className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 flex items-center py-1 px-4">
+            <RedirectButton className="mr-2" path="/auth/register">
+              <Button>
+                <FaPlus />
+                انشاء مستخدم
+              </Button>
+            </RedirectButton>
             <Input
               placeholder="ابحث عن المستخدمين أو المسؤولين"
               className="text-right text-xl"
             />
           </div>
         </div>
-        <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
-            <div className="w-full flex items-center justify-between px-5 my-2">
-              <Button>
-                <FaPlus />
-                أضف مسؤوول
-              </Button>
-              <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                : المسؤولين
-              </h2>
-            </div>
-            <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
-              <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
+        {role === "ADMIN" && (
+          <div className="flex gap-2 flex-1 max-lg:flex-col">
+            <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+              <div className="w-full flex items-center justify-end px-5 my-2">
+                <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
+                  : المسؤولين
+                </h2>
+              </div>
+              <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
+                <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div className="flex gap-2 flex-1 max-lg:flex-col">
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
-            <div className="w-full flex items-center justify-between px-5 my-2">
-              <RedirectButton path="/auth/register">
-                <Button>
-                  <FaPlus />
-                  انشاء مستخدم
-                </Button>
-              </RedirectButton>
+            <div className="w-full flex items-center justify-end px-5 my-2">
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
                 : المستخدمين
               </h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
-              <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
+              <ShowUsers />
             </div>
           </div>
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
-                أضف فعالية
+                إضافة حدث
               </Button>
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                : الفعاليات
+                : الأحداث
               </h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
@@ -248,10 +253,10 @@ const Dashboard = () => {
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
-                أضف نتيجة
+                أضف شوط
               </Button>
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                : النتائج
+                اضافة أشواط
               </h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">

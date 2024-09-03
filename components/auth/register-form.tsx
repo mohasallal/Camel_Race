@@ -13,6 +13,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { FormError } from "../form-error";
@@ -84,90 +91,95 @@ export const RegisterForm = () => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4 text-right">
-            <FormField
-              control={form.control}
-              name="FirstName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : الاسم
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="الاسم"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="FatherName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : اسم الأب
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="اسم الاب"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="GrandFatherName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : اسم الجد
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="اسم الجد"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="FamilyName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : اسم العائلة
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="اسم العائلة"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+              <FormField
+                control={form.control}
+                name="FatherName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : اسم الأب
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="اسم الاب"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="FirstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : الاسم
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="الاسم"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+              <FormField
+                control={form.control}
+                name="FamilyName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : اسم العائلة
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="اسم العائلة"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="GrandFatherName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : اسم الجد
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="اسم الجد"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="NationalID"
@@ -223,44 +235,80 @@ export const RegisterForm = () => {
                 </FormItem>
               )}
             />
+            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+              <FormField
+                control={form.control}
+                name="MobileNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : رقم الهاتف
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="رقم الهاتف"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : اسم المستخدم
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="اسم المستخدم"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
-              name="MobileNumber"
+              name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : رقم الهاتف
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="رقم الهاتف"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : اسم المستخدم
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="اسم المستخدم"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
+                  <FormLabel>: دور المستخدم</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="flex flex-row-reverse">
+                        <SelectValue placeholder="اختار دور المستخدم" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem
+                        className="flex flex-row-reverse"
+                        value="SUPERVISOR"
+                      >
+                        مسؤول
+                      </SelectItem>
+                      <SelectItem
+                        className="flex flex-row-reverse"
+                        value="‘ٌٍُ"
+                      >
+                        مستخدم
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
@@ -286,6 +334,7 @@ export const RegisterForm = () => {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="password"
@@ -332,7 +381,7 @@ export const RegisterForm = () => {
 
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
             <Button disabled={isPending} type="submit" className="w-full">
-              تسجيل
+              انشاء حساب
             </Button>
           </div>
           <FormError message={error} />

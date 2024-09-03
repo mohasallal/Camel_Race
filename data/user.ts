@@ -1,10 +1,6 @@
 import { db } from "@/lib/db";
+import { User } from "@prisma/client";
 
-export type User = {
-  id: string;
-  FirstName: string;
-  email: string;
-};
 export const getUserByEmail = async (email: string) => {
   try {
     const user = await db.user.findUnique({
@@ -29,14 +25,17 @@ export const getUserById = async (id: string) => {
   }
 };
 
-export const getUsers = async (): Promise<User[]> => {
+export const getUser = async (): Promise<User[]> => {
   try {
-    const users = await db.user.findMany();
+    const users = await db.user.findMany({
+      where: {
+        role: "USER", // Filter users by role
+      },
+    });
 
     return users;
   } catch (error) {
-    console.error("Error fetching users:", error);
-    throw error;
+    throw new Error(`Failed to retrieve users: ${error}`);
   }
 };
 
@@ -51,7 +50,12 @@ export const getUserRoles = async (): Promise<
       },
     });
 
-    return users; 
+    return users
+      .filter((user) => user.role !== null)
+      .map((user) => ({
+        id: user.id,
+        role: user.role as string,
+      }));
   } catch (error) {
     throw new Error(`Failed to retrieve user roles: ${error}`);
   }

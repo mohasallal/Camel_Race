@@ -45,7 +45,7 @@ export const LoginForm = () => {
       setSuccess(data.success || "");
       if (data.token) {
         localStorage.setItem("authToken", data.token);
-        router.push("/profile");
+        router.push("/");
       }
     });
   };
