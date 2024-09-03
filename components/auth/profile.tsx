@@ -14,6 +14,7 @@ import {
 } from "../ui/table";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
 
 interface UserProfile {
   id: string;
@@ -36,7 +37,7 @@ const Profile = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("profile component is mounted");
+    console.log("Profile component is mounted");
     async function fetchUserProfile() {
       const token = localStorage.getItem("authToken");
 
@@ -70,6 +71,23 @@ const Profile = () => {
     fetchUserProfile();
   }, [router]);
 
+  const exportToExcel = () => {
+    const table = document.getElementById("myCamels");
+    if (!table) {
+      console.error("Table element not found");
+      setError("Table element not found.");
+      return;
+    }
+
+    try {
+      const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+      XLSX.writeFile(workbook, "camels-data.xlsx");
+    } catch (err) {
+      console.error("Error exporting to Excel:", err);
+      setError("An error occurred while exporting to Excel.");
+    }
+  };
+
   if (error) {
     return <p>Error: {error}</p>;
   }
@@ -100,18 +118,60 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      <div
-        className="container w-full text-right
-   mt-28 max-sm:text-center"
-      >
+      <div className="container w-full text-right mt-28 max-sm:text-center">
         <h1 className="text-5xl font-semibold">أهلا {user.username}</h1>
+      </div>
+
+      <div className="container w-full text-right mt-10 max-sm:text-center">
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 " style={{ direction: 'rtl', gridAutoFlow: 'dense' }}>
+    <div className="bg-gray-100 p-3  rounded-lg">
+      <label className="block text-gray-400 mb-1">الاسم الأول:</label>
+      <input type="text" value={user.FirstName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-200 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">اسم الأب:</label>
+      <input type="text" value={user.FatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-100 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">اسم الجد:</label>
+      <input type="text" value={user.GrandFatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-200 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">اسم العائلة:</label>
+      <input type="text" value={user.FamilyName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-100 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">اسم المستخدم:</label>
+      <input type="text" value={user.username} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-200 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">البريد الإلكتروني:</label>
+      <input type="text" value={user.email} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-100 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">الرقم الوطني:</label>
+      <input type="text" value={user.NationalID} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-200 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">تاريخ الميلاد:</label>
+      <input type="text" value={user.BDate.split('T')[0]} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+    <div className="bg-gray-100 p-3 rounded-lg">
+      <label className="block text-gray-400 mb-1">رقم الهاتف:</label>
+      <input type="text" value={user.MobileNumber} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+    </div>
+  </div>
+</div>
+
+        <div className="container w-full text-center mt-28 max-sm:text-center  ">
         <div className="mt-10">
-          <h2 className="text-2xl">: الهجن المسجلة</h2>
-          <Button className="mr-5">طباعة البيانات</Button>
+          <h2 className="text-2xl mb-5">: الهجن المسجلة</h2>
+          <Button className="mr-5" onClick={exportToExcel}>
+            طباعة البيانات
+          </Button>
         </div>
       </div>
       <Table className="container text-right mt-10" id="myCamels">
-        <TableCaption>الهجن المضافة</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">الفئة / السن</TableHead>
