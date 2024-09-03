@@ -1,12 +1,11 @@
 "use client";
-import { AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineCamera ,AiOutlineArrowLeft } from "react-icons/ai";
 import { BackButton } from "./back-button";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -35,6 +34,7 @@ const Profile = () => {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("Profile component is mounted");
@@ -58,6 +58,7 @@ const Profile = () => {
         if (response.ok) {
           const data = await response.json();
           setUser(data);
+          if (data.image) setSelectedImage(data.image); // Use existing image if available
         } else {
           const errorData = await response.json();
           setError(errorData.error || "Failed to fetch user profile.");
@@ -70,6 +71,19 @@ const Profile = () => {
 
     fetchUserProfile();
   }, [router]);
+
+  const handlePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          setSelectedImage(reader.result as string);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const exportToExcel = () => {
     const table = document.getElementById("myCamels");
@@ -107,14 +121,27 @@ const Profile = () => {
             </BackButton>
           </div>
           <div className="flex items-end justify-end h-full translate-y-[25%] max-sm:justify-center">
-            <Image
-              className="rounded-full border-2 border-black shadow-md"
-              src="/PFP.jpg"
-              width={200}
-              height={200}
-              alt="pfp"
-              priority
-            />
+            <div className="relative">
+              <Image
+                className="rounded-full aspect-square object-contain border-2 border-black shadow-md bg-white"
+                src={selectedImage || "/PFP.jpg"}
+                width={200}
+                height={200}
+                alt="Profile Picture"
+                priority
+              />
+              <label className="absolute inset-0 bg-black opacity-0 hover:opacity-20 flex items-center justify-center cursor-pointer rounded-full">
+                <input
+                  type="file"
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                  onChange={handlePictureChange}
+                />
+                <span className="text-white">
+                <AiOutlineCamera  size={24} />
+
+                </span>
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -123,97 +150,47 @@ const Profile = () => {
       </div>
 
       <div className="container w-full text-right mt-10 max-sm:text-center">
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 gap-4 "
-          style={{ direction: "rtl", gridAutoFlow: "dense" }}
-        >
-          <div className="bg-gray-100 p-3  rounded-lg">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">الاسم الأول:</label>
-            <input
-              type="text"
-              value={user.FirstName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.FirstName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم الأب:</label>
-            <input
-              type="text"
-              value={user.FatherName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.FatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم الجد:</label>
-            <input
-              type="text"
-              value={user.GrandFatherName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.GrandFatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم العائلة:</label>
-            <input
-              type="text"
-              value={user.FamilyName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.FamilyName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم المستخدم:</label>
-            <input
-              type="text"
-              value={user.username}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.username} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">
-              البريد الإلكتروني:
-            </label>
-            <input
-              type="text"
-              value={user.email}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <label className="block text-gray-400 mb-1">البريد الإلكتروني:</label>
+            <input type="text" value={user.email} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">الرقم الوطني:</label>
-            <input
-              type="text"
-              value={user.NationalID}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.NationalID} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">تاريخ الميلاد:</label>
-            <input
-              type="text"
-              value={user.BDate.split("T")[0]}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.BDate.split('T')[0]} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">رقم الهاتف:</label>
-            <input
-              type="text"
-              value={user.MobileNumber}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <input type="text" value={user.MobileNumber} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
           </div>
         </div>
       </div>
 
-      <div className="container w-full text-center mt-28 max-sm:text-center  ">
+      <div className="container w-full text-center mt-28 max-sm:text-center">
         <div className="mt-10">
           <h2 className="text-2xl mb-5">: الهجن المسجلة</h2>
           <Button className="mr-5" onClick={exportToExcel}>
