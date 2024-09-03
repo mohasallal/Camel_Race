@@ -1,5 +1,5 @@
 "use client";
-import { AiOutlineCamera ,AiOutlineArrowLeft } from "react-icons/ai";
+import { AiOutlineCamera, AiOutlineArrowLeft } from "react-icons/ai";
 import { BackButton } from "./back-button";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -137,8 +137,7 @@ const Profile = () => {
                   onChange={handlePictureChange}
                 />
                 <span className="text-white">
-                <AiOutlineCamera  size={24} />
-
+                  <AiOutlineCamera size={24} />
                 </span>
               </label>
             </div>
@@ -153,39 +152,86 @@ const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">الاسم الأول:</label>
-            <input type="text" value={user.FirstName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.FirstName}
+              readOnly
+              className=" outline-none input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم الأب:</label>
-            <input type="text" value={user.FatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.FatherName}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم الجد:</label>
-            <input type="text" value={user.GrandFatherName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.GrandFatherName}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم العائلة:</label>
-            <input type="text" value={user.FamilyName} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.FamilyName}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none  focus:border-0 focus:ring-transparent"
+            />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">اسم المستخدم:</label>
-            <input type="text" value={user.username} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.username}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">البريد الإلكتروني:</label>
-            <input type="text" value={user.email} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <label className="block text-gray-400 mb-1">
+              البريد الإلكتروني:
+            </label>
+            <input
+              type="text"
+              value={user.email}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">الرقم الوطني:</label>
-            <input type="text" value={user.NationalID} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.NationalID}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-200 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">تاريخ الميلاد:</label>
-            <input type="text" value={user.BDate.split('T')[0]} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.BDate.split("T")[0]}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
           <div className="bg-gray-100 p-3 rounded-lg">
             <label className="block text-gray-400 mb-1">رقم الهاتف:</label>
-            <input type="text" value={user.MobileNumber} readOnly className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+            <input
+              type="text"
+              value={user.MobileNumber}
+              readOnly
+              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
+            />
           </div>
         </div>
       </div>

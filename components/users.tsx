@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { FaEllipsisV } from "react-icons/fa";
 
 interface User {
   id: string;
@@ -41,20 +42,22 @@ export const ShowUsers = () => {
       {error && <p>{error}</p>}
       {users.map((user) => (
         <div
-          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between"
+          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5"
           key={user.id}
         >
-          <div className="flex items-center flex-row-reverse">
+          <div className="flex items-center flex-row-reverse gap-2">
             <Image
               src={user.image || "/PFP.jpg"}
               alt="pfp"
               className="rounded-full h-fit"
-              width={75}
-              height={75}
+              width={60}
+              height={60}
             />
-            {user.username}
+            <span className="font-semibold">{user.username}</span>
           </div>
-          <div>Options</div>
+          <div>
+            <FaEllipsisV />
+          </div>
         </div>
       ))}
     </>
