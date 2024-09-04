@@ -90,3 +90,31 @@ export const RegisterSchema = z
     path: ["confirmPassword"],
     message: "كلمة المرور وتأكيد كلمة المرور غير متطابقين",
   });
+
+export const EventsSchema = z
+  .object({
+    name: z.string().min(1, "اسم الحدث مطلوب"),
+    StartDate: z
+      .date({
+        required_error: "تاريخ البدء مطلوب",
+      })
+      .refine((date) => date > new Date(), {
+        message: "تاريخ البدء يجب أن يكون في المستقبل",
+      }),
+    EndDate: z
+      .date({
+        required_error: "تاريخ الانتهاء مطلوب",
+      })
+      .refine((date) => date > new Date(), {
+        message: "تاريخ الانتهاء يجب أن يكون في المستقبل",
+      }),
+  })
+  .superRefine((data, ctx) => {
+    if (data.EndDate <= data.StartDate) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["EndDate"],
+        message: "تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء",
+      });
+    }
+  });

@@ -327,7 +327,7 @@ export const RegisterForm = () => {
                         </SelectItem>
                         <SelectItem
                           className="flex flex-row-reverse"
-                          value="‘ٌٍُ"
+                          value="USER"
                         >
                           مستخدم
                         </SelectItem>

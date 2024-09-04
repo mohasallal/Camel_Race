@@ -18,6 +18,7 @@ import { RedirectButton } from "../auth/redirect-button";
 import { useRouter } from "next/navigation";
 import { ShowUsers } from "../users";
 import { ShowSupers } from "../getSuper";
+import { CreateEventForm } from "../event/EventsForm";
 
 interface UserProfile {
   id: string;
@@ -190,13 +191,32 @@ export const LogoIcon = () => {
 interface DashboardProps {
   role: string;
 }
-
 const Dashboard: React.FC<DashboardProps> = ({ role }) => {
+  const [block, setBlock] = useState(false);
+
+  useEffect(() => {
+    if (block) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "auto";
+      document.body.style.touchAction = "auto";
+    }
+  }, [block]);
+
+  const handleFormChange = () => {
+    setBlock((prev) => !prev); // Toggle form visibility
+  };
+
   return (
     <div className="flex flex-1">
-      <div className="p-2 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full overflow-y-scroll">
+      <div
+        className={`p-2 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full ${
+          block ? "overflow-hidden" : "overflow-y-scroll"
+        }`}
+      >
         <div className="flex">
-          <div className="h-20 w-full rounded-lg  bg-gray-100 dark:bg-neutral-800 flex items-center py-1 px-4">
+          <div className="h-20 w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex items-center py-1 px-4">
             <RedirectButton className="mr-2" path="/auth/register">
               <Button>
                 <FaPlus />
@@ -224,7 +244,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
           </div>
         )}
         <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-end px-5 my-2">
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
                 : المستخدمين
@@ -234,11 +254,19 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <ShowUsers />
             </div>
           </div>
+        </div>
+        <div className="flex gap-2 flex-1 max-lg:flex-col">
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+            {block && (
+              <CreateEventForm
+                className={block ? "block" : "hidden"}
+                onClose={() => setBlock(false)}
+              />
+            )}
             <div className="w-full flex items-center justify-between px-5 my-2">
-              <Button>
+              <Button onClick={handleFormChange}>
                 <FaPlus />
-                إضافة حدث
+                {block ? "إغلاق" : "إضافة حدث"}
               </Button>
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
                 : الأحداث
@@ -248,9 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
             </div>
           </div>
-        </div>
-        <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
