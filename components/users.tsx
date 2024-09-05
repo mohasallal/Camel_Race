@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
-
+import UserDetails from "./admin/ShowUserDetails";
 interface User {
   id: string;
   FirstName: string;
@@ -16,9 +16,9 @@ interface User {
   image?: string;
   role: string;
 }
-
 export const ShowUsers = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -37,13 +37,23 @@ export const ShowUsers = () => {
       });
   }, []);
 
+  const handleUserClick = (userId: string) => {
+    setSelectedUserId(userId);
+  };
+
+  const handleCloseUserDetails = () => {
+    setSelectedUserId(null);
+  };
+
+  if (error) return <p>{error}</p>;
+
   return (
     <>
-      {error && <p>{error}</p>}
       {users.map((user) => (
         <div
-          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5"
+          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
           key={user.id}
+          onClick={() => handleUserClick(user.id)}
         >
           <div className="flex items-center flex-row-reverse gap-2">
             <Image
@@ -60,6 +70,9 @@ export const ShowUsers = () => {
           </div>
         </div>
       ))}
+      {selectedUserId && (
+        <UserDetails userId={selectedUserId} onClose={handleCloseUserDetails} />
+      )}
     </>
   );
 };

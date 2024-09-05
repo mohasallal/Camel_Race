@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { ShowUsers } from "../users";
 import { ShowSupers } from "../getSuper";
 import { CreateEventForm } from "../event/EventsForm";
+import { ShowEvents } from "../show-events";
 
 interface UserProfile {
   id: string;
@@ -193,6 +194,7 @@ interface DashboardProps {
 }
 const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [block, setBlock] = useState(false);
+  const [showAddCamelsForm, setShowAddCamelsForm] = useState(false);
 
   useEffect(() => {
     if (block) {
@@ -273,7 +275,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               </h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
-              <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
+              <ShowEvents />
             </div>
           </div>
           <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">

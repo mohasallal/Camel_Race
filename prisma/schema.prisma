@@ -14,6 +14,21 @@ enum Role {
   USER
 }
 
+enum Sex {
+  Male
+  Female
+}
+
+enum Age {
+  GradeOne
+  GradeTwo
+  GradeThree
+  GradeFour
+  GradeFive
+  GradeSixMale
+  GradeSixFemale
+}
+
 model User{
   id String @id @default(cuid())
   FirstName String
@@ -37,9 +52,12 @@ model Camel {
   id        Int     @id @default(autoincrement()) 
   name      String
   camelID   String  @unique
-  age       Int
+  age       Age
+  sex       Sex
   ownerId   String
   owner     User    @relation(fields: [ownerId], references: [id])
+  loop      Loop?   @relation(fields: [loopId], references: [id])
+  loopId    String?
 }
 
 model Event {
@@ -47,6 +65,17 @@ model Event {
   name        String
   StartDate        DateTime
   EndDate        DateTime
-  //Loops
+  loops Loop[]
 }
 
+model Loop {
+  id      String    @id @default(cuid())
+  name    String
+  event   Event     @relation(fields: [eventId], references: [id])
+  eventId String
+  capacity Int
+  RegisterStart DateTime
+  RegisterEnd   DateTime
+  camelIds   String[]
+  camels  Camel[]   
+}
