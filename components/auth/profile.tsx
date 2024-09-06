@@ -1,4 +1,5 @@
 "use client";
+
 import { AiOutlineCamera, AiOutlineArrowLeft } from "react-icons/ai";
 import { BackButton } from "./back-button";
 import Image from "next/image";
@@ -30,46 +31,60 @@ interface UserProfile {
   role: string;
 }
 
+interface Camel {
+  id: string;
+  age: number;
+  camelID: string;
+  name: string;
+}
+
 const Profile = () => {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [camels, setCamels] = useState<Camel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log("Profile component is mounted");
-    async function fetchUserProfile() {
-      const token = localStorage.getItem("authToken");
-
-      if (!token) {
-        console.log("No token found, redirecting to login");
-        setError("! توكن مفقود ، الرجاء تسجيل الدخول");
-        router.push("/auth/login");
-        return;
-      }
-
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/user/profile", {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setError("! توكن مفقود ، الرجاء تسجيل الدخول");
+          router.push("/auth/login");
+          return;
+        }
+
+        const userResponse = await fetch("/api/user/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data);
-          if (data.image) setSelectedImage(data.image); // Use existing image if available
-        } else {
-          const errorData = await response.json();
+        if (!userResponse.ok) {
+          const errorData = await userResponse.json();
           setError(errorData.error || "Failed to fetch user profile.");
+          return;
         }
-      } catch (error) {
-        console.error("Failed to fetch user profile:", error);
-        setError("An unexpected error occurred.");
-      }
-    }
+        const userData = await userResponse.json();
+        setUser(userData);
+        if (userData.image) setSelectedImage(userData.image);
 
-    fetchUserProfile();
+        const camelResponse = await fetch(`/api/camels/${userData.id}`);
+        if (!camelResponse.ok) {
+          const errorData = await camelResponse.json();
+          setError(errorData.error || "Failed to fetch camels.");
+          return;
+        }
+        const camelData = await camelResponse.json();
+        setCamels(camelData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("An error occurred while fetching data.");
+      }
+    };
+
+    fetchData();
   }, [router]);
 
   const handlePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +103,6 @@ const Profile = () => {
   const exportToExcel = () => {
     const table = document.getElementById("myCamels");
     if (!table) {
-      console.error("Table element not found");
       setError("Table element not found.");
       return;
     }
@@ -242,24 +256,25 @@ const Profile = () => {
           <Button className="mr-5" onClick={exportToExcel}>
             طباعة البيانات
           </Button>
+          {/* Add camel form component here */}
         </div>
       </div>
-      <Table className="container text-right mt-10" id="myCamels">
+      <Table className="container text-right mt-10 mb-20" id="myCamels">
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">الفئة / السن</TableHead>
             <TableHead>رقم الشريحة</TableHead>
             <TableHead>اسم الهجين</TableHead>
-            <TableHead className="text-right">التسلسل</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
-            <TableCell className="font-medium">مثال</TableCell>
-            <TableCell>مثال</TableCell>
-            <TableCell>مثال</TableCell>
-            <TableCell className="text-right">مثال</TableCell>
-          </TableRow>
+          {camels.map((camel) => (
+            <TableRow key={camel.id}>
+              <TableCell className="font-medium">{camel.age}</TableCell>
+              <TableCell>{camel.camelID}</TableCell>
+              <TableCell>{camel.name}</TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
     </div>
