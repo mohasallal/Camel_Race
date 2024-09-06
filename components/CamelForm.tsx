@@ -7,20 +7,30 @@ import {
   SelectContent,
   SelectItem,
   SelectValue,
-} from "./ui/select"; // Adjust the import path as needed
+} from "./ui/select";
+import { Camel } from "@prisma/client";
 
 interface Props {
   className?: string;
+  userId: string;
   onClose: () => void;
+  onAddCamel: (newCamel: Camel) => void;
 }
 
-const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
+const AddCamelsForm: React.FC<Props> = ({
+  onClose,
+  className,
+  userId,
+  onAddCamel,
+}) => {
   const [camelDetails, setCamelDetails] = useState({
     name: "",
-    camelId: "",
+    camelID: "",
+    ownerId: userId,
     age: "GradeOne",
     sex: "Male",
   });
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCamelDetails({ ...camelDetails, [e.target.name]: e.target.value });
@@ -32,6 +42,7 @@ const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("Submitting camel details:", camelDetails);
 
     try {
       const response = await fetch("/api/camels/create", {
@@ -43,10 +54,14 @@ const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
       });
 
       const result = await response.json();
+      console.log("Response from server:", result);
 
       if (response.ok) {
-        alert(result.success || "Camel added successfully!");
-        onClose();
+        onAddCamel(result);
+        alert("Camel added successfully!");
+        setTimeout(() => {
+          onClose();
+        }, 750);
       } else {
         alert(result.error || "Failed to add camel.");
       }
@@ -71,8 +86,8 @@ const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
             className="mb-2"
           />
           <Input
-            name="camelId"
-            value={camelDetails.camelId}
+            name="camelID"
+            value={camelDetails.camelID}
             onChange={handleChange}
             placeholder="Camel ID"
             className="mb-2"
@@ -114,7 +129,11 @@ const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
               </SelectContent>
             </Select>
           </div>
-
+          {successMessage && (
+            <div className="mt-4 text-green-600 font-semibold text-center">
+              {successMessage}
+            </div>
+          )}
           <Button type="submit" className="mr-2">
             Add Camel
           </Button>
@@ -126,5 +145,4 @@ const AddCamelsForm: React.FC<Props> = ({ onClose, className = "" }) => {
     </div>
   );
 };
-
 export default AddCamelsForm;

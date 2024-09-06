@@ -12,9 +12,9 @@ import { Button } from "../ui/button";
 import AddCamelsForm from "../CamelForm";
 
 interface Camel {
-  id: string;
+  id: number;
   name: string;
-  camelId: string;
+  camelID: string;
   age: string;
   sex: string;
 }
@@ -39,7 +39,6 @@ interface UserDetailsProps {
   userId: string;
   onClose: () => void;
 }
-
 const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [user, setUser] = useState<User | null>(null);
   const [camels, setCamels] = useState<Camel[]>([]);
@@ -47,35 +46,50 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
 
   useEffect(() => {
-    // Fetch user details
-    fetch(`/api/users/${userId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setUser(data);
-          // Fetch camels for the user
-          fetch(`/api/camels/${data.id}`)
-            .then((response) => response.json())
-            .then((camelData) => {
-              if (camelData.error) {
-                setError(camelData.error);
-              } else {
-                setCamels(camelData);
-              }
-            })
-            .catch((error) => {
-              console.error("Error fetching camels:", error);
-              setError("An error occurred while fetching camels.");
-            });
+    const fetchData = async () => {
+      try {
+        const userResponse = await fetch(`/api/users/${userId}`);
+        const userData = await userResponse.json();
+        if (userData.error) {
+          setError(userData.error);
+          return;
         }
-      })
-      .catch((error) => {
-        console.error("Error fetching user details:", error);
-        setError("An error occurred while fetching user details.");
-      });
+        setUser(userData);
+
+        const camelResponse = await fetch(`/api/camels/${userData.id}`);
+        const camelData = await camelResponse.json();
+        if (camelData.error) {
+          setError(camelData.error);
+        } else {
+          setCamels(camelData);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("An error occurred while fetching data.");
+      }
+    };
+
+    fetchData();
   }, [userId]);
+
+  const fetchCamels = async () => {
+    try {
+      const response = await fetch(`/api/camels/${userId}`);
+      const camelData = await response.json();
+      if (camelData.error) {
+        setError(camelData.error);
+      } else {
+        setCamels(camelData);
+      }
+    } catch (error) {
+      console.error("Error fetching camels:", error);
+      setError("An error occurred while fetching camels.");
+    }
+  };
+
+  const handleAddCamel = (newCamel: Camel) => {
+    setCamels((prevCamels) => [...prevCamels, newCamel]);
+  };
 
   if (error) return <div>Error: {error}</div>;
 
@@ -126,7 +140,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               {showAddCamelForm && (
                 <AddCamelsForm
                   className="mt-4"
-                  onClose={() => setShowAddCamelForm(false)}
+                  userId={user.id}
+                  onClose={() => {
+                    fetchCamels();
+                    setShowAddCamelForm(false);
+                  }}
+                  onAddCamel={handleAddCamel}
                 />
               )}
             </div>
@@ -137,19 +156,22 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                   <TableHead className="w-[100px]">الفئة / السن</TableHead>
                   <TableHead>رقم الشريحة</TableHead>
                   <TableHead>اسم الهجين</TableHead>
-                  <TableHead className="text-right">التسلسل</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {camels.length > 0 ? (
-                  camels.map((camel) => (
-                    <TableRow key={camel.id}>
-                      <TableCell className="font-medium">{camel.age}</TableCell>
-                      <TableCell>{camel.camelId}</TableCell>
-                      <TableCell>{camel.name}</TableCell>
-                      <TableCell className="text-right">مثال</TableCell>
-                    </TableRow>
-                  ))
+                  camels.map(
+                    (camel) =>
+                      camel && (
+                        <TableRow key={camel.id}>
+                          <TableCell className="font-medium">
+                            {camel.age || "..."}
+                          </TableCell>
+                          <TableCell>{camel.camelID || "..."}</TableCell>
+                          <TableCell>{camel.name || "..."}</TableCell>
+                        </TableRow>
+                      )
+                  )
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
@@ -173,5 +195,4 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     </div>
   );
 };
-
 export default UserDetails;

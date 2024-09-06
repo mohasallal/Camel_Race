@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { camelSchema } from "@/schemas";
 import { createCamel } from "@/Actions/CreateCamels";
 
 export async function POST(request: Request) {

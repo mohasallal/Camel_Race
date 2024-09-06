@@ -123,15 +123,20 @@ export const camelSchema = z.object({
   name: z.string().min(1, "Name is required"),
   camelID: z.string().min(1, "Camel ID is required"),
   age: z.enum([
-    "GradeOne",
-    "GradeTwo",
-    "GradeThree",
-    "GradeFour",
-    "GradeFive",
-    "GradeSixMale",
-    "GradeSixFemale"
-  ]),
-  sex: z.enum(["Male", "Female"]),
-  ownerId: z.string().min(1, "Owner ID is required"),
-  loopId: z.string().optional(),
+      "GradeOne",
+      "GradeTwo",
+      "GradeThree",
+      "GradeFour",
+      "GradeFive",
+      "GradeSixMale",
+      "GradeSixFemale",
+    ],
+    {
+      invalid_type_error: "Invalid age",
+    }
+  ),
+  sex: z.enum(["Male", "Female"], {
+    invalid_type_error: "Invalid sex",
+  }),
+  ownerId: z.string().min(1),
 });
