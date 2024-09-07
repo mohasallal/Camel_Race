@@ -20,6 +20,7 @@ import { ShowUsers } from "../users";
 import { ShowSupers } from "../getSuper";
 import { CreateEventForm } from "../event/EventsForm";
 import { ShowEvents } from "../show-events";
+import SearchBar from "./SearchBar";
 
 interface UserProfile {
   id: string;
@@ -38,13 +39,9 @@ interface UserProfile {
 
 export function AdminDashboard() {
   const router = useRouter();
-
   const [user, setUser] = useState<UserProfile | null>(null);
-
   const [error, setError] = useState<string | null>(null);
-
   const [open, setOpen] = useState(false);
-
   useEffect(() => {
     async function fetchUserProfile() {
       const token = localStorage.getItem("authToken");
@@ -197,6 +194,7 @@ interface DashboardProps {
 }
 const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [block, setBlock] = useState(false);
+  const [showAddCamelsForm, setShowAddCamelsForm] = useState(false);
 
   useEffect(() => {
     if (block) {
@@ -209,10 +207,11 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   }, [block]);
 
   const handleFormChange = () => {
-    setBlock((prev) => !prev); 
+    setBlock((prev) => !prev); // Toggle form visibility
   };
 
   return (
+    
     <div className="flex flex-1">
       <div
         className={`p-2 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full ${
@@ -227,10 +226,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
                 انشاء مستخدم
               </Button>
             </RedirectButton>
-            <Input
-              placeholder="ابحث عن المستخدمين أو المسؤولين"
-              className="text-right text-xl"
-            />
+            <SearchBar/>
           </div>
         </div>
         {role === "ADMIN" && (
@@ -260,7 +256,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
           </div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             {block && (
               <CreateEventForm
                 className={block ? "block" : "hidden"}
@@ -280,7 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <ShowEvents />
             </div>
           </div>
-          {/* <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
@@ -293,7 +289,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
               <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
