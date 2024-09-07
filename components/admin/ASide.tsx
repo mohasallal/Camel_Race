@@ -38,8 +38,11 @@ interface UserProfile {
 
 export function AdminDashboard() {
   const router = useRouter();
+
   const [user, setUser] = useState<UserProfile | null>(null);
+
   const [error, setError] = useState<string | null>(null);
+
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -194,7 +197,6 @@ interface DashboardProps {
 }
 const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [block, setBlock] = useState(false);
-  const [showAddCamelsForm, setShowAddCamelsForm] = useState(false);
 
   useEffect(() => {
     if (block) {
@@ -207,7 +209,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   }, [block]);
 
   const handleFormChange = () => {
-    setBlock((prev) => !prev); // Toggle form visibility
+    setBlock((prev) => !prev); 
   };
 
   return (
@@ -258,7 +260,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
           </div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             {block && (
               <CreateEventForm
                 className={block ? "block" : "hidden"}
@@ -278,7 +280,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <ShowEvents />
             </div>
           </div>
-          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          {/* <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
@@ -291,7 +293,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
               <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

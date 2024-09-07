@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaEllipsisV } from "react-icons/fa";
+import EventDetails from "./event/event-details";
 
 interface Event {
   id: string;
@@ -10,6 +11,7 @@ interface Event {
 
 export const ShowEvents = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -33,20 +35,29 @@ export const ShowEvents = () => {
     return `${date.toLocaleDateString("en-GB")} ${date.toLocaleTimeString()}`;
   };
 
+  const handleEventClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+  };
+
+  const handleCloseEventDetails = () => {
+    setSelectedEventId(null);
+  };
+
+  if (error) return <p>{error}</p>;
+
   return (
     <>
-      {error && <p>{error}</p>}
       {events.map((event) => (
         <div
-          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5"
+          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
           key={event.id}
+          onClick={() => handleEventClick(event.id)}
         >
           <div className="flex items-center flex-row-reverse gap-2">
             <div className="flex flex-col text-right">
               <span className="font-semibold">{event.name}</span>
               <span className="text-sm">
-                {formatDateTime(event.StartDate)} -{" "}
-                {formatDateTime(event.EndDate)}
+                {formatDateTime(event.StartDate)} - {formatDateTime(event.EndDate)}
               </span>
             </div>
           </div>
@@ -55,6 +66,9 @@ export const ShowEvents = () => {
           </div>
         </div>
       ))}
+      {selectedEventId && (
+        <EventDetails eventId={selectedEventId} onClose={handleCloseEventDetails} />
+      )}
     </>
   );
 };

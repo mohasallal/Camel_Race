@@ -28,54 +28,62 @@ enum Age {
   GradeSixMale
   GradeSixFemale
 }
-
-model User{
-  id String @id @default(cuid())
-  FirstName String
-  FatherName String
+model User {
+  id              String   @id @default(cuid())
+  FirstName       String
+  FatherName      String
   GrandFatherName String
-  FamilyName String
-  username String
-  email String @unique
-  NationalID String @unique
-  BDate DateTime
-  MobileNumber String
-  emailVerified DateTime?
-  password String
-  image String?
-  role            Role?      @default(USER)
-  camels Camel[]
+  FamilyName      String
+  username        String   @unique
+  email           String   @unique
+  NationalID      String   @unique
+  BDate           DateTime
+  MobileNumber    String
+  emailVerified   DateTime?
+  password        String
+  image           String?
+  role            Role?    @default(USER)
+  camels          Camel[]
 }
 
-
 model Camel {
-  id        Int     @id @default(autoincrement()) 
+  id        Int     @id @default(autoincrement())
   name      String
   camelID   String  @unique
   age       Age
   sex       Sex
   ownerId   String
   owner     User    @relation(fields: [ownerId], references: [id])
-  loop      Loop?   @relation(fields: [loopId], references: [id])
-  loopId    String?
+  loops     CamelLoop[]     
 }
 
 model Event {
   id          String   @id @default(cuid())
   name        String
-  StartDate        DateTime
-  EndDate        DateTime
-  loops Loop[]
+  StartDate   DateTime
+  EndDate     DateTime
+  loops       Loop[]
 }
 
 model Loop {
-  id      String    @id @default(cuid())
-  name    String
-  event   Event     @relation(fields: [eventId], references: [id])
-  eventId String
-  capacity Int
-  RegisterStart DateTime
-  RegisterEnd   DateTime
-  camelIds   String[]
-  camels  Camel[]   
+  id           String   @id @default(cuid())
+  capacity     Int
+  sex          Sex  
+  age          Age  
+  time         String   
+  startRegister DateTime
+  endRegister  DateTime
+  eventId      String
+  event        Event     @relation(fields: [eventId], references: [id])  
+  camels       CamelLoop[]  
+}
+
+model CamelLoop {
+  id      String   @id @default(cuid())
+  camelId Int
+  loopId  String
+  camel   Camel   @relation(fields: [camelId], references: [id])
+  loop    Loop    @relation(fields: [loopId], references: [id])
+
+  @@unique([camelId, loopId], name: "camel_unique_in_event")  
 }

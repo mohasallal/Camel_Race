@@ -40,7 +40,7 @@ function generateToken(existingUser: {
       email: existingUser.email,
       username: existingUser.username,
     };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   } catch (error) {
     console.error("Error generating token:", error);
     throw new Error("Could not generate token");

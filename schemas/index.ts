@@ -45,7 +45,8 @@ export const RegisterSchema = z
       })
       .min(1, {
         message: "اسم المستخدم مطلوب",
-      }),
+      })
+      .toLowerCase(),
     email: z.string().email({
       message: "البريد الالكتروني مطلوب",
     }),
@@ -122,7 +123,8 @@ export const EventsSchema = z
 export const camelSchema = z.object({
   name: z.string().min(1, "Name is required"),
   camelID: z.string().min(1, "Camel ID is required"),
-  age: z.enum([
+  age: z.enum(
+    [
       "GradeOne",
       "GradeTwo",
       "GradeThree",
@@ -140,3 +142,36 @@ export const camelSchema = z.object({
   }),
   ownerId: z.string().min(1),
 });
+
+export const createLoopSchema = z
+  .object({
+    capacity: z.number().min(1, { message: "Capacity must be at least 1." }),
+    sex: z.enum(["Male", "Female"]),
+    age: z.enum(
+      [
+        "GradeOne",
+        "GradeTwo",
+        "GradeThree",
+        "GradeFour",
+        "GradeFive",
+        "GradeSixMale",
+        "GradeSixFemale",
+      ],
+      {
+        invalid_type_error: "Invalid age",
+      }
+    ),
+    time: z.enum(["صباحي", "مسائي"]),
+    startRegister: z.string().transform((val) => new Date(val)),
+    endRegister: z.string().transform((val) => new Date(val)),
+    eventId: z.string(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.endRegister <= data.startRegister) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["EndDate"],
+        message: "تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء",
+      });
+    }
+  });
