@@ -1,10 +1,30 @@
 import { useEffect, useState } from "react";
+import CreateLoopForm from "../loop-form";
+import { Button } from "../ui/button";
+import {
+  Table,
+  TableHeader,
+  TableRow,
+  TableHead,
+  TableBody,
+  TableCell,
+} from "../ui/table";
 
 interface Event {
   id: string;
   name: string;
   StartDate: string;
   EndDate: string;
+}
+
+interface Loop {
+  id: string;
+  capacity: number;
+  age: string;
+  sex: string;
+  time: string;
+  startRegister: string;
+  endRegister: string;
 }
 
 interface EventDetailsProps {
@@ -14,26 +34,49 @@ interface EventDetailsProps {
 
 const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   const [event, setEvent] = useState<Event | null>(null);
+  const [loops, setLoops] = useState<Loop[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isCreateLoopModalOpen, setIsCreateLoopModalOpen] = useState(false);
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    const fetchEventData = async () => {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
-        const data = await response.json();
-        console.log("API response data:", data);
-        if (data.error) {
-          setError(data.error);
+        const eventResponse = await fetch(`/api/events/${eventId}`);
+
+        if (!eventResponse.ok) {
+          throw new Error(`Event fetch error: ${eventResponse.statusText}`);
+        }
+
+        const eventData = await eventResponse.json();
+
+        console.log("Event API response data:", eventData);
+
+        if (eventData.error) {
+          setError(eventData.error);
         } else {
-          setEvent(data);
+          setEvent(eventData);
+        }
+
+        const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
+
+        if (!loopsResponse.ok) {
+          throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
+        }
+
+        const loopsData = await loopsResponse.json();
+        console.log("Loops API response data:", loopsData); // Check the structure here
+        if (Array.isArray(loopsData)) {
+          setLoops(loopsData);
+        } else {
+          setError("Unexpected data format for loops.");
         }
       } catch (error) {
         console.error("Error fetching event details:", error);
-        setError("An error occurred while fetching event details.");
+        setError(`An error occurred while fetching event details: ${error}`);
       }
     };
 
-    fetchEvent();
+    fetchEventData();
   }, [eventId]);
 
   if (error) return <div>Error: {error}</div>;
@@ -55,17 +98,64 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
               <strong>End Date:</strong>{" "}
               {new Date(event.EndDate).toLocaleString("en-GB")}
             </p>
+
+            <Table className="container text-right mt-4">
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">الفئة / السن</TableHead>
+                  <TableHead>القدرة</TableHead>
+                  <TableHead>النوع</TableHead>
+                  <TableHead>الوقت</TableHead>
+                  <TableHead>تاريخ البدء</TableHead>
+                  <TableHead>تاريخ الانتهاء</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loops.length > 0 ? (
+                  loops.map((loop) => (
+                    <TableRow key={loop.id}>
+                      <TableCell className="font-medium">{loop.age}</TableCell>
+                      <TableCell>{loop.capacity}</TableCell>
+                      <TableCell>{loop.sex}</TableCell>
+                      <TableCell>{loop.time}</TableCell>
+                      <TableCell>
+                        {new Date(loop.startRegister).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {new Date(loop.endRegister).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center">
+                      No loops found.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
           </div>
         ) : (
           <p>Loading...</p>
         )}
-        <button
-          onClick={onClose}
-          className="mt-4 bg-gray-500 text-white p-2 rounded"
-        >
-          Close
-        </button>
+        <div className="flex justify-between mt-5">
+          <Button onClick={() => setIsCreateLoopModalOpen(true)}>
+            Create Loop
+          </Button>
+
+          <Button onClick={onClose} variant="outline">
+            Close
+          </Button>
+        </div>
       </div>
+
+      {isCreateLoopModalOpen && (
+        <CreateLoopForm
+          eventId={eventId}
+          onClose={() => setIsCreateLoopModalOpen(false)}
+        />
+      )}
     </div>
   );
 };

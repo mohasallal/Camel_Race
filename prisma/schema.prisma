@@ -28,6 +28,12 @@ enum Age {
   GradeSixMale
   GradeSixFemale
 }
+
+enum Time {
+  Morning
+  Evening
+}
+
 model User {
   id              String   @id @default(cuid())
   FirstName       String
@@ -66,16 +72,16 @@ model Event {
 }
 
 model Loop {
-  id           String   @id @default(cuid())
-  capacity     Int
-  sex          Sex  
-  age          Age  
-  time         String   
+  id            String   @id @default(cuid())
+  capacity      Int
+  age           Age
+  sex           Sex
+  time          Time
   startRegister DateTime
-  endRegister  DateTime
-  eventId      String
-  event        Event     @relation(fields: [eventId], references: [id])  
-  camels       CamelLoop[]  
+  endRegister   DateTime
+  eventId       String
+  event         Event    @relation(fields: [eventId], references: [id])
+  CamelLoop CamelLoop[]
 }
 
 model CamelLoop {

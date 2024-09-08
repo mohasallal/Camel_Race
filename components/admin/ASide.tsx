@@ -211,7 +211,6 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   };
 
   return (
-    
     <div className="flex flex-1">
       <div
         className={`p-2 md:p-5 rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full ${
@@ -226,7 +225,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
                 انشاء مستخدم
               </Button>
             </RedirectButton>
-            <SearchBar/>
+            <SearchBar />
           </div>
         </div>
         {role === "ADMIN" && (
@@ -256,7 +255,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
           </div>
         </div>
         <div className="flex gap-2 flex-1 max-lg:flex-col">
-          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             {block && (
               <CreateEventForm
                 className={block ? "block" : "hidden"}
@@ -276,7 +275,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <ShowEvents />
             </div>
           </div>
-          <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
+          {/* <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button>
                 <FaPlus />
@@ -289,7 +288,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
               <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

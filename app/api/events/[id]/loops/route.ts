@@ -1,27 +1,25 @@
-// import { db } from '@/lib/db';
-// import { NextResponse } from 'next/server';
+import { createLoop } from "@/Actions/CreateLoops";
+import { NextRequest, NextResponse } from "next/server";
 
-// export async function POST(request: Request, { params }: { params: { id: string } }) {
-//   const { id } = params;
-//   const body = await request.json();
-//   const { capacity, gender, age, time, startRegister, endRegister } = body;
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const eventId = params.id;
+    const body = await req.json();
+    console.log("Received body:", body); // Log body to debug
 
-//   try {
-//     const loop = await db.loop.create({
-//       data: {
-//         eventId: id,
-//         capacity,
-//         gender,
-//         age,
-//         time,
-//         startRegister: new Date(startRegister),
-//         endRegister: new Date(endRegister),
-//       },
-//     });
+    const result = await createLoop(body, eventId);
+    console.log("Result from createLoop:", result);
 
-//     return NextResponse.json(loop, { status: 201 });
-//   } catch (error) {
-//     console.error("Error creating loop:", error);
-//     return NextResponse.json({ error: "Failed to create loop" }, { status: 500 });
-//   }
-// }
+    if (result.error) {
+      return NextResponse.json({ error: result.error }, { status: 400 });
+    }
+
+    return NextResponse.json({ success: result.success }, { status: 201 });
+  } catch (error) {
+    console.error("Error in creating loop:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}

@@ -145,26 +145,24 @@ export const camelSchema = z.object({
 
 export const createLoopSchema = z
   .object({
-    capacity: z.number().min(1, { message: "Capacity must be at least 1." }),
+    capacity: z.number().min(1),
+    age: z.enum([
+      "GradeOne",
+      "GradeTwo",
+      "GradeThree",
+      "GradeFour",
+      "GradeFive",
+      "GradeSixMale",
+      "GradeSixFemale",
+    ]),
     sex: z.enum(["Male", "Female"]),
-    age: z.enum(
-      [
-        "GradeOne",
-        "GradeTwo",
-        "GradeThree",
-        "GradeFour",
-        "GradeFive",
-        "GradeSixMale",
-        "GradeSixFemale",
-      ],
-      {
-        invalid_type_error: "Invalid age",
-      }
-    ),
-    time: z.enum(["صباحي", "مسائي"]),
-    startRegister: z.string().transform((val) => new Date(val)),
-    endRegister: z.string().transform((val) => new Date(val)),
-    eventId: z.string(),
+    time: z
+      .enum(["Morning", "Evening", "صباحي", "مسائي"])
+      .transform((val) =>
+        val === "صباحي" ? "Morning" : val === "مسائي" ? "Evening" : val
+      ),
+    startRegister: z.string().transform((str) => new Date(str)),
+    endRegister: z.string().transform((str) => new Date(str)),
   })
   .superRefine((data, ctx) => {
     if (data.endRegister <= data.startRegister) {
