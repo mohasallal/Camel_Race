@@ -64,7 +64,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
         }
 
         const loopsData = await loopsResponse.json();
-        console.log("Loops API response data:", loopsData); // Check the structure here
+        console.log("Loops API response data:", loopsData);
         if (Array.isArray(loopsData)) {
           setLoops(loopsData);
         } else {
@@ -79,8 +79,26 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     fetchEventData();
   }, [eventId]);
 
-  if (error) return <div>Error: {error}</div>;
-
+  const fetchLoops = async () => {
+    try {
+      const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
+      if (!loopsResponse.ok) {
+        throw new Error(
+          `Loops fetch error: ${loopsResponse.status} - ${loopsResponse.statusText}`
+        );
+      }
+      const loopsData = await loopsResponse.json();
+      if (loopsData.error) {
+        console.log("Error from server:", loopsData.error);
+        setError(loopsData.error);
+      } else {
+        setLoops(loopsData);
+      }
+    } catch (error) {
+      console.error("Error fetching loops:", error);
+      setError(`An error occurred while fetching loops: ${error}`);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -153,7 +171,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       {isCreateLoopModalOpen && (
         <CreateLoopForm
           eventId={eventId}
-          onClose={() => setIsCreateLoopModalOpen(false)}
+          onClose={() => {
+            setIsCreateLoopModalOpen(false);
+            fetchLoops();
+          }}
         />
       )}
     </div>

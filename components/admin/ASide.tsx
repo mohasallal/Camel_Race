@@ -88,6 +88,8 @@ export function AdminDashboard() {
     return null;
   }
 
+  
+
   const links = [
     {
       label: "اللائحة",
@@ -194,7 +196,7 @@ interface DashboardProps {
 }
 const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [block, setBlock] = useState(false);
-  const [showAddCamelsForm, setShowAddCamelsForm] = useState(false);
+  const [events, setEvents] = useState<Event[]>([]);
 
   useEffect(() => {
     if (block) {
@@ -206,8 +208,21 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
     }
   }, [block]);
 
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch('/api/events'); 
+      if (!response.ok) {
+        throw new Error(`Fetch error: ${response.statusText}`);
+      }
+      const data = await response.json();
+      setEvents(data);
+    } catch (error) {
+      console.error('Error fetching events:', error);
+    }
+  };
+
   const handleFormChange = () => {
-    setBlock((prev) => !prev); // Toggle form visibility
+    setBlock((prev) => !prev);
   };
 
   return (
@@ -275,20 +290,6 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <ShowEvents />
             </div>
           </div>
-          {/* <div className="h-[30rem] w-[50%] rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
-            <div className="w-full flex items-center justify-between px-5 my-2">
-              <Button>
-                <FaPlus />
-                أضف شوط
-              </Button>
-              <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                اضافة أشواط
-              </h2>
-            </div>
-            <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
-              <div className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg"></div>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>
