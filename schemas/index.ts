@@ -173,3 +173,8 @@ export const createLoopSchema = z
       });
     }
   });
+
+export const registerCamelSchema = z.object({
+  camelId: z.number().min(1),
+  loopId: z.string().min(1),
+});

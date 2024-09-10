@@ -27,6 +27,7 @@ import { FormSuccess } from "../form-success";
 import { register } from "@/Actions/register";
 import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
+import { useRouter } from "next/navigation";
 
 interface UserProfile {
   role: string;
@@ -38,25 +39,53 @@ export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
+
+  const router = useRouter();
+
   useEffect(() => {
     const storedToken = localStorage.getItem("authToken");
+
+    if (!storedToken) {
+      router.push("/auth/login");
+      return;
+    }
+
     setToken(storedToken);
 
-    if (storedToken) {
-      fetch("/api/user/profile", {
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          setUser(data);
-        })
-        .catch((error) => {
-          console.error("Error fetching user profile:", error);
+    const fetchUserProfile = async () => {
+      try {
+        const response = await fetch("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+          },
         });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setUser(data);
+        } else {
+          console.error("Failed to fetch user profile:", data);
+          router.push("/auth/login");
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        router.push("/auth/login");
+      }
+    };
+
+    fetchUserProfile();
+  }, [router]);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN" || user.role === "SUPERVISOR") {
+      } else {
+        router.push("/auth/login");
+      }
     }
-  }, []);
+  }, [user, router]);
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -101,8 +130,6 @@ export const RegisterForm = () => {
     <CardWrapper
       heading="🐫 إنشاء حساب جديد"
       headerLabel="تسجيل حساب"
-      backButtonLabel="يوجد لديك حساب؟"
-      backButtonHref="/auth/login"
       showSocial
     >
       <RedirectButton

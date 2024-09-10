@@ -26,19 +26,25 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   const token = generateToken(existingUser);
-  return { token, success: "! تم تسجيل الدخول بنجاح" };
+  return {
+    token,
+    success: "! تم تسجيل الدخول بنجاح",
+    role: existingUser.role || "user" 
+  };
 };
 
 function generateToken(existingUser: {
   id: string;
   email: string;
   username: string;
+  role: string | null; 
 }) {
   try {
     const payload = {
       id: existingUser.id,
       email: existingUser.email,
       username: existingUser.username,
+      role: existingUser.role || "user", 
     };
     return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
   } catch (error) {

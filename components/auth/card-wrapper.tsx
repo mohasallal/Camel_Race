@@ -6,8 +6,6 @@ import { Header } from "./header";
 interface CardWrapperProps {
   children: React.ReactNode;
   headerLabel: string;
-  backButtonLabel: string;
-  backButtonHref: string;
   showSocial?: boolean;
   heading: string;
 }
@@ -15,8 +13,6 @@ interface CardWrapperProps {
 export const CardWrapper = ({
   children,
   headerLabel,
-  backButtonLabel,
-  backButtonHref,
   heading,
 }: CardWrapperProps) => {
   return (
@@ -25,9 +21,7 @@ export const CardWrapper = ({
         <Header head={heading} label={headerLabel} />
       </CardHeader>
       <CardContent>{children}</CardContent>
-      <CardFooter>
-        <BackButton label={backButtonLabel} href={backButtonHref} />
-      </CardFooter>
+      <CardFooter></CardFooter>
     </Card>
   );
 };

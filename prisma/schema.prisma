@@ -49,7 +49,7 @@ model User {
   password        String
   image           String?
   role            Role?    @default(USER)
-  camels          Camel[]
+  camels          Camel[]  
 }
 
 model Camel {
@@ -58,9 +58,9 @@ model Camel {
   camelID   String  @unique
   age       Age
   sex       Sex
-  ownerId   String
-  owner     User    @relation(fields: [ownerId], references: [id])
-  loops     CamelLoop[]     
+  ownerId   String  // Foreign key from User
+  owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  loops     CamelLoop[]  // Relationship with CamelLoop model
 }
 
 model Event {
@@ -68,28 +68,29 @@ model Event {
   name        String
   StartDate   DateTime
   EndDate     DateTime
-  loops       Loop[]
+  loops       Loop[]  // Relationship with Loop model
 }
 
 model Loop {
   id            String   @id @default(cuid())
   capacity      Int
-  age           Age
-  sex           Sex
-  time          Time
+  registered    Int      @default(autoincrement())
+  age           Age 
+  sex           Sex  
+  time          Time  
   startRegister DateTime
   endRegister   DateTime
   eventId       String
-  event         Event    @relation(fields: [eventId], references: [id])
-  CamelLoop CamelLoop[]
+  event         Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  CamelLoop     CamelLoop[]  
 }
 
 model CamelLoop {
   id      String   @id @default(cuid())
   camelId Int
   loopId  String
-  camel   Camel   @relation(fields: [camelId], references: [id])
-  loop    Loop    @relation(fields: [loopId], references: [id])
+  camel   Camel   @relation(fields: [camelId], references: [id], onDelete: Cascade)
+  loop    Loop    @relation(fields: [loopId], references: [id], onDelete: Cascade)
 
-  @@unique([camelId, loopId], name: "camel_unique_in_event")  
+  @@unique([camelId, loopId], name: "camel_unique_in_event")  // Ensure camel can only register once per loop
 }

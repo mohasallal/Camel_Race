@@ -25,7 +25,6 @@ import { IconArrowBack } from "@tabler/icons-react";
 export const LoginForm = () => {
   const [error, setErrors] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -36,16 +35,21 @@ export const LoginForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setErrors("");
     setSuccess("");
     startTransition(async () => {
       const data = await login(values);
       setErrors(data.error || "");
       setSuccess(data.success || "");
+
       if (data.token) {
         localStorage.setItem("authToken", data.token);
-        router.push("/");
+        if (data.role === "ADMIN" || data.role === "SUPERVISOR") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/");
+        }
       }
     });
   };
@@ -54,8 +58,6 @@ export const LoginForm = () => {
     <CardWrapper
       heading=" 🐪تـسجيل الدخول"
       headerLabel="! أهلا من جديد"
-      backButtonLabel="لا يوجد لديك حساب؟"
-      backButtonHref="/auth/register"
       showSocial
     >
       <RedirectButton className="cursor-pointer absolute top-2 left-2" path="/">

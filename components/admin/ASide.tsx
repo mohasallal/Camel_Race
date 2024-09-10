@@ -88,8 +88,6 @@ export function AdminDashboard() {
     return null;
   }
 
-  
-
   const links = [
     {
       label: "اللائحة",
@@ -103,13 +101,6 @@ export function AdminDashboard() {
       href: "#",
       icon: (
         <IconUserBolt className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
-      ),
-    },
-    {
-      label: "الاعدادات",
-      href: "/settings/",
-      icon: (
-        <IconSettings className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -165,7 +156,7 @@ export function AdminDashboard() {
 export const Logo = () => {
   return (
     <Link
-      href="/"
+      href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <span className="text-2xl">🐪</span>
@@ -183,7 +174,7 @@ export const Logo = () => {
 export const LogoIcon = () => {
   return (
     <Link
-      href="/"
+      href="#"
       className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
     >
       <span className="text-2xl flex">🐪</span>
@@ -210,14 +201,14 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
 
   const fetchEvents = async () => {
     try {
-      const response = await fetch('/api/events'); 
+      const response = await fetch("/api/events");
       if (!response.ok) {
         throw new Error(`Fetch error: ${response.statusText}`);
       }
       const data = await response.json();
       setEvents(data);
     } catch (error) {
-      console.error('Error fetching events:', error);
+      console.error("Error fetching events:", error);
     }
   };
 

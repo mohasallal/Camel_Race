@@ -14,7 +14,7 @@ const Nav = () => {
   };
 
   return (
-    <nav className="top-0 left-0 right-0 fixed bg-white/70 backdrop-blur-lg py-2">
+    <nav className="top-0 left-0 right-0 fixed bg-white/70 backdrop-blur-lg py-2 z-50">
       <div className="container w-full flex justify-between">
         <SideMenuButton>
           <FaBars size={24} />

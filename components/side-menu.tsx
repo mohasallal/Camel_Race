@@ -38,7 +38,7 @@ const SideMenuButton = ({ children }: Props) => {
     >
       {children}
       {isOpned && (
-        <div className="top-0 right-0 left-0 bottom-0 absolute z-50 bg-white w-full h-screen flex flex-col items-center justify-center backdrop-blur-3xl">
+        <div className="top-0 right-0 left-0 bottom-0 absolute z-50 bg-white/95 w-full h-screen flex flex-col items-center justify-center backdrop-blur-3xl">
           <NavLinks
             enablescroll={enablescrolling}
             className=" flex flex-col items-center hover:cursor-default justify-center gap-5 relative text-2xl p-4 w-full z-50"

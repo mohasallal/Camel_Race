@@ -15,6 +15,7 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
+import Nav from "../Nav";
 
 interface UserProfile {
   id: string;
@@ -50,7 +51,7 @@ const Profile = () => {
       try {
         const token = localStorage.getItem("authToken");
         if (!token) {
-          setError("! توكن مفقود ، الرجاء تسجيل الدخول");
+          setError("! الرجاء تسجيل الدخول");
           router.push("/auth/login");
           return;
         }
@@ -126,18 +127,14 @@ const Profile = () => {
 
   return (
     <div>
-      <div className="bg-[url('/WadiRam.jpeg')] h-[300px] relative bg-no-repeat bg-cover bg-top">
+      <div className="bg-[url('/WadiRam.jpeg')] h-[350px] relative bg-no-repeat bg-cover bg-top">
         <div className="bg-black/50 absolute inset-0" />
         <div className="container relative h-full">
-          <div className="w-[50px] aspect-square absolute top-4 left-4">
-            <BackButton className="bg-white/70 text-black" href="/">
-              <AiOutlineArrowLeft size={24} />
-            </BackButton>
-          </div>
+          <Nav />
           <div className="flex items-end justify-end h-full translate-y-[25%] max-sm:justify-center">
             <div className="relative">
               <Image
-                className="rounded-full aspect-square object-contain border-2 border-black shadow-md bg-white"
+                className="rounded-full aspect-square object-contain border-2 border-black shadow-md bg-white z-0"
                 src={selectedImage || "/PFP.jpg"}
                 width={200}
                 height={200}
@@ -163,100 +160,110 @@ const Profile = () => {
       </div>
 
       <div className="container w-full text-right mt-10 max-sm:text-center">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-100 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">الاسم الأول:</label>
-            <input
-              type="text"
-              value={user.FirstName}
-              readOnly
-              className=" outline-none input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+        <div className="flex flex-col items-center justify-center text-right gap-4">
+          <div className="flex items-center justify-center gap-2 w-full flex-row-reverse max-sm:flex-col">
+            <div className="bg-gray-100 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">الاسم الأول:</label>
+              <input
+                type="text"
+                value={user.FirstName}
+                readOnly
+                className=" outline-none input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+              />
+            </div>
+            <div className="bg-gray-200 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">اسم الأب:</label>
+              <input
+                type="text"
+                value={user.FatherName}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
           </div>
-          <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">اسم الأب:</label>
-            <input
-              type="text"
-              value={user.FatherName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
+          <div className="flex w-full gap-2 flex-row-reverse max-sm:flex-col">
+            <div className="bg-gray-100 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">اسم الجد:</label>
+              <input
+                type="text"
+                value={user.GrandFatherName}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
+            <div className="bg-gray-200 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">اسم العائلة:</label>
+              <input
+                type="text"
+                value={user.FamilyName}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none  focus:border-0 focus:ring-transparent text-right"
+              />
+            </div>
           </div>
-          <div className="bg-gray-100 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">اسم الجد:</label>
-            <input
-              type="text"
-              value={user.GrandFatherName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
+          <div className="flex w-full gap-2 flex-row-reverse max-sm:flex-col">
+            <div className="bg-gray-100 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">اسم المستخدم:</label>
+              <input
+                type="text"
+                value={user.username}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
+            <div className="bg-gray-200 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">
+                البريد الإلكتروني:
+              </label>
+              <input
+                type="text"
+                value={user.email}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none  text-right"
+              />
+            </div>
           </div>
-          <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">اسم العائلة:</label>
-            <input
-              type="text"
-              value={user.FamilyName}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none  focus:border-0 focus:ring-transparent"
-            />
-          </div>
-          <div className="bg-gray-100 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">اسم المستخدم:</label>
-            <input
-              type="text"
-              value={user.username}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
-          </div>
-          <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">
-              البريد الإلكتروني:
-            </label>
-            <input
-              type="text"
-              value={user.email}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
-          </div>
-          <div className="bg-gray-100 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">الرقم الوطني:</label>
-            <input
-              type="text"
-              value={user.NationalID}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
-          </div>
-          <div className="bg-gray-200 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">تاريخ الميلاد:</label>
-            <input
-              type="text"
-              value={user.BDate.split("T")[0]}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
-          </div>
-          <div className="bg-gray-100 p-3 rounded-lg">
-            <label className="block text-gray-400 mb-1">رقم الهاتف:</label>
-            <input
-              type="text"
-              value={user.MobileNumber}
-              readOnly
-              className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none "
-            />
+          <div className="flex w-full gap-2 max-sm:flex-col">
+            <div className="bg-gray-100 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">الرقم الوطني:</label>
+              <input
+                type="text"
+                value={user.NationalID}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
+            <div className="bg-gray-200 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">تاريخ الميلاد:</label>
+              <input
+                type="text"
+                value={user.BDate.split("T")[0]}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
+            <div className="bg-gray-100 p-3 rounded-lg w-full">
+              <label className="block text-gray-400 mb-1">رقم الهاتف:</label>
+              <input
+                type="text"
+                value={user.MobileNumber}
+                readOnly
+                className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="container w-full text-center mt-28 max-sm:text-center">
-        <div className="mt-10">
-          <h2 className="text-2xl mb-5">: الهجن المسجلة</h2>
-          <Button className="mr-5" onClick={exportToExcel}>
-            طباعة البيانات
-          </Button>
-          {/* Add camel form component here */}
+      <div className="container w-full text-center mt-20 max-sm:text-center">
+        <div className="mt-10 flex items-center justify-between flex-row-reverse max-sm:flex-col max-sm:gap-5">
+          <h2 className="text-2xl">: الهجن المسجلة</h2>
+          <div className="flex items-center justify-center gap-1">
+            <Button variant="outline" className="mr-5" onClick={exportToExcel}>
+              طباعة البيانات
+            </Button>
+            <Button>تسجيل الهجن في السباق</Button>
+          </div>
         </div>
       </div>
       <Table className="container text-right mt-10 mb-20" id="myCamels">
