@@ -2,7 +2,7 @@
 
 "use server";
 
-import { db } from "@/lib/db"; 
+import { db } from "@/lib/db";
 import { registerCamelSchema } from "@/schemas";
 
 export const registerCamelInLoop = async (values: {
@@ -33,7 +33,7 @@ export const registerCamelInLoop = async (values: {
       return { error: "Loop does not exist" };
     }
 
-    if (camel.age !== loop.age || camel.sex !== loop.sex ) {
+    if (camel.age !== loop.age || camel.sex !== loop.sex) {
       return { error: "Camel does not meet the loop's criteria" };
     }
 
@@ -43,6 +43,17 @@ export const registerCamelInLoop = async (values: {
 
     if (camelLoopCount >= loop.capacity) {
       return { error: "The loop is full" };
+    }
+
+    const existingRegistration = await db.camelLoop.findFirst({
+      where: {
+        loopId: String(loopId),
+        camelId: camelId,
+      },
+    });
+
+    if (existingRegistration) {
+      return { error: "Camel is already registered in this loop" };
     }
 
     await db.camelLoop.create({

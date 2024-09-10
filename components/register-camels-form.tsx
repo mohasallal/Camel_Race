@@ -37,6 +37,7 @@ export default function RegisterCamelForm({
   const [events, setEvents] = useState<Event[]>([]);
   const [loops, setLoops] = useState<Loop[]>([]);
   const [camels, setCamels] = useState<Camel[]>([]);
+  const [registeredCamels, setRegisteredCamels] = useState<Camel[]>([]);
 
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [selectedLoop, setSelectedLoop] = useState<string | null>(null);
@@ -92,7 +93,20 @@ export default function RegisterCamelForm({
                 camel.age === selectedLoopDetails.age &&
                 camel.sex === selectedLoopDetails.sex
             );
-            setAvailableCamels(filteredCamels);
+
+            // Fetch already registered camels in the selected loop
+            const registeredResponse = await fetch(
+              `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
+            );
+            const registeredData = await registeredResponse.json();
+            setRegisteredCamels(registeredData);
+
+            // Filter out already registered camels
+            const availableCamels = filteredCamels.filter(
+              (camel: Camel) =>
+                !registeredData.some((registered: Camel) => registered.id === camel.id)
+            );
+            setAvailableCamels(availableCamels);
           }
         } catch (error) {
           console.error("Error fetching user's camels:", error);
@@ -101,7 +115,7 @@ export default function RegisterCamelForm({
 
       fetchUserCamels();
     }
-  }, [selectedLoop, loops, userId]);
+  }, [selectedLoop, loops, userId, selectedEvent]);
 
   const handleRegister = async () => {
     if (!selectedCamel || !selectedLoop) {

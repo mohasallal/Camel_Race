@@ -309,7 +309,7 @@ const Profile = () => {
           <TableBody>
             {camels.map((camel) => (
               <TableRow key={camel.id}>
-                <TableCell className="font-medium">
+                <TableCell className="font-medium w-[33%]">
                   {camel.age} \ {camel.sex}
                 </TableCell>
                 <TableCell>{camel.camelID}</TableCell>
