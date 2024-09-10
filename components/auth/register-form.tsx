@@ -128,7 +128,7 @@ export const RegisterForm = () => {
 
   return (
     <CardWrapper
-      heading="🐫 إنشاء حساب جديد"
+      heading="🐪 إنشاء حساب جديد"
       headerLabel="تسجيل حساب"
       showSocial
     >
@@ -350,7 +350,7 @@ export const RegisterForm = () => {
                           className="flex flex-row-reverse"
                           value="SUPERVISOR"
                         >
-                          مسؤول
+                          مشرف
                         </SelectItem>
                         <SelectItem
                           className="flex flex-row-reverse"

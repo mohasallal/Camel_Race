@@ -55,7 +55,7 @@ model User {
 model Camel {
   id        Int     @id @default(autoincrement())
   name      String
-  camelID   String  @unique
+  camelID   Int  @unique
   age       Age
   sex       Sex
   ownerId   String  // Foreign key from User

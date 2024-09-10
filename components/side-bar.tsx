@@ -158,24 +158,30 @@ export const MobileSidebar = ({
 export const SidebarLink = ({
   link,
   className,
+  onClick,
   ...props
 }: {
   link: Links;
   className?: string;
+  onClick?: React.MouseEventHandler;
   props?: LinkProps;
 }) => {
   const { open, animate } = useSidebar();
   return (
     <Link
       href={link.href}
+      onClick={(e) => {
+        if (onClick) {
+          onClick(e);
+        }
+      }}
       className={cn(
-        "flex items-center justify-start gap-2  group/sidebar py-2",
+        "flex items-center justify-start gap-2 group/sidebar py-2",
         className
       )}
       {...props}
     >
       {link.icon}
-
       <motion.span
         animate={{
           display: animate ? (open ? "inline-block" : "none") : "inline-block",

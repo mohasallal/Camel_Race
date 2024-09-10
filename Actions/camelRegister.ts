@@ -2,13 +2,8 @@
 
 "use server";
 
-import { z } from "zod";
 import { db } from "@/lib/db"; 
-
-const registerCamelSchema = z.object({
-  camelId: z.number(), 
-  loopId: z.string(), 
-});
+import { registerCamelSchema } from "@/schemas";
 
 export const registerCamelInLoop = async (values: {
   camelId: number;

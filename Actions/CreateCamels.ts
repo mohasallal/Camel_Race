@@ -4,19 +4,17 @@ import { db } from "@/lib/db";
 import { camelSchema } from "@/schemas";
 
 export const createCamel = async (values: z.infer<typeof camelSchema>) => {
-  console.log("Received values for camel creation:", values); // Log the input values
-
   const validatedFields = camelSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    console.log("Validation failed:", validatedFields.error.errors); // Log the validation errors
+    console.log("Validation failed:", validatedFields.error.errors);
     return { error: "! حقل غير صالح", details: validatedFields.error.errors };
   }
 
   const { name, camelID, age, sex, ownerId } = validatedFields.data;
 
   try {
-    const existingCamel = await db.camel.findFirst({
+    const existingCamel = await db.camel.findUnique({
       where: { camelID },
     });
 

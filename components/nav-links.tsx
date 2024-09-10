@@ -42,22 +42,22 @@ const NavLinks = ({ className, enablescroll }: Props) => {
           <Link href="/admin/dashboard">لائحة المسؤول</Link>
         </li>
       )}
+      <li onClick={enablescroll}>
+        <Link href="mailto:info@jocrc.com">تواصل معنا</Link>
+      </li>
       {token && (
         <>
-          <li onClick={enablescroll}>
-            <Link href="mailto:info@jocrc.com">تواصل معنا</Link>
-          </li>
           <li onClick={enablescroll}>
             <Link href="/profile#myCamels">المطايا الخاصة بي</Link>
           </li>
           <li onClick={enablescroll}>
             <Link href="/profile">الملف الشخصي</Link>
           </li>
-          <li onClick={enablescroll}>
-            <Link href="/">الصفحة الرئيسية</Link>
-          </li>
         </>
       )}
+      <li onClick={enablescroll}>
+        <Link href="/">الصفحة الرئيسية</Link>
+      </li>
     </ul>
   );
 };

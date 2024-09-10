@@ -87,6 +87,7 @@ const AddCamelsForm: React.FC<Props> = ({
           />
           <Input
             name="camelID"
+            type="number"
             value={camelDetails.camelID}
             onChange={handleChange}
             placeholder="Camel ID"

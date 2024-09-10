@@ -122,7 +122,7 @@ export const EventsSchema = z
 
 export const camelSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  camelID: z.string().min(1, "Camel ID is required"),
+  camelID: z.coerce.number().min(1, "Camel ID is required"),
   age: z.enum(
     [
       "GradeOne",
@@ -175,6 +175,6 @@ export const createLoopSchema = z
   });
 
 export const registerCamelSchema = z.object({
-  camelId: z.number().min(1),
+  camelId: z.coerce.number().min(1),
   loopId: z.string().min(1),
 });

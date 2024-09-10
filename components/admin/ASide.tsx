@@ -21,6 +21,7 @@ import { ShowSupers } from "../getSuper";
 import { CreateEventForm } from "../event/EventsForm";
 import { ShowEvents } from "../show-events";
 import SearchBar from "./SearchBar";
+import { signOut } from "@/lib/auth";
 
 interface UserProfile {
   id: string;
@@ -42,6 +43,8 @@ export function AdminDashboard() {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+
   useEffect(() => {
     async function fetchUserProfile() {
       const token = localStorage.getItem("authToken");
@@ -88,6 +91,16 @@ export function AdminDashboard() {
     return null;
   }
 
+  const handleSignOut = async () => {
+    try {
+      localStorage.removeItem("authToken");
+      setToken(null);
+      router.push("/");
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    }
+  };
+
   const links = [
     {
       label: "اللائحة",
@@ -106,6 +119,10 @@ export function AdminDashboard() {
     {
       label: "تسجيل الخروج",
       href: "#",
+      onClick: async (e: React.MouseEvent) => {
+        e.preventDefault();
+        await handleSignOut();
+      },
       icon: (
         <IconArrowLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
@@ -125,14 +142,18 @@ export function AdminDashboard() {
             {open ? <Logo /> : <LogoIcon />}
             <div className="mt-8 flex flex-col gap-2">
               {links.map((link, idx) => (
-                <SidebarLink key={idx} link={link} />
+                <SidebarLink
+                  key={idx}
+                  link={link}
+                  onClick={link.onClick ? (e) => link.onClick(e) : undefined}
+                />
               ))}
             </div>
           </div>
           <div>
             <SidebarLink
               link={{
-                label: "Admin Name",
+                label: user.username,
                 href: "#",
                 icon: (
                   <Image
@@ -239,7 +260,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
             <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4 max-lg:w-full">
               <div className="w-full flex items-center justify-end px-5 my-2">
                 <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                  : المسؤولين
+                  : المشرفين
                 </h2>
               </div>
               <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
@@ -271,10 +292,10 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
             <div className="w-full flex items-center justify-between px-5 my-2">
               <Button onClick={handleFormChange}>
                 <FaPlus />
-                {block ? "إغلاق" : "إضافة حدث"}
+                {block ? "إغلاق" : "إضافة فعالية"}
               </Button>
               <h2 className="my-2 text-3xl font-semibold max-md:text-2xl">
-                : الأحداث
+                : الفعاليات
               </h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg mb-4 p-2 overflow-y-scroll flex flex-col items-center gap-2">
