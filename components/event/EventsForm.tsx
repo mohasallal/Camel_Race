@@ -1,5 +1,4 @@
 "use client";
-
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,7 +52,7 @@ export const CreateEventForm = ({
     <div
       className={`fixed inset-0 bg-white/50 z-50 flex items-center justify-center ${className}`}
     >
-      <div className="relative p-6 bg-white rounded-lg shadow-lg">
+      <div className="relative p-6 bg-white rounded-lg shadow-lg max-w-lg w-full flex flex-col items-center justify-center">
         <button
           type="button"
           onClick={onClose}
@@ -64,9 +63,9 @@ export const CreateEventForm = ({
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-6 w-[400px]"
+            className="space-y-6 w-full"
           >
-            <div className="space-y-4 text-right">
+            <div className="space-y-4 text-right w-full">
               <FormField
                 control={form.control}
                 name="name"

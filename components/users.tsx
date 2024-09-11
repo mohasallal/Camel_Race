@@ -51,7 +51,7 @@ export const ShowUsers = () => {
     <>
       {users.map((user) => (
         <div
-          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
+          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer mb-2"
           key={user.id}
           onClick={() => handleUserClick(user.id)}
         >

@@ -1,7 +1,10 @@
-import { AdminDashboard } from "@/components/admin/ASide";
+import AdminDashboard from "@/components/admin/Dashboard";
 
-const Dashboard = () => {
-  return <AdminDashboard />;
-};
-
-export default Dashboard;
+export default function DashboardPage() {
+  const role = "ADMIN"; 
+  return (
+    <div>
+      <AdminDashboard role={role} />
+    </div>
+  );
+}
