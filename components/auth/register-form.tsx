@@ -80,6 +80,7 @@ export const RegisterForm = () => {
   useEffect(() => {
     if (user) {
       if (user.role === "ADMIN" || user.role === "SUPERVISOR") {
+        router.push("/auth/register");
       } else {
         router.push("/auth/login");
       }
