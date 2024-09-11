@@ -1,5 +1,3 @@
-// File: app/actions/registerCamelInLoop.ts
-
 "use server";
 
 import { db } from "@/lib/db";

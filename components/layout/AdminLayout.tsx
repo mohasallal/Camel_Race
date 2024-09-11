@@ -11,6 +11,8 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/side-bar";
+import { FaFileAlt } from "react-icons/fa";
+import { MdInsertDriveFile } from "react-icons/md";
 
 interface UserProfile {
   id: string;
@@ -70,6 +72,11 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
     return <p>Loading...</p>;
   }
 
+  if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {
+    router.push("/error");
+    return null;
+  }
+
   const handleSignOut = async () => {
     try {
       localStorage.removeItem("authToken");
@@ -95,8 +102,15 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       ),
     },
     {
+      label: "المطايا المسجلة",
+      href: "/admin/registeredCamels/",
+      icon: (
+        <MdInsertDriveFile className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
       label: "تسجيل الخروج",
-      href: "#",
+      href: "",
       onClick: async (e: React.MouseEvent) => {
         e.preventDefault();
         await handleSignOut();

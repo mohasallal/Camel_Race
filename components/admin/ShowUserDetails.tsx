@@ -14,7 +14,7 @@ import AddCamelsForm from "../CamelForm";
 interface Camel {
   id: number;
   name: string;
-  camelID: string;
+  camelID: number;
   age: string;
   sex: string;
 }
@@ -121,7 +121,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               <strong>National ID:</strong> {user.NationalID}
             </p>
             <p>
-              <strong>Birth Date:</strong> {user.BDate.split('T')[0]}
+              <strong>Birth Date:</strong> {user.BDate.split("T")[0]}
             </p>
             <p>
               <strong>Mobile Number:</strong> {user.MobileNumber}
