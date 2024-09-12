@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { MdDelete } from "react-icons/md";
 import {
   Table,
   TableBody,
@@ -33,21 +34,23 @@ interface User {
   image?: string;
   role: string;
   camels?: Camel[];
-  swiftCode:string,
-  IBAN:string,
-  bankName:string,
-  accountId:string,
+  swiftCode: string;
+  IBAN: string;
+  bankName: string;
+  accountId: string;
 }
 
 interface UserDetailsProps {
   userId: string;
   onClose: () => void;
 }
+
 const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [user, setUser] = useState<User | null>(null);
   const [camels, setCamels] = useState<Camel[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,6 +96,28 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
 
   const handleAddCamel = (newCamel: Camel) => {
     setCamels((prevCamels) => [...prevCamels, newCamel]);
+  };
+
+  const handleDeleteCamel = async () => {
+    if (confirmDelete !== null) {
+      try {
+        const response = await fetch(`/api/camels/${confirmDelete}/delete`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          setCamels((prevCamels) => prevCamels.filter(camel => camel.id !== confirmDelete));
+          alert("Camel deleted successfully");
+          setConfirmDelete(null); // Close the confirmation popup
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.error}`);
+        }
+      } catch (error) {
+        console.error("Error deleting camel:", error);
+        alert("An error occurred while deleting the camel.");
+      }
+    }
   };
 
   if (error) return <div>Error: {error}</div>;
@@ -160,22 +185,27 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                   <TableHead className="w-[100px]">الفئة / السن</TableHead>
                   <TableHead>رقم الشريحة</TableHead>
                   <TableHead>اسم الهجين</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {camels.length > 0 ? (
-                  camels.map(
-                    (camel) =>
-                      camel && (
-                        <TableRow key={camel.id}>
-                          <TableCell className="font-medium">
-                            {camel.age || "..."}
-                          </TableCell>
-                          <TableCell>{camel.camelID || "..."}</TableCell>
-                          <TableCell>{camel.name || "..."}</TableCell>
-                        </TableRow>
-                      )
-                  )
+                  camels.map(camel => (
+                    <TableRow key={camel.id}>
+                      <TableCell className="font-medium">{camel.age || "..."}</TableCell>
+                      <TableCell>{camel.camelID || "..."}</TableCell>
+                      <TableCell>{camel.name || "..."}</TableCell>
+                      <TableCell>
+                        <button
+                          onClick={() => setConfirmDelete(camel.id)}
+                          className="text-red-500 hover:text-red-700"
+                          aria-label="Delete camel"
+                        >
+                          <MdDelete size={24} />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))
                 ) : (
                   <TableRow>
                     <TableCell colSpan={4} className="text-center">
@@ -196,7 +226,32 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           Close
         </button>
       </div>
+
+      {/* Confirmation Popup */}
+      {confirmDelete !== null && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+            <p>Are you sure you want to delete this camel?</p>
+            <div className="mt-4 flex justify-end">
+              <Button
+                onClick={() => setConfirmDelete(null)}
+                className="mr-2 bg-gray-500"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleDeleteCamel}
+                className="bg-red-500 text-white"
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
 export default UserDetails;
