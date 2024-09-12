@@ -50,6 +50,10 @@ model User {
   image           String?
   role            Role?    @default(USER)
   camels          Camel[]  
+  swiftCode        String?   @unique
+  accountId        String?   @unique
+  bankName         String?
+  IBAN             String?   @unique
 }
 
 model Camel {

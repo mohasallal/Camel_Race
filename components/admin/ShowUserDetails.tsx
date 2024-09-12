@@ -33,6 +33,10 @@ interface User {
   image?: string;
   role: string;
   camels?: Camel[];
+  swiftCode:string,
+  IBAN:string,
+  bankName:string,
+  accountId:string,
 }
 
 interface UserDetailsProps {

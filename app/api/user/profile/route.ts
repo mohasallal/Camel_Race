@@ -35,6 +35,10 @@ export async function GET(request: Request) {
         MobileNumber: true,
         image: true,
         role: true,
+        swiftCode: true,
+        IBAN:true,
+        bankName:true,
+        accountId:true,
       },
     });
 

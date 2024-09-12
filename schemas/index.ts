@@ -86,8 +86,32 @@ export const RegisterSchema = z
     confirmPassword: z.string().min(6, {
       message: "الطول 6 حروف على الاقل",
     }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
+     swiftCode: z
+      .string()
+       .length(8, {
+       message: "رمز SWIFT يجب أن يكون 8 أحرف",
+       }),
+       accountId: z
+       .string({
+       message: "  رقم الحساب النكي مطلوب",
+       })
+       .min(1, {
+         message: "   رقم الحساب البنكي مطلوب",
+       }),
+       IBAN: z
+       .string()
+       .length(30, {
+        message: "رقم IBAN يجب أن يكون 30 حرفًا",
+       }),
+       bankName: z
+       .string({
+         message: "اسم البنك مطلوب",
+       })
+       .min(1, {
+         message: "اسم البنك مطلوب",
+       }),
+
+  }).refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "كلمة المرور وتأكيد كلمة المرور غير متطابقين",
   });

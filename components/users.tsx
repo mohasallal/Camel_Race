@@ -15,6 +15,10 @@ interface User {
   MobileNumber: string;
   image?: string;
   role: string;
+  swiftCode:string,
+  IBAN:string,
+  bankName:string,
+  accountId:string,
 }
 export const ShowUsers = () => {
   const [users, setUsers] = useState<User[]>([]);

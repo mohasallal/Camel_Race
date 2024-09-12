@@ -28,6 +28,7 @@ import { register } from "@/Actions/register";
 import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import ImageUpload from "../image-upload";
 
 interface UserProfile {
   role: string;
@@ -101,6 +102,10 @@ export const RegisterForm = () => {
       MobileNumber: "",
       password: "",
       confirmPassword: "",
+      swiftCode:"",
+      IBAN:"",
+      bankName:"",
+      accountId:"",
     },
   });
 
@@ -108,8 +113,12 @@ export const RegisterForm = () => {
     setErrors("");
     setSuccess("");
     startTransition(() => {
+      console.log("Submitting values:", values); // لتتبع القيم المرسلة
+      
       register(values)
         .then((data) => {
+          console.log("Response from server:", data); // تتبع الاستجابة من الخادم
+          
           if (data && typeof data === "object") {
             if (data.error) {
               setErrors(data.error);
@@ -126,6 +135,7 @@ export const RegisterForm = () => {
         });
     });
   };
+  
 
   return (
     <CardWrapper
@@ -430,6 +440,103 @@ export const RegisterForm = () => {
                 </FormItem>
               )}
             />
+            <h1 className="text-center">المعلومات البنكية</h1>
+            <FormField
+              control={form.control}
+              name="swiftCode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : ادخل رقم السويفت
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="text"
+                      {...field}
+                      placeholder="ادخل رقم السويفت   "
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : أدخل رقم الحساب البنكي
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="text"
+                      {...field}
+                      placeholder=" أدخل رقم الحساب البنكي"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="IBAN"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : ادخل رقم الأيبان
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="text"
+                      {...field}
+                      placeholder="  أدخل رقم الايبان"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    ادخل اسم البنك الخاص بك
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="text"
+                      {...field}
+                      placeholder=" .. أدخل اسم البنك الخاص بك"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+<div className="m-2 text-center">
+      <label >حمّل الصورة الشخصية 
+      <ImageUpload/>
+      </label>
+      <label >حمّل صورة جواز السفر 
+      <ImageUpload/>
+      </label>
+      <label >حمّل صورة  الهوية 
+      <ImageUpload/>
+      </label> 
+      </div>
           </div>
 
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
