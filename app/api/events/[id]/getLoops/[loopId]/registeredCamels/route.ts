@@ -1,27 +1,76 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { db } from '@/lib/db';
+import { NextResponse } from "next/server";
+import { db } from "@/lib/db";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { eventId, loopId } = req.query;
+export async function GET(
+  req: Request,
+  { params }: { params: { eventId: string; loopId: string } }
+) {
+  const { searchParams } = new URL(req.url);
+  const { loopId } = params;
+  const userId = searchParams.get("userId");
 
-  if (req.method === 'GET') {
-    try {
-      const registeredCamels = await db.camelLoop.findMany({
+  try {
+    let registeredCamels;
+
+    if (userId) {
+      registeredCamels = await db.camelLoop.findMany({
+        where: {
+          loopId: String(loopId),
+          camel: {
+            ownerId: String(userId),
+          },
+        },
+        include: {
+          camel: {
+            include: {
+              owner: {
+                select: {
+                  FirstName: true,
+                  FatherName: true,
+                  GrandFatherName: true,
+                  FamilyName: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    } else {
+      registeredCamels = await db.camelLoop.findMany({
         where: {
           loopId: String(loopId),
         },
         include: {
-          camel: true, 
+          camel: {
+            include: {
+              owner: {
+                select: {
+                  FirstName: true,
+                  FatherName: true,
+                  GrandFatherName: true,
+                  FamilyName: true,
+                },
+              },
+            },
+          },
         },
       });
-
-      res.status(200).json(registeredCamels.map(camelLoop => camelLoop.camel));
-    } catch (error) {
-      console.error('Error fetching registered camels:', error);
-      res.status(500).json({ error: 'Error fetching registered camels' });
     }
-  } else {
-    res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    const camels = registeredCamels.map((camelLoop) => ({
+      id: camelLoop.camel.id,
+      name: camelLoop.camel.name,
+      age: camelLoop.camel.age,
+      sex: camelLoop.camel.sex,
+      owner: `${camelLoop.camel.owner.FirstName} ${camelLoop.camel.owner.FatherName} ${camelLoop.camel.owner.GrandFatherName} ${camelLoop.camel.owner.FamilyName}`,
+    }));
+
+    return NextResponse.json(camels);
+  } catch (error) {
+    console.error("Error fetching registered camels:", error);
+    return NextResponse.json(
+      { error: "Error fetching registered camels" },
+      { status: 500 }
+    );
   }
 }
