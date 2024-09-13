@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
 
 interface User {
   id: string;
@@ -58,9 +57,6 @@ export const ShowSupers = () => {
               height={60}
             />
             <span className="font-semibold">{user.username}</span>
-          </div>
-          <div>
-            <FaEllipsisV />
           </div>
         </div>
       ))}

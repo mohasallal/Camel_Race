@@ -2,7 +2,7 @@
 import SearchBar from "@/components/admin/SearchBar";
 import { RedirectButton } from "@/components/auth/redirect-button";
 import { Button } from "@/components/ui/button";
-import { UsersTabel } from "@/components/usersTabel";
+import { ShowUsers } from "@/components/usersTabel";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import * as XLSX from "xlsx";
@@ -55,7 +55,7 @@ const Page = () => {
               </Button>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg p-2 overflow-y-auto">
-              <UsersTabel />
+              <ShowUsers />
             </div>
           </div>
         </div>

@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { MdDelete } from "react-icons/md";
@@ -11,6 +12,7 @@ import {
 } from "../ui/table";
 import { Button } from "../ui/button";
 import AddCamelsForm from "../CamelForm";
+import { IoIosClose } from "react-icons/io";
 
 interface Camel {
   id: number;
@@ -51,6 +53,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,13 +106,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     if (confirmDelete !== null) {
       try {
         const response = await fetch(`/api/camels/${confirmDelete}/delete`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
 
         if (response.ok) {
-          setCamels((prevCamels) => prevCamels.filter(camel => camel.id !== confirmDelete));
+          setCamels((prevCamels) =>
+            prevCamels.filter((camel) => camel.id !== confirmDelete)
+          );
           alert("Camel deleted successfully");
-          setConfirmDelete(null); // Close the confirmation popup
+          setConfirmDelete(null);
         } else {
           const error = await response.json();
           alert(`Error: ${error.error}`);
@@ -120,11 +126,41 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     }
   };
 
+  const handleDeleteUser = async () => {
+    try {
+      const response = await fetch(`/api/users/${userToDelete}/deleteUser`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        alert("User deleted successfully");
+        onClose();
+      } else {
+        const data = await response.json();
+        alert(data.error || "Failed to delete user");
+      }
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      alert("An error occurred while deleting the user");
+    } finally {
+      setShowDeleteConfirm(false);
+    }
+  };
+
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <button
+          onClick={onClose}
+          className="mt-4 bg-gray-500 text-white p-2 rounded mb-5"
+        >
+          <IoIosClose size={24} />
+        </button>
         <h2 className="text-xl font-bold mb-4">User Details</h2>
         {user ? (
           <div>
@@ -162,23 +198,39 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               width={100}
               height={100}
             />
-            <div className="mt-4">
-              <Button onClick={() => setShowAddCamelForm(true)}>
-                Add Camel
+            <div className="flex items-center justify-between mt-5">
+              <Button variant="ghost">
+                Edit
               </Button>
-              {showAddCamelForm && (
-                <AddCamelsForm
-                  className="mt-4"
-                  userId={user.id}
-                  onClose={() => {
-                    fetchCamels();
-                    setShowAddCamelForm(false);
-                  }}
-                  onAddCamel={handleAddCamel}
-                />
-              )}
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  setUserToDelete(user?.id || "");
+                  setShowDeleteConfirm(true);
+                }}
+              >
+                Delete
+              </Button>
             </div>
-            <h3 className="text-lg font-semibold mt-6">Users Camels</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold mt-6">Users Camels</h3>
+              <div className="mt-4">
+                <Button onClick={() => setShowAddCamelForm(true)}>
+                  Add Camel
+                </Button>
+                {showAddCamelForm && (
+                  <AddCamelsForm
+                    className="mt-4"
+                    userId={user.id}
+                    onClose={() => {
+                      fetchCamels();
+                      setShowAddCamelForm(false);
+                    }}
+                    onAddCamel={handleAddCamel}
+                  />
+                )}
+              </div>
+            </div>
             <Table className="container text-right mt-4" id="myCamels">
               <TableHeader>
                 <TableRow>
@@ -190,9 +242,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </TableHeader>
               <TableBody>
                 {camels.length > 0 ? (
-                  camels.map(camel => (
+                  camels.map((camel) => (
                     <TableRow key={camel.id}>
-                      <TableCell className="font-medium">{camel.age || "..."}</TableCell>
+                      <TableCell className="font-medium">
+                        {camel.age || "..."}
+                      </TableCell>
                       <TableCell>{camel.camelID || "..."}</TableCell>
                       <TableCell>{camel.name || "..."}</TableCell>
                       <TableCell>
@@ -219,15 +273,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         ) : (
           <p>Loading...</p>
         )}
-        <button
-          onClick={onClose}
-          className="mt-4 bg-gray-500 text-white p-2 rounded"
-        >
-          Close
-        </button>
       </div>
 
-      {/* Confirmation Popup */}
       {confirmDelete !== null && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
@@ -248,6 +295,32 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </Button>
             </div>
           </div>
+        </div>
+      )}
+
+      {showDeleteConfirm && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
+            <p>Are you sure you want to delete this camel?</p>
+            <div className="mt-4 flex justify-end">
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  className="bg-gray-500 text-white"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleDeleteUser}
+                  className="bg-red-500 text-white"
+                >
+                  Confirm
+                </Button>
+              </div>
+            </div>
+          </div>
+           
         </div>
       )}
     </div>

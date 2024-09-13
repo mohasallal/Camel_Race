@@ -116,6 +116,25 @@ export const RegisterSchema = z
     message: "كلمة المرور وتأكيد كلمة المرور غير متطابقين",
   });
 
+  export const UpdateUserSchema = z.object({
+    id: z.string(),
+    FirstName: z.string().optional(),
+    FatherName: z.string().optional(),
+    GrandFatherName: z.string().optional(),
+    FamilyName: z.string().optional(),
+    username: z.string().optional(),
+    email: z.string().email().optional(),
+    NationalID: z.string().optional(),
+    BDate: z.string().optional(),
+    MobileNumber: z.string().optional(),
+    role: z.string().optional(),
+    password: z.string().optional(),
+    swiftCode: z.string().optional(),
+    IBAN: z.string().optional(),
+    bankName: z.string().optional(),
+    accountId: z.string().optional(),
+  });
+
 export const EventsSchema = z
   .object({
     name: z.string().min(1, "اسم الحدث مطلوب"),

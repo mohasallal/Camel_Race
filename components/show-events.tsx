@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaEllipsisV } from "react-icons/fa";
 import EventDetails from "./event/event-details";
 
 interface Event {
@@ -49,7 +48,7 @@ export const ShowEvents = () => {
     <>
       {events.map((event) => (
         <div
-          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
+          className="w-full h-20 flex-shrink-0 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer mb-2"
           key={event.id}
           onClick={() => handleEventClick(event.id)}
         >
@@ -57,17 +56,18 @@ export const ShowEvents = () => {
             <div className="flex flex-col text-right">
               <span className="font-semibold">{event.name}</span>
               <span className="text-sm">
-                {formatDateTime(event.StartDate)} - {formatDateTime(event.EndDate)}
+                {formatDateTime(event.StartDate)} -{" "}
+                {formatDateTime(event.EndDate)}
               </span>
             </div>
-          </div>
-          <div>
-            <FaEllipsisV />
           </div>
         </div>
       ))}
       {selectedEventId && (
-        <EventDetails eventId={selectedEventId} onClose={handleCloseEventDetails} />
+        <EventDetails
+          eventId={selectedEventId}
+          onClose={handleCloseEventDetails}
+        />
       )}
     </>
   );
