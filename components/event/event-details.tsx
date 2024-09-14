@@ -10,6 +10,7 @@ import {
   TableBody,
   TableCell,
 } from "../ui/table";
+import { updateLoop } from "@/Actions/updateLoop";
 
 interface Event {
   id: string;
@@ -142,6 +143,28 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       alert("An error occurred while updating the event.");
     }
   };
+  const handleUpdateLoop = async (loopId: string, loopData: Loop) => {
+    try {
+      const response = await fetch(`/api/events/${eventId}/getLoops/${loopId}/updateLoop`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loopData),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Failed to update loop: ${response.statusText}`);
+      }
+  
+      const updatedLoop = await response.json();
+      setLoops((prevLoops) => prevLoops.map((loop) => loop.id === loopId ? updatedLoop : loop));
+    } catch (error: any) {
+      console.error("Error updating loop:", error);
+      setError(`An error occurred while updating the loop: ${error.message}`);
+    }
+  };
+  
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
@@ -164,11 +187,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
             </p>
             <p>
               <strong>Start Date:</strong>{" "}
-              {new Date(event.StartDate).toLocaleString("en-GB")}
+              {new Date(event.StartDate).toLocaleString("en-GB").split(',')[0]}
             </p>
             <p>
               <strong>End Date:</strong>{" "}
-              {new Date(event.EndDate).toLocaleString("en-GB")}
+              {new Date(event.EndDate).toLocaleString("en-GB").split(',')[0]}
             </p>
 
             <Table className="container text-right mt-4">
@@ -234,11 +257,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           onClose={() => {
             setIsCreateLoopModalOpen(false);
             fetchLoops();
-          } }
-          onAddLoop={(newLoop: Loop) => setLoops((prevLoops) => [...prevLoops, newLoop])} onUpdateLoop={function (updatedLoop: Loop): void {
-            throw new Error("Function not implemented.");
-          } } editingLoop={null}          // onUpdateLoop={handleUpdateLoop}
-          // editingLoop={editingLoop}
+          }}
+          onAddLoop={(newLoop: Loop) => setLoops((prevLoops) => [...prevLoops, newLoop])}
+          onUpdateLoop={handleUpdateLoop}
+          editingLoop={editingLoop}
         />
       )}
 

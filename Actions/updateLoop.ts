@@ -1,3 +1,5 @@
+// app/Actions/updateLoop.ts
+
 import { db } from "@/lib/db";
 import { Loop } from "@prisma/client";
 
@@ -24,8 +26,8 @@ export const updateLoop = async (id: string, updatedData: Partial<Loop>) => {
 
     console.log("Loop updated successfully:", result);
     return result;
-  } catch (error: any) {
-    console.error("Error updating loop:", error.message || error);
+  } catch (error:any) {
+    console.error("Error updating loop:", error);
     throw new Error(`Error updating loop: ${error.message}`);
   }
 };

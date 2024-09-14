@@ -1,84 +1,30 @@
-"use server";
-import * as z from "zod";
 import { db } from "@/lib/db";
-import { UpdateUserSchema } from "@/schemas";
-import bcryptjs from "bcryptjs";
+import { User } from "@prisma/client";
 
-export const updateUser = async (values: z.infer<typeof UpdateUserSchema>) => {
-  const validatedFields = UpdateUserSchema.safeParse(values);
+export const updateUser = async (id: string, updatedData: Partial<User>) => {
+  console.log('Attempting to update user with ID:', id);
 
-  if (!validatedFields.success) {
-    return { error: "! حقل غير صالح" };
+  if (typeof id !== "string" || typeof updatedData !== "object") {
+    throw new Error("Invalid input: ID or data format is incorrect");
   }
 
-  const {
-    id,
-    FirstName,
-    FatherName,
-    GrandFatherName,
-    FamilyName,
-    username,
-    email,
-    NationalID,
-    BDate,
-    MobileNumber,
-    role,
-    password,
-    swiftCode,
-    IBAN,
-    bankName,
-    accountId,
-  } = validatedFields.data;
-
   try {
-    const existingUser = await db.user.findUnique({
-      where: { id }
-    });
-
-    if (!existingUser) {
-      return { error: "المستخدم غير موجود" };
+    // Check if the user exists
+    const userExists = await db.user.findUnique({ where: { id } });
+    if (!userExists) {
+      throw new Error("User not found");
     }
 
-    const updateData: any = {
-      FirstName,
-      FatherName,
-      GrandFatherName,
-      FamilyName,
-      username,
-      email,
-      NationalID,
-      BDate,
-      MobileNumber,
-      role,
-      bankName,
-      accountId
-    };
-
-    if (password) {
-      const hashedPassword = await bcryptjs.hash(password, 10);
-      updateData.password = hashedPassword;
-    }
-
-    if (swiftCode) {
-      const hashedSwift = await bcryptjs.hash(swiftCode, 10);
-      updateData.swiftCode = hashedSwift;
-    }
-
-    if (IBAN) {
-      const hashedIBAN = await bcryptjs.hash(IBAN, 15);
-      updateData.IBAN = hashedIBAN;
-    }
-
-    await db.user.update({
+    // Update the user
+    const result = await db.user.update({
       where: { id },
-      data: updateData,
+      data: updatedData,
     });
 
-    return {
-      success: "! تم تحديث المعلومات",
-    };
-  } catch (error) {
-    console.error("Update error:", error);
-    return { error: "حدث خطأ أثناء تحديث المعلومات" };
+    console.log("User updated successfully:", result);
+    return result;
+  } catch (error: any) {
+    console.error("Error updating user:", error.message || error);
+    throw new Error("Error updating user");
   }
 };

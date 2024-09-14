@@ -1,29 +1,31 @@
-// Example: PUT /api/events/[eventId]/updateLoop
+// app/api/events/[id]/getLoops/[loopsId]/updateLoop/route.ts
 
-import { db } from '@/lib/db';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { updateLoop } from "@/Actions/updateLoop";
+import { NextResponse } from "next/server";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'PUT') {
-    try {
-      const eventId = req.query.eventId as string;
-      const loopData = JSON.parse(req.body);
+export async function PUT(request: Request) {
+  try {
+    console.log('Received PUT request');
+    const url = new URL(request.url);
+    const pathParts = url.pathname.split('/');
 
-      // Update the loop associated with the event
-      const updatedLoop = await db.loop.update({
-        where: { id: loopData.id },
-        data: {
-          ...loopData,
-          event: { connect: { id: eventId } },
-        },
-      });
+    // Extract loopsId from the path
+    const loopsId = pathParts[pathParts.length - 2]; // Assuming 'updateLoop' is the last segment
+    console.log('Extracted loopsId:', loopsId);
 
-      res.status(200).json(updatedLoop);
-    } catch (error) {
-      res.status(500).json({ error: 'Error updating loop' });
+    if (!loopsId || typeof loopsId !== "string") {
+      return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
     }
-  } else {
-    res.setHeader('Allow', ['PUT']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    const body = await request.json();
+    console.log('Received body:', body);
+
+    // Call updateLoop
+    await updateLoop(loopsId, body);
+
+    return NextResponse.json({ message: "Loop updated successfully" });
+  } catch (error) {
+    console.error("Error updating loop:", error);
+    return NextResponse.json({ error: "Error updating loop" }, { status: 500 });
   }
 }

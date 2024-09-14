@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Age, Camel, Sex } from "@prisma/client";
-import { AiOutlineClose } from "react-icons/ai"; // استيراد أيقونة X
 
 interface Props {
   className?: string;
@@ -100,7 +99,7 @@ const AddCamelsForm: React.FC<Props> = ({
     try {
       if (editingCamel) {
         if (onUpdateCamel) {
-          await onUpdateCamel({
+          onUpdateCamel({
             ...editingCamel,
             ...camelToSubmit,
           });

@@ -1,50 +1,39 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { RegisterSchema } from '@/schemas';
-import { db } from '@/lib/db';
+import { updateUser } from '@/Actions/updateRegiseration';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { id } = req.query;
-  if (req.method === 'PUT') {
-    try {
-      if (!id || typeof id !== 'string') {
-        throw new Error('Invalid user ID');
-      }
+export async function PUT(request: NextRequest) {
+  const url = new URL(request.url);
+  const pathParts = url.pathname.split('/');
+  const idString = pathParts[pathParts.length - 2]; // Extract the ID from the URL
+  const id = idString; // Assuming ID is a string; adjust if it's numeric
 
-      const formData = req.body;
-      const parsedData = RegisterSchema.parse(formData);
+  console.log('Extracted ID:', id);
 
-      const user = await db.user.findUnique({ where: { id } });
-      if (!user) {
-        throw new Error('User not found');
-      }
+  // Validate the ID
+  if (!id) {
+    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  }
 
-      const updatedData: any = {
-        firstName: parsedData.FirstName,
-        fatherName: parsedData.FatherName,
-        grandFatherName: parsedData.GrandFatherName,
-        familyName: parsedData.FamilyName,
-        username: parsedData.username,
-        email: parsedData.email,
-        nationalID: parsedData.NationalID,
-        BDate: parsedData.BDate,
-        mobileNumber: parsedData.MobileNumber,
-        swiftCode: parsedData.swiftCode,
-        IBAN: parsedData.IBAN,
-        bankName: parsedData.bankName,
-        accountId: parsedData.accountId,
-      };
+  try {
+    // Extract the body from the request
+    const body = await request.json();
 
-      const updatedUser = await db.user.update({
-        where: { id },
-        data: updatedData,
-      });
-
-      res.status(200).json({ success: true, user: updatedUser });
-    } catch (error) {
-      res.status(400).json({ success: false, error: error });
+    // Validate that the body contains data
+    if (!body || Object.keys(body).length === 0) {
+      return NextResponse.json({ error: "Empty payload" }, { status: 400 });
     }
-  } else {
-    res.setHeader('Allow', ['PUT']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+
+    // Update user data using the ID and received data
+    await updateUser(id, body);
+
+    return NextResponse.json({ message: "User updated successfully" });
+
+  } catch (error) {
+    console.error("Error updating user:", error);
+
+    // Determine the error type if possible
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
