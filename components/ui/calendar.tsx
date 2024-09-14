@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -18,8 +18,8 @@ type CalendarProps = {
 
 const Calendar: React.FC<CalendarProps> = ({ events }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [days, setDays] = useState<Date[]>([]);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
+  const [days, setDays] = useState<Date[]>([]);
 
   useEffect(() => {
     const generateDaysArray = (month: number, year: number) => {
@@ -42,22 +42,29 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
     return date >= startDate && date <= endDate;
   };
 
-  const handleDayClick = (day: Date) => {
-    setSelectedDay(day);
+  const getEventsForDay = (day: Date) => {
+    return events.filter((event) =>
+      isDateInRange(day, new Date(event.startDate), new Date(event.endDate))
+    );
   };
 
-  const eventsForSelectedDay = events.filter((event) =>
-    isDateInRange(selectedDay || new Date(), new Date(event.startDate), new Date(event.endDate))
-  );
+  const isToday = (date: Date) => {
+    const today = new Date();
+    return (
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+    );
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={() => changeMonth("prev")}
-          className={buttonVariants({ variant: "outline" }) + " h-12 w-12"}
+          className={buttonVariants({ variant: "outline" }) + " h-10 w-10 flex items-center justify-center"}
         >
-          <ChevronLeftIcon className="h-6 w-6" />
+          <FaChevronLeft className="h-5 w-5" />
         </button>
         <span className="text-xl font-semibold">
           {currentMonth.toLocaleDateString("en-US", {
@@ -67,35 +74,36 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
         </span>
         <button
           onClick={() => changeMonth("next")}
-          className={buttonVariants({ variant: "outline" }) + " h-12 w-12"}
+          className={buttonVariants({ variant: "outline" }) + " h-10 w-10 flex items-center justify-center"}
         >
-          <ChevronRightIcon className="h-6 w-6" />
+          <FaChevronRight className="h-5 w-5" />
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-3">
+      <div className="grid grid-cols-7 gap-4">
         {days.map((day) => {
           const dayKey = day.toISOString().split("T")[0];
-          const dayEvents = events.filter((event) =>
-            isDateInRange(day, new Date(event.startDate), new Date(event.endDate))
-          );
+          const eventsForDay = getEventsForDay(day);
+          const firstEvent = eventsForDay[0];
+          const hasEvents = eventsForDay.length > 0;
+          const isCurrentDay = isToday(day);
 
           return (
             <div
               key={dayKey}
-              onClick={() => handleDayClick(day)}
               className={cn(
-                "relative p-8 border border-gray-400 text-center text-sm cursor-pointer transition-transform hover:scale-105",
+                "relative p-6 border rounded-lg text-center cursor-pointer",
                 {
-                  "bg-yellow-200": dayEvents.length > 0,
-                  "bg-orange-100": !dayEvents.length,
+                  "bg-yellow-100": hasEvents,
+                  "bg-yellow-300": isCurrentDay,
                 }
               )}
+              onClick={() => setSelectedDay(day)}
             >
-              <div className="font-semibold text-lg">{day.getDate()}</div>
-              {dayEvents.length > 0 && (
-                <div className="absolute bottom-0 left-0 w-full bg-yellow-600 text-white text-xs p-1 truncate">
-                  {dayEvents[0].name} {/* Show only the first event's name */}
+              <div className="text-lg font-semibold">{day.getDate()}</div>
+              {firstEvent && (
+                <div className="absolute bottom-0 left-0 right-0 bg-yellow-500 text-white text-xs p-1">
+                  {firstEvent.name}
                 </div>
               )}
             </div>
@@ -103,33 +111,28 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
         })}
       </div>
 
-      {selectedDay && (
-        <div className="mt-6 p-4 border border-gray-300 rounded bg-white shadow-lg">
-          <h3 className="text-lg font-semibold mb-2">
-            Events on {selectedDay.toLocaleDateString()}
-          </h3>
-          {eventsForSelectedDay.length > 0 ? (
-            <ul>
-              {eventsForSelectedDay.map((event) => (
-                <li key={event.id} className="mb-2">
-                  <div className="font-medium">{event.name}</div>
-                  <div className="text-sm text-gray-600">
-                    {new Date(event.startDate).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })} - {new Date(event.endDate).toLocaleTimeString([], {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </div>
+      {/* Always-visible div below the calendar showing details */}
+      <div className="mt-6 p-4 border rounded-lg bg-yellow-50">
+        <h2 className="text-lg font-medium mb-2">
+          Events on {selectedDay ? selectedDay.toDateString() : "No day selected"}
+        </h2>
+        <ul>
+          {selectedDay ? (
+            getEventsForDay(selectedDay).length > 0 ? (
+              getEventsForDay(selectedDay).map((event) => (
+                <li key={event.id}>
+                  <strong>{event.name}</strong> - {new Date(event.startDate).toLocaleDateString()} to{" "}
+                  {new Date(event.endDate).toLocaleDateString()}
                 </li>
-              ))}
-            </ul>
+              ))
+            ) : (
+              <li>No events for this day.</li>
+            )
           ) : (
-            <p>No events for this day.</p>
+            <li>Select a day to view events.</li>
           )}
-        </div>
-      )}
+        </ul>
+      </div>
     </div>
   );
 };
