@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { MdDelete } from "react-icons/md";
+import { MdDelete, MdEdit } from "react-icons/md";
 import {
   Table,
   TableBody,
@@ -53,8 +53,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [editingCamel, setEditingCamel] = useState<Camel | null>(null); // State for tracking editing camel
 
   useEffect(() => {
     const fetchData = async () => {
@@ -102,6 +101,40 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     setCamels((prevCamels) => [...prevCamels, newCamel]);
   };
 
+  const handleEditCamel = (camel: Camel) => {
+    setEditingCamel(camel); // Set the camel that is being edited
+    setShowAddCamelForm(true); // Open the form
+  };
+
+  const handleUpdateCamel = async (updatedCamel: Camel) => {
+    try {
+      const response = await fetch(`/api/camels/${updatedCamel.id}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedCamel),
+      });
+
+      if (response.ok) {
+        // Update the camels state with the updated camel
+        setCamels((prevCamels) =>
+          prevCamels.map((camel) =>
+            camel.id === updatedCamel.id ? updatedCamel : camel
+          )
+        );
+        setShowAddCamelForm(false); // Close the form
+        setEditingCamel(null); // Clear the editing state
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.error}`);
+      }
+    } catch (error) {
+      console.error("Error updating camel:", error);
+      alert("An error occurred while updating the camel.");
+    }
+  };
+
   const handleDeleteCamel = async () => {
     if (confirmDelete !== null) {
       try {
@@ -128,7 +161,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
 
   const handleDeleteUser = async () => {
     try {
-      const response = await fetch(`/api/users/${userToDelete}/deleteUser`, {
+      const response = await fetch(`/api/users/${userId}/deleteUser`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -145,15 +178,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     } catch (error) {
       console.error("Error deleting user:", error);
       alert("An error occurred while deleting the user");
-    } finally {
-      setShowDeleteConfirm(false);
     }
   };
 
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <button
           onClick={onClose}
@@ -198,36 +229,26 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               width={100}
               height={100}
             />
-            <div className="flex items-center justify-between mt-5">
-              <Button variant="ghost">Edit</Button>
-              <Button
-                variant="destructive"
-                onClick={() => {
-                  setUserToDelete(user?.id || "");
-                  setShowDeleteConfirm(true);
-                }}
-              >
-                Delete
+            <div>
+              <Button onClick={() => setShowAddCamelForm(true)}>
+                Add Camel
               </Button>
+              {showAddCamelForm && (
+                <AddCamelsForm
+                  className="mt-4"
+                  userId={user.id}
+                  onClose={() => {
+                    fetchCamels();
+                    setShowAddCamelForm(false);
+                  }}
+                  onAddCamel={handleAddCamel}
+                  onUpdateCamel={handleUpdateCamel} // Pass update handler
+                  editingCamel={editingCamel} // Pass camel to edit
+                />
+              )}
             </div>
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold mt-6">Users Camels</h3>
-              <div className="mt-4">
-                <Button onClick={() => setShowAddCamelForm(true)}>
-                  Add Camel
-                </Button>
-                {showAddCamelForm && (
-                  <AddCamelsForm
-                    className="mt-0"
-                    userId={user.id}
-                    onClose={() => {
-                      fetchCamels();
-                      setShowAddCamelForm(false);
-                    }}
-                    onAddCamel={handleAddCamel}
-                  />
-                )}
-              </div>
+            <div className="flex items-center justify-between mt-6">
+              <h3 className="text-lg font-semibold">User's Camels</h3>
             </div>
             <Table className="container text-right mt-4" id="myCamels">
               <TableHeader>
@@ -248,6 +269,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       <TableCell>{camel.camelID || "..."}</TableCell>
                       <TableCell>{camel.name || "..."}</TableCell>
                       <TableCell>
+                        <button
+                          onClick={() => handleEditCamel(camel)} // Edit button
+                          className="text-[#272E3F] mr-2"
+                          aria-label="Edit camel"
+                        >
+                          <MdEdit size={24} />
+                        </button>
                         <button
                           onClick={() => setConfirmDelete(camel.id)}
                           className="text-red-500 hover:text-red-700"
@@ -295,12 +323,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           </div>
         </div>
       )}
-
+{/* 
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
             <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
-            <p>Are you sure you want to delete this camel?</p>
+            <p>Are you sure you want to delete this user?</p>
             <div className="mt-4 flex justify-end">
               <div className="flex items-center gap-2">
                 <Button
@@ -318,9 +346,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </div>
             </div>
           </div>
-           
         </div>
-      )}
+      )} */}
     </div>
   );
 };
