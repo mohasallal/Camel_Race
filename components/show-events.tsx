@@ -8,12 +8,17 @@ interface Event {
   EndDate: string;
 }
 
-export const ShowEvents = () => {
+interface ShowEventsProps {
+  eventAdded: boolean;
+  setEventAdded: (value: boolean) => void;
+}
+
+export const ShowEvents: React.FC<ShowEventsProps> = ({ eventAdded, setEventAdded }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchEvents = () => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
       .then((data) => {
@@ -27,12 +32,18 @@ export const ShowEvents = () => {
         console.error("Error fetching events:", error);
         setError("An error occurred while fetching events.");
       });
+  };
+
+  useEffect(() => {
+    fetchEvents();
   }, []);
 
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return `${date.toLocaleDateString("en-GB")} ${date.toLocaleTimeString()}`;
-  };
+  useEffect(() => {
+    if (eventAdded) {
+      fetchEvents();
+      setEventAdded(false);
+    }
+  }, [eventAdded, setEventAdded]);
 
   const handleEventClick = (eventId: string) => {
     setSelectedEventId(eventId);
@@ -41,6 +52,11 @@ export const ShowEvents = () => {
   const handleCloseEventDetails = () => {
     setSelectedEventId(null);
   };
+
+  function formatDate(dateString: string) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  }
 
   if (error) return <p>{error}</p>;
 
@@ -56,8 +72,7 @@ export const ShowEvents = () => {
             <div className="flex flex-col text-right">
               <span className="font-semibold">{event.name}</span>
               <span className="text-sm">
-                {formatDateTime(event.StartDate)} -{" "}
-                {formatDateTime(event.EndDate)}
+              {formatDate(event.StartDate)} - {formatDate(event.EndDate)}
               </span>
             </div>
           </div>

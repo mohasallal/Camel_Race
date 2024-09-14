@@ -68,7 +68,7 @@ export const RegisteredCamelsTable = () => {
     <div className="w-full">
       <div className="flex gap-4 mb-4">
         <select
-          className="border p-2 rounded"
+          className="border p-2 rounded w-[300px]"
           value={selectedEvent || ""}
           onChange={(e) => setSelectedEvent(e.target.value)}
         >
@@ -82,7 +82,7 @@ export const RegisteredCamelsTable = () => {
 
         {selectedEvent && (
           <select
-            className="border p-2 rounded"
+            className="border p-2 rounded w-[300px]"
             value={selectedLoop || ""}
             onChange={(e) => setSelectedLoop(e.target.value)}
           >

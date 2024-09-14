@@ -199,9 +199,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               height={100}
             />
             <div className="flex items-center justify-between mt-5">
-              <Button variant="ghost">
-                Edit
-              </Button>
+              <Button variant="ghost">Edit</Button>
               <Button
                 variant="destructive"
                 onClick={() => {
@@ -220,7 +218,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 </Button>
                 {showAddCamelForm && (
                   <AddCamelsForm
-                    className="mt-4"
+                    className="mt-0"
                     userId={user.id}
                     onClose={() => {
                       fetchCamels();

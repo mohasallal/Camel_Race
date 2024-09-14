@@ -20,11 +20,14 @@ import { useState } from "react";
 export const CreateEventForm = ({
   className,
   onClose,
+  onEventAdded,  
 }: {
   className?: string;
   onClose: () => void;
+  onEventAdded: () => void; 
 }) => {
   const [message, setMessage] = useState<string | null>(null);
+
   const form = useForm<z.infer<typeof EventsSchema>>({
     resolver: zodResolver(EventsSchema),
     defaultValues: {
@@ -39,6 +42,9 @@ export const CreateEventForm = ({
       const event = await createEventAction(values);
       console.log("Event created successfully:", event);
       setMessage("Event created successfully!");
+
+      onEventAdded();
+
       setTimeout(() => {
         onClose(); // Close the form after a delay
       }, 1000); // Delay of 1 second

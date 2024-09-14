@@ -110,11 +110,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
             </p>
             <p>
               <strong>Start Date:</strong>{" "}
-              {new Date(event.StartDate).toLocaleString("en-GB")}
+              {new Date(event.StartDate).toISOString().split("T")[0]}
             </p>
             <p>
               <strong>End Date:</strong>{" "}
-              {new Date(event.EndDate).toLocaleString("en-GB")}
+              {new Date(event.EndDate).toISOString().split("T")[0]}
             </p>
 
             <Table className="container text-right mt-4">

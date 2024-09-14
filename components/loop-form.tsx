@@ -112,7 +112,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
               Start Register Date
             </label>
             <input
-              type="datetime-local"
+              type="date"
               value={startRegister}
               onChange={(e) => setStartRegister(e.target.value)}
               className="w-full p-2 border rounded"
@@ -124,7 +124,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
               End Register Date
             </label>
             <input
-              type="datetime-local"
+              type="date"
               value={endRegister}
               onChange={(e) => setEndRegister(e.target.value)}
               className="w-full p-2 border rounded"

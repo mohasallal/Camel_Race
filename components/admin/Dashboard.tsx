@@ -15,6 +15,7 @@ interface DashboardProps {
 
 const AdminDashboard: React.FC<DashboardProps> = ({ role }) => {
   const [isEventFormOpen, setEventFormOpen] = useState(false);
+  const [eventAdded, setEventAdded] = useState(false);
 
   useEffect(() => {
     if (isEventFormOpen) {
@@ -26,7 +27,20 @@ const AdminDashboard: React.FC<DashboardProps> = ({ role }) => {
     }
   }, [isEventFormOpen]);
 
-  const toggleEventForm = () => setEventFormOpen((prev) => !prev);
+  const toggleEventForm = () => {
+    setEventFormOpen((prev) => !prev);
+  };
+
+  const handleEventAdded = () => {
+    setEventAdded(true);
+    setEventFormOpen(false);
+  };
+
+  useEffect(() => {
+    if (eventAdded) {
+      setEventAdded(false); 
+    }
+  }, [eventAdded]);
 
   return (
     <div className="flex flex-1">
@@ -70,7 +84,9 @@ const AdminDashboard: React.FC<DashboardProps> = ({ role }) => {
 
         <div className="flex gap-2 max-lg:flex-col">
           <div className="h-[30rem] w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col items-end py-1 px-4">
-            {isEventFormOpen && <CreateEventForm onClose={toggleEventForm} />}
+            {isEventFormOpen && (
+              <CreateEventForm onClose={toggleEventForm} onEventAdded={handleEventAdded} />
+            )}
             <div className="w-full flex justify-between items-center px-5 my-2">
               <Button onClick={toggleEventForm}>
                 <FaPlus />
@@ -79,7 +95,8 @@ const AdminDashboard: React.FC<DashboardProps> = ({ role }) => {
               <h2 className="text-3xl font-semibold my-2">: الفعاليات</h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg p-2 overflow-y-scroll">
-              <ShowEvents />
+              {/* Event list */}
+              <ShowEvents eventAdded={eventAdded} setEventAdded={setEventAdded} />
             </div>
           </div>
         </div>
