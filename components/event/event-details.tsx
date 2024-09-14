@@ -234,9 +234,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           onClose={() => {
             setIsCreateLoopModalOpen(false);
             fetchLoops();
-          }}
-          onAddLoop={(newLoop: Loop) => setLoops((prevLoops) => [...prevLoops, newLoop])}
-          // onUpdateLoop={handleUpdateLoop}
+          } }
+          onAddLoop={(newLoop: Loop) => setLoops((prevLoops) => [...prevLoops, newLoop])} onUpdateLoop={function (updatedLoop: Loop): void {
+            throw new Error("Function not implemented.");
+          } } editingLoop={null}          // onUpdateLoop={handleUpdateLoop}
           // editingLoop={editingLoop}
         />
       )}

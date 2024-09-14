@@ -4,7 +4,7 @@ import Nav from "@/components/Nav";
 
 export default function Home() {
   return (
-    <main className="box-border">
+    <main className="box-border min-h-screen">
       <Nav />
       <Main />
       <Footer />

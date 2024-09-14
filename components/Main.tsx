@@ -75,7 +75,7 @@ function Main() {
           </div>
         </div>
         <div>
-          <h1>Event Calendar</h1>
+          <h1 className="text-center text-3xl font-semibold">جدول الفعاليات</h1>
           <Calendar events={events} />
         </div>
       </div>

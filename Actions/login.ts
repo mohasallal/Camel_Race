@@ -29,7 +29,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   return {
     token,
     success: "! تم تسجيل الدخول بنجاح",
-    role: existingUser.role || "user" 
+    role: existingUser.role || "user",
   };
 };
 
@@ -37,16 +37,16 @@ function generateToken(existingUser: {
   id: string;
   email: string;
   username: string;
-  role: string | null; 
+  role: string | null;
 }) {
   try {
     const payload = {
       id: existingUser.id,
       email: existingUser.email,
       username: existingUser.username,
-      role: existingUser.role || "user", 
+      role: existingUser.role || "user",
     };
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: "30d" });
   } catch (error) {
     console.error("Error generating token:", error);
     throw new Error("Could not generate token");

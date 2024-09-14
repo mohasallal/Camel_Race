@@ -13,6 +13,7 @@ const Footer = () => {
         <div className="text-right max-sm:text-center">
           <h2 className="font-bold text-3xl">رياضة الهجن الأردنية</h2>
           <p>البطولات المحلية في الاردن لسباق الهجن</p>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13872.90061804163!2d35.5189175!3d29.6262032!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1500ebd250cabcb3%3A0xb7f08658dd3db1c4!2sSheikh%20Zayed%20Bin%20Sultan%20Al%20Nahyan%20Camel%20Stadium!5e0!3m2!1sen!2sjo!4v1726321189938!5m2!1sen!2sjo" className="border-0 max-w-[600px] aspect-square w-full" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
         </div>
         <div className="flex flex-col items-end justify-center gap-3 max-sm:items-center">
           <h2 className="font-bold text-3xl">تواصل معنا</h2>
