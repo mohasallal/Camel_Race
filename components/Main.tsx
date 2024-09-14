@@ -1,9 +1,63 @@
+"use client";
 import Image from "next/image";
-import { Button } from "./ui/button";
-import GoogleCalendarEmbed from "./GoogleCalendarEmbed";
-import { RedirectButton } from "./auth/redirect-button";
+import { useEffect, useState } from "react";
+import { Calendar } from "./ui/calendar";
 
-const Main = () => {
+type CalendarEvent = {
+  id: string;
+  name: string;
+  startDate: Date;
+  endDate: Date;
+};
+
+function Main() {
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events/getEvents");
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+
+        console.log("Fetched events data:", data); // Debugging statement
+
+        if (Array.isArray(data)) {
+          setEvents(
+            data.map((event: any) => ({
+              id: event.id,
+              name: event.name,
+              startDate: new Date(event.StartDate),
+              endDate: new Date(event.EndDate),
+            }))
+          );
+        } else {
+          throw new Error("Unexpected data structure");
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setError("");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return <div>Loading events...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading events: {error}</div>;
+  }
   return (
     <section className="bg-[url('/desert2.jpg')] bg-no-repeat bg-center bg-cover h-full w-full  p-0 sm:p-10 max-sm:py-10 my-0">
       <div className="container max-sm:px-0 bg-white/70 mt-20 rounded-xl py-5">
@@ -18,22 +72,15 @@ const Main = () => {
             <p className="text-2xl max-lg:text-xl max-md:text-lg max-sm:text-base">
               ! ابدا رحلتك الآن
             </p>
-            {/* <RedirectButton path="/auth/register">
-              <Button
-                size="lg"
-                className="rounded-xl bg-gray-200 opacity-60 text-black font-black hover:bg-gray-100 duration-200 w-[10rem] relative"
-              >
-                سجل اللآن
-              </Button>
-            </RedirectButton> */}
           </div>
         </div>
         <div>
-          <GoogleCalendarEmbed />
+          <h1>Event Calendar</h1>
+          <Calendar events={events} />
         </div>
       </div>
     </section>
   );
-};
+}
 
 export default Main;
