@@ -1,17 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/lib/db";
 
-export async function POST(req: NextRequest) {
+export async function DELETE(req: NextRequest) {
   try {
     const { camelId } = await req.json();
-    const url = new URL(req.url);
-    const loopId = url.searchParams.get('loopId');
+    const url = new URL(req.url || "", `http://${req.headers.get("host")}`);
+    const [_, , , , , loopId] = url.pathname.split("/");
 
-    console.log('Received camelId:', camelId);
-    console.log('Received loopId:', loopId);
+    console.log("Received camelId:", camelId);
+    console.log("Received loopId:", loopId);
 
     if (!camelId || !loopId) {
-      return NextResponse.json({ message: 'Invalid request parameters' }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid request parameters" },
+        { status: 400 }
+      );
     }
 
     const loop = await db.loop.findUnique({
@@ -19,17 +22,24 @@ export async function POST(req: NextRequest) {
       select: { startRegister: true, endRegister: true },
     });
 
+    console.log("Loop data:", loop);
+
     if (!loop) {
-      return NextResponse.json({ message: 'Loop not found' }, { status: 404 });
+      return NextResponse.json({ message: "Loop not found" }, { status: 404 });
     }
 
     const currentTime = new Date();
+    console.log("Current time:", currentTime);
 
-    if (currentTime < loop.startRegister || currentTime > loop.endRegister) {
-      return NextResponse.json({ message: 'Registration period has ended' }, { status: 403 });
+    if (currentTime > loop.endRegister) {
+      return NextResponse.json(
+        { message: "Registration period has ended" },
+        { status: 403 }
+      );
     }
 
     const camelIdNumber = parseInt(camelId, 10);
+    console.log("Parsed camelIdNumber:", camelIdNumber);
 
     await db.camelLoop.deleteMany({
       where: {
@@ -38,9 +48,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: 'Camel removed successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: "Camel removed successfully" },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Error removing camel:', error);
-    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
+    console.error("Error removing camel:", error);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

@@ -55,6 +55,9 @@ const Profile = ({ userId }: { userId: string }) => {
     const fetchEvents = async () => {
       try {
         const response = await fetch("/api/events/getEvents");
+        if (!response.ok) {
+          throw new Error(`Error fetching events: ${response.statusText}`);
+        }
         const data = await response.json();
         setEvents(data);
       } catch (error) {
@@ -70,6 +73,9 @@ const Profile = ({ userId }: { userId: string }) => {
       const fetchLoops = async () => {
         try {
           const response = await fetch(`/api/events/${selectedEvent}/getLoops`);
+          if (!response.ok) {
+            throw new Error(`Error fetching loops: ${response.statusText}`);
+          }
           const data = await response.json();
           setLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent));
         } catch (error) {
@@ -88,6 +94,9 @@ const Profile = ({ userId }: { userId: string }) => {
           const response = await fetch(
             `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels?userId=${userId}`
           );
+          if (!response.ok) {
+            throw new Error(`Error fetching registered camels: ${response.statusText}`);
+          }
           const registeredData = await response.json();
           setRegisteredCamels(registeredData);
           if (registeredData.length === 0) {
@@ -111,7 +120,7 @@ const Profile = ({ userId }: { userId: string }) => {
       const response = await fetch(
         `/api/events/${selectedEvent}/getLoops/${selectedLoop}/removeRegisteredCamel`,
         {
-          method: "POST",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
@@ -119,20 +128,24 @@ const Profile = ({ userId }: { userId: string }) => {
         }
       );
 
+      console.log('Response Status:', response.status);
+      console.log('Response Body:', await response.text());
+
       if (response.ok) {
-        // Update the registered camels immediately after removing
         setRegisteredCamels((prev) =>
           prev.filter((camel) => camel.id !== camelToRemove)
         );
         setMessage("Camel removed successfully");
-        setCamelToRemove(null); // Clear the camel to remove
+        setCamelToRemove(null); 
       } else {
         console.error("Failed to remove camel");
+        setMessage("Failed to remove camel");
       }
     } catch (error) {
       console.error("Error removing camel:", error);
+      setMessage("Error removing camel");
     } finally {
-      setIsDialogOpen(false); // Close the dialog
+      setIsDialogOpen(false);
     }
   };
 
