@@ -1,3 +1,4 @@
+"use client"
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
@@ -44,7 +45,6 @@ export default function RegisterCamelForm({
   const [availableCamels, setAvailableCamels] = useState<Camel[]>([]);
   const [message, setMessage] = useState("");
 
-  // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -59,7 +59,6 @@ export default function RegisterCamelForm({
     fetchEvents();
   }, []);
 
-  // Fetch loops for the selected event
   useEffect(() => {
     if (selectedEvent) {
       const fetchLoops = async () => {
@@ -76,7 +75,6 @@ export default function RegisterCamelForm({
     }
   }, [selectedEvent]);
 
-  // Fetch user camels and filter based on loop age and sex, also check capacity
   useEffect(() => {
     if (selectedLoop) {
       const fetchUserCamels = async () => {
@@ -147,6 +145,11 @@ export default function RegisterCamelForm({
 
       if (res.ok) {
         setMessage("Camel registered successfully!");
+        const registeredResponse = await fetch(
+          `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
+        );
+        const registeredData = await registeredResponse.json();
+        setRegisteredCamels(registeredData);
       } else {
         setMessage(data.error || "Failed to register camel.");
       }
@@ -213,7 +216,6 @@ export default function RegisterCamelForm({
             </select>
           </div>
         )}
-
         <div className="flex justify-between items-center">
           <Button onClick={handleRegister} disabled={!selectedCamel}>
             Register

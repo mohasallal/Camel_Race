@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
 import Nav from "../Nav";
 import RegisterCamelForm from "../register-camels-form";
-import MyCamels from "../myCamels";
+import RegisterCamelUser from "../RegisteredCamelsUsers";
 
 interface UserProfile {
   id: string;
@@ -215,7 +215,7 @@ const Profile = () => {
                   type="text"
                   value={user.FamilyName}
                   readOnly
-                  className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none  focus:border-0 focus:ring-transparent text-right"
+                  className="input-field w-full p-2 rounded-md bg-gray-50 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-right"
                 />
               </div>
             </div>
@@ -279,8 +279,50 @@ const Profile = () => {
           </div>
         </div>
 
-        <MyCamels userId={user.id} />
+        <div className="container w-full text-center mt-20 max-sm:text-center">
+          <div className="mt-10 flex items-center justify-between flex-row-reverse max-sm:flex-col max-sm:gap-5">
+            <h2 className="text-2xl">: الهجن المسجلة</h2>
+            <div className="flex items-center justify-center gap-1">
+              <Button
+                variant="outline"
+                className="mr-5"
+                onClick={exportToExcel}
+              >
+                طباعة البيانات
+              </Button>
+              <Button onClick={handleRegisterForm}>
+                {camelRegister
+                  ? "إخفاء استمارة التسجيل"
+                  : "تسجيل الهجن في السباق"}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <Table className="container text-right mt-10 mb-20" id="myCamels">
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">الفئة / السن</TableHead>
+              <TableHead>رقم الشريحة</TableHead>
+              <TableHead>اسم الهجين</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {camels.map((camel) => (
+              <TableRow key={camel.id}>
+                <TableCell className="font-medium w-[33%]">
+                  {camel.age} \ {camel.sex}
+                </TableCell>
+                <TableCell>{camel.camelID}</TableCell>
+                <TableCell>{camel.name}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
+      {camelRegister && (
+        <RegisterCamelForm userId={user.id} onClose={handleRegisterForm} />
+      )}
+      <RegisterCamelUser userId={user.id} />
     </>
   );
 };

@@ -48,9 +48,6 @@ const NavLinks = ({ className, enablescroll }: Props) => {
       {token && (
         <>
           <li onClick={enablescroll}>
-            <Link href="/profile#myCamels">المطايا الخاصة بي</Link>
-          </li>
-          <li onClick={enablescroll}>
             <Link href="/profile">الملف الشخصي</Link>
           </li>
         </>
