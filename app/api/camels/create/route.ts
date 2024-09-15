@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Error handling request:", error);
     return NextResponse.json(
-      { error: "حدث خطأ أثناء معالجة الطلب" },
+      { error: "فعالية خطأ أثناء معالجة الطلب" },
       { status: 500 }
     );
   }

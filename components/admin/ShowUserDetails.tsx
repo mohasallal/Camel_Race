@@ -370,7 +370,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           onClick={()=>{
             alert('تم تحديث الجمل بنجاح الرجاء الخروج')
           }}
-            type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
+            type="submit" className="bg-gray-800 text-white ">
             تحديث الجمل
           </Button>
           <Button
@@ -391,9 +391,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
 
             {confirmDeleteCamel && (
           <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md ">
               <h2 className="text-xl font-bold mb-4">تأكيد الحذف</h2>
-              <p>هل أنت متأكد أنك تريد حذف هذا الجمل؟</p>
+              <p className="mb-3">هل أنت متأكد أنك تريد حذف هذا الجمل؟</p>
               <Button
                 onClick={() => {
                   handleDeleteCamel();
@@ -406,6 +406,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               <Button
                 onClick={() => setConfirmDeleteCamel(null)}
                 variant="secondary"
+                className="ml-2 "
               >
                 إلغاء
               </Button>

@@ -85,7 +85,7 @@
 
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || "حدث خطأ غير محدد");
+          throw new Error(errorData.error || "فعالية خطأ غير محدد");
         }
 
         const data = await response.json();
@@ -96,7 +96,7 @@
         }
         onClose();
       } catch (error: any) {
-        setError(error.message || "حدث خطأ أثناء إرسال البيانات.");
+        setError(error.message || "فعالية خطأ أثناء إرسال البيانات.");
       } finally {
         setIsLoading(false);
       }
@@ -110,11 +110,11 @@
     return (
       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-          <h2 className="text-xl font-bold mb-4">{editingLoop ? "تحديث حلقة" : "إنشاء حلقة"}</h2>
+          <h2 className="text-xl font-bold mb-4 text-center">{editingLoop ? "تحديث شوط" : "إنشاء شوط"}</h2>
           {error && <div className="text-red-500 mb-4">{error}</div>}
-          {isLoading && <div className="text-blue-500 mb-4">جاري إرسال البيانات...</div>}
+          {isLoading && <div className=" mb-4">جاري إرسال البيانات...</div>}
           <form onSubmit={handleSubmit}>
-            <div className="mb-4">
+            <div className="mb-4 text-end">
               <label htmlFor="capacity" className="block text-sm font-bold mb-1">القدرة</label>
               <input
                 id="capacity"
@@ -126,7 +126,7 @@
                 aria-required="true"
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 text-end">
               <label htmlFor="age" className="block text-sm font-bold mb-1">الفئة / السن</label>
               <select
                 id="age"
@@ -143,7 +143,7 @@
                 <option value="GradeSixFemale">Grade Six Female</option>
               </select>
             </div>
-            <div className="mb-4">
+            <div className="mb-4 text-end">
               <label htmlFor="sex" className="block text-sm font-bold mb-1">النوع</label>
               <select
                 id="sex"
@@ -167,7 +167,7 @@
                 <option value="Evening">مسائي (Evening)</option>
               </select>
             </div>
-            <div className="mb-4">
+            <div className="mb-4 text-end">
               <label htmlFor="startRegister" className="block text-sm font-bold mb-1">تاريخ البدء للتسجيل</label>
               <input
                 id="startRegister"
@@ -179,7 +179,7 @@
                 aria-required="true"
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-4 text-end">
               <label htmlFor="endRegister" className="block text-sm font-bold mb-1">تاريخ النهاية للتسجيل</label>
               <input
                 id="endRegister"

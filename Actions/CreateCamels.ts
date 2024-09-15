@@ -37,6 +37,6 @@ export const createCamel = async (values: z.infer<typeof camelSchema>) => {
     };
   } catch (error) {
     console.error("Error creating camel in database:", error);
-    return { error: "حدث خطأ أثناء إضافة الجمل", details: error };
+    return { error: "فعالية خطأ أثناء إضافة الجمل", details: error };
   }
 };

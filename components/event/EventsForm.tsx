@@ -78,13 +78,13 @@ export const CreateEventForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center justify-end">
-                      : اسم الحدث
+                      : اسم الفعالية
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
                         {...field}
-                        placeholder="اسم الحدث"
+                        placeholder="اسم الفعالية"
                         className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
                       />
                     </FormControl>
@@ -159,7 +159,7 @@ export const CreateEventForm = ({
                 )}
               />
             </div>
-            <Button type="submit">إنشاء الحدث</Button>
+            <Button type="submit">إنشاء الفعالية</Button>
           </form>
         </Form>
         {message && (

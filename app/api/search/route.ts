@@ -20,6 +20,6 @@ export async function GET(request: Request) {
     return NextResponse.json(users);
   } catch (error) {
     console.error("Error fetching users:", error);
-    return NextResponse.json({ error: 'حدث خطأ أثناء البحث' }, { status: 500 });
+    return NextResponse.json({ error: 'فعالية خطأ أثناء البحث' }, { status: 500 });
   }
 }

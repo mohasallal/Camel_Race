@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import CreateLoopForm from "../loop-form";
 import { Button } from "../ui/button";
+import { MdDelete, MdEdit } from "react-icons/md";
 import {
   Table,
   TableHeader,
@@ -174,7 +175,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           تفاصيل الحدث
           <div className="flex space-x-2">
             <Button onClick={() => setIsEditEventModalOpen(true)} variant="outline">
-              <FaEdit className="mr-2" size={18} /> تعديل الحدث
+              <MdEdit className="mr-2" size={18} /> تعديل الحدث
             </Button>
             <Button onClick={() => setConfirmDeleteEvent(true)} variant="destructive">
               <FaTrash className="mr-2" size={18} /> حذف الحدث
@@ -182,16 +183,16 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           </div>
         </h2>
         {event ? (
-          <div>
+          <div className="text-end pb-4 pt-4">
             <p>
-              <strong>Name:</strong> {event.name}
+              <strong>الاسم:</strong> {event.name}
             </p>
             <p>
-              <strong>Start Date:</strong>{" "}
+              <strong> تاريخ البدء:</strong>{" "}
               {new Date(event.StartDate).toLocaleString("en-GB").split(',')[0]}
             </p>
             <p>
-              <strong>End Date:</strong>{" "}
+              <strong> تاريخ الانتهاء :</strong>{" "}
               {new Date(event.EndDate).toLocaleString("en-GB").split(',')[0]}
             </p>
 
@@ -236,7 +237,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center">
-                      No loops found.
+                      لا يوجد أشواط.
                     </TableCell>
                   </TableRow>
                 )}
@@ -247,7 +248,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           <p>جاري التحميل...</p>
         )}
         <div className="flex justify-between mt-5">
-          <Button onClick={() => setIsCreateLoopModalOpen(true)}>إنشاء حلقة</Button>
+          <Button onClick={() => setIsCreateLoopModalOpen(true)}>إنشاء شوط</Button>
           <Button onClick={onClose} variant="outline">إغلاق</Button>
         </div>
       </div>
@@ -268,7 +269,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       {isEditEventModalOpen && event && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-            <h3 className="text-lg font-semibold mb-4">تعديل الحدث</h3>
+            <h3 className="text-lg font-semibold mb-4 text-center">تعديل الحدث</h3>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -282,40 +283,40 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 handleUpdateEvent(updatedEvent);
               }}
             >
-              <div className="mb-4">
+              <div className="mb-4 text-end">
                 <label htmlFor="name" className="block font-medium mb-1">اسم الحدث</label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   defaultValue={event.name}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="border border-gray-300 rounded p-2 w-full text-end"
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 text-end">
                 <label htmlFor="StartDate" className="block font-medium mb-1">تاريخ البدء</label>
                 <input
                   type="datetime-local"
                   id="StartDate"
                   name="StartDate"
                   defaultValue={new Date(event.StartDate).toISOString().slice(0, 16)}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="border border-gray-300 rounded p-2 w-full text-end"
                   required
                 />
               </div>
-              <div className="mb-4">
+              <div className="mb-4 text-end">
                 <label htmlFor="EndDate" className="block font-medium mb-1">تاريخ النهاية</label>
                 <input
                   type="datetime-local"
                   id="EndDate"
                   name="EndDate"
                   defaultValue={new Date(event.EndDate).toISOString().slice(0, 16)}
-                  className="border border-gray-300 rounded p-2 w-full"
+                  className="border border-gray-300 rounded p-2 w-full text-end"
                   required
                 />
               </div>
-              <div className="flex justify-end">
+              <div className="flex justify-center gap-3">
                 <Button type="submit" className="ml-2">حفظ</Button>
                 <Button onClick={() => setIsEditEventModalOpen(false)} variant="outline">
                   إلغاء
@@ -331,7 +332,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
             <h3 className="text-lg font-semibold mb-4 text-center">تأكيد حذف الحدث</h3>
             <p className="mb-4 text-center">هل أنت متأكد أنك تريد حذف هذا الحدث؟</p>
-            <div className="flex justify-end">
+            <div className="flex justify-center gap-3">
               <Button onClick={handleDeleteEvent} className="ml-2">نعم</Button>
               <Button onClick={() => setConfirmDeleteEvent(false)} variant="outline">
                 إلغاء
@@ -344,8 +345,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       {confirmDeleteLoop && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-70 flex items-center justify-center z-60">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-            <h3 className="text-lg font-semibold mb-4 text-center">تأكيد حذف الحلقة</h3>
-            <p className="mb-4 text-center">هل أنت متأكد أنك تريد حذف هذه الحلقة؟</p>
+            <h3 className="text-lg font-semibold mb-4 text-center">تأكيد حذف الشوط</h3>
+            <p className="mb-4 text-center">هل أنت متأكد أنك تريد حذف هذه الشوط؟</p>
             <div className="flex justify-end">
               <Button onClick={() => handleDeleteLoop(confirmDeleteLoop!)} className="ml-2">نعم</Button>
               <Button onClick={() => setConfirmDeleteLoop(null)} variant="outline">إلغاء</Button>

@@ -137,7 +137,7 @@ export const RegisterSchema = z
 
 export const EventsSchema = z
   .object({
-    name: z.string().min(1, "اسم الحدث مطلوب"),
+    name: z.string().min(1, "اسم الفعالية مطلوب"),
     StartDate: z
       .date({
         required_error: "تاريخ البدء مطلوب",
