@@ -80,7 +80,7 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4">
         {days.map((day) => {
           const dayKey = day.toISOString().split("T")[0];
           const eventsForDay = getEventsForDay(day);
@@ -92,7 +92,7 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
             <div
               key={dayKey}
               className={cn(
-                "relative p-6 border rounded-lg text-center cursor-pointer",
+                "relative p-4 md:p-5 lg:p-6 border rounded-lg text-center cursor-pointer",
                 {
                   "bg-yellow-100": hasEvents,
                   "bg-yellow-300": isCurrentDay,
@@ -100,9 +100,9 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
               )}
               onClick={() => setSelectedDay(day)}
             >
-              <div className="text-lg font-semibold">{day.getDate()}</div>
+              <div className="text-base md:text-lg font-semibold">{day.getDate()}</div>
               {firstEvent && (
-                <div className="absolute bottom-0 left-0 right-0 bg-yellow-500 text-white text-xs p-1">
+                <div className="absolute bottom-0 left-0 right-0 bg-yellow-500 text-white text-xs p-[2px] rounded-md">
                   {firstEvent.name}
                 </div>
               )}

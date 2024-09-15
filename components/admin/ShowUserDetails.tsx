@@ -225,13 +225,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
             <p><strong>  الرقم الوطني : </strong> {user.NationalID}</p>
             <p><strong>تاريخ الميلاد :</strong> {user.BDate.split("T")[0]}</p>
             <p><strong> رقم الهاتف :</strong> {user.MobileNumber}</p>
-            {/* <Image
-              src={user.image || "/PFP.jpg"}
-              alt="Profile Picture"
-              className="rounded-full items-end"
-              width={100}
-              height={100}
-            /> */}
             <div className="mt-4">
               <Button onClick={() => setShowAddCamelForm(true)}>
                إضافة جمل

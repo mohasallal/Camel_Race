@@ -53,19 +53,18 @@ const AddCamelsForm: React.FC<Props> = ({
     if (editingCamel) {
       setCamelDetails({
         name: editingCamel.name || "",
-        camelID: editingCamel.camelID.toString() || "", 
+        camelID: editingCamel.camelID.toString() || "",
         ownerId: editingCamel.ownerId || userId, // التأكد من أن ownerId موجود
         age: editingCamel.age || "GradeOne",
         sex: editingCamel.sex || "Male",
       });
     }
   }, [editingCamel, userId]);
-  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCamelDetails({ ...camelDetails, [e.target.name]: e.target.value });
   };
-  
+
   const handleSelectChange = (name: string, value: string) => {
     setCamelDetails({ ...camelDetails, [name]: value });
   };
@@ -80,7 +79,7 @@ const AddCamelsForm: React.FC<Props> = ({
 
     setErrors(newErrors);
 
-    return Object.values(newErrors).every(error => error === "");
+    return Object.values(newErrors).every((error) => error === "");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -89,7 +88,7 @@ const AddCamelsForm: React.FC<Props> = ({
     if (!validateForm()) {
       return; // Do not submit the form if there are validation errors
     }
-    
+
     const camelToSubmit = {
       ...camelDetails,
       camelID: parseInt(camelDetails.camelID, 10), // تحويل camelID إلى عدد صحيح
@@ -122,7 +121,7 @@ const AddCamelsForm: React.FC<Props> = ({
           alert(result.error || "Failed to add camel.");
         }
       }
-      onClose(); // إغلاق النموذج بعد التعديل أو الإضافة
+      onClose();
     } catch (error) {
       console.error("Error adding/updating camel:", error);
       alert("An error occurred while adding/updating camel.");
@@ -143,26 +142,47 @@ const AddCamelsForm: React.FC<Props> = ({
               name="name"
               value={camelDetails.name}
               onChange={handleChange}
-              placeholder="Camel Name"
-              className="w-full"
+              placeholder="اسم المطية"
+              className="w-full text-right"
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
           </div>
-          
+
           <div className="mb-2">
             <Input
               name="camelID"
               type="number"
               value={camelDetails.camelID}
               onChange={handleChange}
-              placeholder="Camel ID"
-              className="w-full"
+              placeholder="رقم الشريحة"
+              className="w-full text-right"
             />
-            {errors.camelID && <p className="text-red-500 text-sm">{errors.camelID}</p>}
+            {errors.camelID && (
+              <p className="text-red-500 text-sm">{errors.camelID}</p>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label className="block text-gray-700 text-right">جنس المطية</label>
+            <Select
+              value={camelDetails.sex}
+              onValueChange={(value) => handleSelectChange("sex", value)}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select Sex" />
+              </SelectTrigger>
+              <SelectContent >
+                <SelectItem value="Male">قعدان</SelectItem>
+                <SelectItem value="Female">بكار</SelectItem>
+              </SelectContent>
+            </Select>
+            {errors.sex && <p className="text-red-500 text-sm">{errors.sex}</p>}
           </div>
 
           <div className="mb-2">
-            <label className="block text-gray-700">Camel Age</label>
+            <label className="block text-gray-700 text-right">صف المطية</label>
             <Select
               value={camelDetails.age}
               onValueChange={(value) => handleSelectChange("age", value)}
@@ -171,34 +191,19 @@ const AddCamelsForm: React.FC<Props> = ({
                 <SelectValue placeholder="Select Age" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="GradeOne">Grade One</SelectItem>
-                <SelectItem value="GradeTwo">Grade Two</SelectItem>
-                <SelectItem value="GradeThree">Grade Three</SelectItem>
-                <SelectItem value="GradeFour">Grade Four</SelectItem>
-                <SelectItem value="GradeFive">Grade Five</SelectItem>
-                <SelectItem value="GradeSixMale">Grade Six Male</SelectItem>
-                <SelectItem value="GradeSixFemale">Grade Six Female</SelectItem>
+                <SelectItem value="GradeOne">مفرد</SelectItem>
+                <SelectItem value="GradeTwo">حقايق</SelectItem>
+                <SelectItem value="GradeThree">لقايا</SelectItem>
+                <SelectItem value="GradeFour">جذاع</SelectItem>
+                <SelectItem value="GradeFive">ثنايا</SelectItem>
+                <SelectItem value="GradeSixMale">زمول</SelectItem>
+                <SelectItem value="GradeSixFemale">حيل</SelectItem>
               </SelectContent>
             </Select>
             {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
           </div>
 
-          <div className="mb-4">
-            <label className="block text-gray-700">Camel Sex</label>
-            <Select
-              value={camelDetails.sex}
-              onValueChange={(value) => handleSelectChange("sex", value)}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select Sex" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.sex && <p className="text-red-500 text-sm">{errors.sex}</p>}
-          </div>
+         
 
           <Button type="submit" className="mr-2">
             {editingCamel ? "Update Camel" : "Add Camel"}

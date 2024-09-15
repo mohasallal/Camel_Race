@@ -95,7 +95,6 @@ const AdminDashboard: React.FC<DashboardProps> = ({ role }) => {
               <h2 className="text-3xl font-semibold my-2">: الفعاليات</h2>
             </div>
             <div className="w-full h-full bg-gray-200 rounded-lg p-2 overflow-y-scroll">
-              {/* Event list */}
               <ShowEvents eventAdded={eventAdded} setEventAdded={setEventAdded} />
             </div>
           </div>

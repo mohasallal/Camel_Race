@@ -95,12 +95,14 @@ const Profile = ({ userId }: { userId: string }) => {
             `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels?userId=${userId}`
           );
           if (!response.ok) {
-            throw new Error(`Error fetching registered camels: ${response.statusText}`);
+            throw new Error(
+              `Error fetching registered camels: ${response.statusText}`
+            );
           }
           const registeredData = await response.json();
           setRegisteredCamels(registeredData);
           if (registeredData.length === 0) {
-            setMessage("No registered camels");
+            setMessage("");
           } else {
             setMessage("");
           }
@@ -128,15 +130,15 @@ const Profile = ({ userId }: { userId: string }) => {
         }
       );
 
-      console.log('Response Status:', response.status);
-      console.log('Response Body:', await response.text());
+      console.log("Response Status:", response.status);
+      console.log("Response Body:", await response.text());
 
       if (response.ok) {
         setRegisteredCamels((prev) =>
           prev.filter((camel) => camel.id !== camelToRemove)
         );
         setMessage("Camel removed successfully");
-        setCamelToRemove(null); 
+        setCamelToRemove(null);
       } else {
         console.error("Failed to remove camel");
         setMessage("Failed to remove camel");
