@@ -74,16 +74,15 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     try {
       const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
       if (!loopsResponse.ok) {
-        throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
+        throw new Error(`Loops fetch error: ${loopsResponse.status} - ${loopsResponse.statusText}`);
       }
       const loopsData = await loopsResponse.json();
-      setLoops(loopsData || []);  // Ensure loops are specific to the event
+      setLoops(loopsData || []);
     } catch (error) {
       console.error("Error fetching loops:", error);
       setError(`An error occurred while fetching loops: ${error}`);
     }
   };
-  
 
   const handleEditLoop = (loop: Loop) => {
     setEditingLoop(loop);

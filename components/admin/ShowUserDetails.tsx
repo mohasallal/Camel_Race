@@ -190,9 +190,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     }
   };
   
-
-  if (error) return <div>Error: {error}</div>;
-
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
@@ -206,15 +203,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         </button>
             <div>
             <Button onClick={() => setConfirmDeleteUser(true)} variant="destructive">
-              Delete User
+             حذف المستخدم
             </Button>
             <Button onClick={() => setShowEditUserForm(true)} className="ml-2">
-                Edit User Info
+                تعديل بيانات المستخدم
               </Button>
               </div>
             </div>
         <div className="flex justify-between items-start">
-            <h2 className="text-xl font-bold mb-4">User Details</h2>
+            <h2 className="text-xl font-bold mb-4">بيانات المستخدم</h2>
             
         </div>
         {user ? (
@@ -255,7 +252,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               )}
             </div>
             <div className="flex items-center justify-between mt-6">
-              <h3 className="text-lg font-semibold">User's Camels</h3>
+              <h3 className="text-lg font-semibold">المطايا الخاص بي</h3>
               
             </div>
             <Table className="container text-right mt-4" id="myCamels">
@@ -293,7 +290,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </TableBody>
             </Table>
             {/* امكانية الغاءها في حال عدم حل مشكلة اضافة الجمل */}
-            {showEditCamelForm && editingCamel && (
+            { editingCamel && (
   <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 overflow-auto">
     <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg mx-4 md:mx-0">
       <h2 className="text-2xl font-semibold text-gray-800 mb-6">تعديل الجمل</h2>
@@ -369,7 +366,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           </select>
         </label>
         <div className="flex justify-end space-x-4">
-          <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
+          <Button 
+          onClick={()=>{
+            alert('تم تحديث الجمل بنجاح الرجاء الخروج')
+          }}
+            type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
             تحديث الجمل
           </Button>
           <Button
