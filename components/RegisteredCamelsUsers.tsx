@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 import {
   Table,
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ConfirmationDialog from "./CDCFL";
 
 interface Event {
   id: string;
@@ -46,6 +48,8 @@ const Profile = ({ userId }: { userId: string }) => {
   const [selectedLoop, setSelectedLoop] = useState<string | null>(null);
   const [registeredCamels, setRegisteredCamels] = useState<Camel[]>([]);
   const [message, setMessage] = useState<string>("");
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [camelToRemove, setCamelToRemove] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -86,12 +90,10 @@ const Profile = ({ userId }: { userId: string }) => {
           );
           const registeredData = await response.json();
           setRegisteredCamels(registeredData);
-
-          // Set message if no camels are registered
           if (registeredData.length === 0) {
             setMessage("No registered camels");
           } else {
-            setMessage(""); // Clear the message if there are registered camels
+            setMessage("");
           }
         } catch (error) {
           console.error("Error fetching registered camels:", error);
@@ -101,6 +103,38 @@ const Profile = ({ userId }: { userId: string }) => {
       fetchRegisteredCamels();
     }
   }, [selectedLoop, selectedEvent, userId]);
+
+  const handleRemoveCamel = async () => {
+    if (!camelToRemove || !selectedEvent || !selectedLoop) return;
+
+    try {
+      const response = await fetch(
+        `/api/events/${selectedEvent}/getLoops/${selectedLoop}/removeRegisteredCamel`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ camelId: camelToRemove, userId }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the registered camels immediately after removing
+        setRegisteredCamels((prev) =>
+          prev.filter((camel) => camel.id !== camelToRemove)
+        );
+        setMessage("Camel removed successfully");
+        setCamelToRemove(null); // Clear the camel to remove
+      } else {
+        console.error("Failed to remove camel");
+      }
+    } catch (error) {
+      console.error("Error removing camel:", error);
+    } finally {
+      setIsDialogOpen(false); // Close the dialog
+    }
+  };
 
   return (
     <div className="p-6 container">
@@ -141,35 +175,51 @@ const Profile = ({ userId }: { userId: string }) => {
         </div>
       )}
 
-      {selectedLoop && registeredCamels.length > 0 && (
+      {selectedLoop && (
         <div className="mb-4">
           <h3 className="text-lg mb-2">Registered Camels</h3>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>ID</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead>Sex</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {registeredCamels.map((camel) => (
-                <TableRow key={camel.id}>
-                  <TableCell>{camel.name}</TableCell>
-                  <TableCell>{camel.camelID}</TableCell>
-                  <TableCell>{camel.age}</TableCell>
-                  <TableCell>{camel.sex}</TableCell>
+          {registeredCamels.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Age</TableHead>
+                  <TableHead>Sex</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {registeredCamels.map((camel) => (
+                  <TableRow key={camel.id}>
+                    <TableCell className="text-right">{camel.name}</TableCell>
+                    <TableCell className="text-right">{camel.age}</TableCell>
+                    <TableCell className="text-right">{camel.sex}</TableCell>
+                    <TableCell className="text-right">
+                      <button
+                        className="px-4 py-2 bg-red-500 text-white rounded"
+                        onClick={() => {
+                          setCamelToRemove(camel.id);
+                          setIsDialogOpen(true);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p>No registered camels</p>
+          )}
         </div>
       )}
-
-      {selectedLoop && registeredCamels.length === 0 && !message && (
-        <p>No registered camels</p>
-      )}
+      <ConfirmationDialog
+        isOpen={isDialogOpen}
+        onConfirm={handleRemoveCamel}
+        onCancel={() => setIsDialogOpen(false)}
+        message="Are you sure you want to remove this camel from this loop?"
+      />
     </div>
   );
 };
