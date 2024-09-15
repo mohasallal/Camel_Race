@@ -23,8 +23,8 @@ import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
 
 export const LoginForm = () => {
-  const [error, setErrors] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const [error, setErrors] = useState<string >("");
+  const [success, setSuccess] = useState<string >("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({

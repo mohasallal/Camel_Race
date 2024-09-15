@@ -179,7 +179,7 @@
                 aria-required="true"
               />
             </div>
-            <div className="mb-4 text-end">
+            <div className="mb-4">
               <label htmlFor="endRegister" className="block text-sm font-bold mb-1">تاريخ النهاية للتسجيل</label>
               <input
                 id="endRegister"

@@ -158,7 +158,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       }
     } catch (error: any) {
       console.error("Error updating event:", error);
-      alert("An error occurred while updating the event.");
+     
     }
   };
   const handleUpdateLoop = async (loopId: string, loopData: Loop) => {

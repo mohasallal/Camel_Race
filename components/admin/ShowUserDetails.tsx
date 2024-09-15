@@ -142,15 +142,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
       });
 
       if (response.ok) {
-        alert("User deleted successfully");
         onClose();
       } else {
         const data = await response.json();
-        alert(data.error || "Failed to delete user");
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      alert("An error occurred while deleting the user");
     }
   };
 
@@ -159,10 +156,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
       if (updatedUser.BDate) {
         // Validate ISO-8601 date format
         const isValidDate = !isNaN(Date.parse(updatedUser.BDate));
-        if (!isValidDate) {
-          alert("Invalid date format");
-          return;
-        }
+        
       }
   
       try {
@@ -179,13 +173,11 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         if (response.ok) {
           setUser((prevUser) => ({ ...prevUser, ...updatedUser }));
           setShowEditUserForm(false);
-          alert(result.success);
-        } else {
-          alert(result.error || 'Failed to update user');
-        }
+         
+        } 
       } catch (error) {
         console.error('Error updating user:', error);
-        alert('An error occurred while updating the user.');
+     
       }
     }
   };
@@ -423,9 +415,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </div>
             )}
             {showEditUserForm && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto  pt-50">
+              <div className="fixed inset-0 grid  gap-4 items-center bg-gray-800 bg-opacity-50   justify-center z-50 overflow-y-auto ">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                  <h3 className="text-lg font-semibold">تعديل بيانات المستخدم </h3>
+                  <h3 className="text-lg font-semibold text-center ">تعديل بيانات المستخدم </h3>
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
@@ -441,7 +433,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, FirstName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full text-end"
+                        className="border p-2 rounded mt-1 block w-full text-end  "
                       />
                     </label>
                     <label>

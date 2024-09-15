@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { string } from "zod";
 
 interface UpdateEventData {
   name?: string;
@@ -26,8 +27,8 @@ export const updateEvent = async (id: string, data: UpdateEventData) => {
 
     const updatedData = {
       ...data,
-      StartDate: data.StartDate ? new Date(data.StartDate).toISOString() : undefined,
-      EndDate: data.EndDate ? new Date(data.EndDate).toISOString() : undefined,
+      StartDate: data.StartDate ? new Date(data.StartDate).toISOString() :string,
+      EndDate: data.EndDate ? new Date(data.EndDate).toISOString() :string,
     };
 
     const updatedEvent = await db.event.update({

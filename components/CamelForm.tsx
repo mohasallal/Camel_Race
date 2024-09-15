@@ -103,7 +103,6 @@ const AddCamelsForm: React.FC<Props> = ({
             ...camelToSubmit,
           });
         }
-        alert("Camel updated successfully!");
       } else {
         const response = await fetch("/api/camels/create", {
           method: "POST",
@@ -116,15 +115,11 @@ const AddCamelsForm: React.FC<Props> = ({
         const result = await response.json();
         if (response.ok) {
           onAddCamel(result);
-          alert("Camel added successfully!");
-        } else {
-          alert(result.error || "Failed to add camel.");
-        }
+        } 
       }
       onClose();
     } catch (error) {
       console.error("Error adding/updating camel:", error);
-      alert("An error occurred while adding/updating camel.");
     }
   };
 
