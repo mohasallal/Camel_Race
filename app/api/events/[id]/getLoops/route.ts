@@ -1,19 +1,28 @@
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { eventId: string } }
 ) {
   try {
-    const eventId = params.eventId;
-    const loops = await db.loop.findMany({ where: { eventId } });
-    if (!loops.length) {
-      return NextResponse.json({ error: "No loops found" }, { status: 404 });
+    const { eventId } = params;
+
+    console.log("Received eventId:", eventId); 
+
+    const loops = await db.loop.findMany({ where: { eventId: eventId } });
+
+    console.log("Loops fetched:", loops);
+
+    if (loops.length === 0) {
+      return NextResponse.json({ error: "No loops found for this event" }, { status: 404 });
     }
+
     return NextResponse.json(loops, { status: 200 });
+
   } catch (error) {
     console.error("Error fetching loops:", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
-

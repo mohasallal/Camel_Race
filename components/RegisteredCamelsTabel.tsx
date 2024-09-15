@@ -17,6 +17,7 @@ interface Camel {
 }
 
 interface Loop {
+  eventId: string;
   id: string;
   age: string;
   sex: string;
@@ -46,7 +47,12 @@ export const RegisteredCamelsTable = () => {
     if (selectedEvent) {
       fetch(`/api/events/${selectedEvent}/getLoops`)
         .then((response) => response.json())
-        .then((data) => setLoops(data))
+        .then((data) => {
+          const filteredLoops = data.filter(
+            (loop: Loop) => loop.eventId === selectedEvent
+          );
+          setLoops(filteredLoops);
+        })
         .catch((error) => setError("Error fetching loops"));
     }
   }, [selectedEvent]);

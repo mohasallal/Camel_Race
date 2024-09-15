@@ -1,7 +1,6 @@
 "use client";
 
-import { AiOutlineCamera, AiOutlineArrowLeft } from "react-icons/ai";
-import { BackButton } from "./back-button";
+import { AiOutlineCamera } from "react-icons/ai";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
@@ -17,6 +16,7 @@ import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
 import Nav from "../Nav";
 import RegisterCamelForm from "../register-camels-form";
+import MyCamels from "../myCamels";
 
 interface UserProfile {
   id: string;
@@ -279,49 +279,8 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="container w-full text-center mt-20 max-sm:text-center">
-          <div className="mt-10 flex items-center justify-between flex-row-reverse max-sm:flex-col max-sm:gap-5">
-            <h2 className="text-2xl">: الهجن المسجلة</h2>
-            <div className="flex items-center justify-center gap-1">
-              <Button
-                variant="outline"
-                className="mr-5"
-                onClick={exportToExcel}
-              >
-                طباعة البيانات
-              </Button>
-              <Button onClick={handleRegisterForm}>
-                {camelRegister
-                  ? "إخفاء استمارة التسجيل"
-                  : "تسجيل الهجن في السباق"}
-              </Button>
-            </div>
-          </div>
-        </div>
-        <Table className="container text-right mt-10 mb-20" id="myCamels">
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">الفئة / السن</TableHead>
-              <TableHead>رقم الشريحة</TableHead>
-              <TableHead>اسم الهجين</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {camels.map((camel) => (
-              <TableRow key={camel.id}>
-                <TableCell className="font-medium w-[33%]">
-                  {camel.age} \ {camel.sex}
-                </TableCell>
-                <TableCell>{camel.camelID}</TableCell>
-                <TableCell>{camel.name}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <MyCamels userId={user.id} />
       </div>
-      {camelRegister && (
-        <RegisterCamelForm userId={user.id} onClose={handleRegisterForm} />
-      )}
     </>
   );
 };

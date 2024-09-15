@@ -38,14 +38,13 @@ export default function RegisterCamelForm({
   const [loops, setLoops] = useState<Loop[]>([]);
   const [camels, setCamels] = useState<Camel[]>([]);
   const [registeredCamels, setRegisteredCamels] = useState<Camel[]>([]);
-
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [selectedLoop, setSelectedLoop] = useState<string | null>(null);
   const [selectedCamel, setSelectedCamel] = useState<string | null>(null);
-
   const [availableCamels, setAvailableCamels] = useState<Camel[]>([]);
   const [message, setMessage] = useState("");
 
+  // Fetch events
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -60,13 +59,14 @@ export default function RegisterCamelForm({
     fetchEvents();
   }, []);
 
+  // Fetch loops for the selected event
   useEffect(() => {
     if (selectedEvent) {
       const fetchLoops = async () => {
         try {
           const response = await fetch(`/api/events/${selectedEvent}/getLoops`);
           const data = await response.json();
-          setLoops(data);
+          setLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent));
         } catch (error) {
           console.error("Error fetching loops:", error);
         }
@@ -76,6 +76,7 @@ export default function RegisterCamelForm({
     }
   }, [selectedEvent]);
 
+  // Fetch user camels and filter based on loop age and sex, also check capacity
   useEffect(() => {
     if (selectedLoop) {
       const fetchUserCamels = async () => {
@@ -94,19 +95,26 @@ export default function RegisterCamelForm({
                 camel.sex === selectedLoopDetails.sex
             );
 
-            // Fetch already registered camels in the selected loop
             const registeredResponse = await fetch(
               `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
             );
             const registeredData = await registeredResponse.json();
             setRegisteredCamels(registeredData);
 
-            // Filter out already registered camels
-            const availableCamels = filteredCamels.filter(
-              (camel: Camel) =>
-                !registeredData.some((registered: Camel) => registered.id === camel.id)
-            );
-            setAvailableCamels(availableCamels);
+            if (registeredData.length >= selectedLoopDetails.capacity) {
+              setMessage(
+                "This loop has reached its capacity. Registration is not allowed."
+              );
+              setAvailableCamels([]);
+            } else {
+              const availableCamels = filteredCamels.filter(
+                (camel: Camel) =>
+                  !registeredData.some(
+                    (registered: Camel) => registered.id === camel.id
+                  )
+              );
+              setAvailableCamels(availableCamels);
+            }
           }
         } catch (error) {
           console.error("Error fetching user's camels:", error);

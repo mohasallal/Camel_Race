@@ -10,7 +10,6 @@ import {
   TableBody,
   TableCell,
 } from "../ui/table";
-import { updateLoop } from "@/Actions/updateLoop";
 
 interface Event {
   id: string;
@@ -20,6 +19,7 @@ interface Event {
 }
 
 interface Loop {
+  eventId: string;
   id: string;
   capacity: number;
   age: string;
@@ -59,7 +59,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
           throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
         }
         const loopsData = await loopsResponse.json();
-        setLoops(loopsData || []);
+        const filteredLoops = loopsData.filter((loop: Loop) => loop.eventId === eventId);
+        setLoops(filteredLoops || []);
       } catch (error: any) {
         console.error("Error fetching event details:", error);
         setError(`An error occurred while fetching event details: ${error.message}`);
