@@ -15,6 +15,7 @@ export const createLoop = async (
   // Validate data
   const validatedFields = createLoopSchema.safeParse(values);
   if (!validatedFields.success) {
+    console.error("Validation failed:", validatedFields.error.errors);
     return { error: "Invalid data", details: validatedFields.error.errors };
   }
 
@@ -24,6 +25,7 @@ export const createLoop = async (
   try {
     const event = await db.event.findUnique({ where: { id: eventId } });
     if (!event) {
+      console.error("Event not found:", eventId);
       return { error: "Event not found" };
     }
 
@@ -33,8 +35,8 @@ export const createLoop = async (
         age,
         sex,
         time,
-        startRegister,
-        endRegister,
+        startRegister: new Date(startRegister),
+        endRegister: new Date(endRegister),
         eventId,
       },
     });
@@ -42,6 +44,6 @@ export const createLoop = async (
     return { success: "Loop created successfully" };
   } catch (error) {
     console.error("Error creating loop:", error);
-    return { error: "Error creating loop", details: error };
+    return { error: "Error creating loop", details: error || "Unknown error" };
   }
 };
