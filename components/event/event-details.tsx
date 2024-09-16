@@ -226,7 +226,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">الفئة / السن</TableHead>
-                  <TableHead>القدرة</TableHead>
+                  <TableHead>سعة الشوط</TableHead>
                   <TableHead>النوع</TableHead>
                   <TableHead>الوقت</TableHead>
                   <TableHead>تاريخ البدء</TableHead>

@@ -91,13 +91,6 @@ export const RegisterSchema = z
        .length(8, {
        message: "رمز SWIFT يجب أن يكون 8 أحرف",
        }),
-       accountId: z
-       .string({
-       message: "  رقم الحساب النكي مطلوب",
-       })
-       .min(1, {
-         message: "   رقم الحساب البنكي مطلوب",
-       }),
        IBAN: z
        .string()
        .length(30, {

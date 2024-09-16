@@ -115,7 +115,7 @@
           {isLoading && <div className=" mb-4">جاري إرسال البيانات...</div>}
           <form onSubmit={handleSubmit}>
             <div className="mb-4 text-end">
-              <label htmlFor="capacity" className="block text-sm font-bold mb-1">القدرة</label>
+              <label htmlFor="capacity" className="block text-sm font-bold mb-1">سعة الشوط</label>
               <input
                 id="capacity"
                 type="number"

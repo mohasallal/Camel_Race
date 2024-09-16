@@ -177,7 +177,7 @@ const AddCamelsForm: React.FC<Props> = ({
           </div>
 
           <div className="mb-2">
-            <label className="block text-gray-700 text-right">صف المطية</label>
+            <label className="block text-gray-700 text-right">صنف المطية</label>
             <Select
               value={camelDetails.age}
               onValueChange={(value) => handleSelectChange("age", value)}

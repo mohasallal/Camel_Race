@@ -69,7 +69,17 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   }
 
   if (!user) {
-    return <p>Loading...</p>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+    <Image 
+      src={'/loadingPage.jpeg'}
+      width={150}
+      height={150}
+      alt="loading"
+      className="flex justify-center items-center"
+      />
+      </div>
+      );
   }
 
   if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {

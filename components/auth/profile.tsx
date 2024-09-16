@@ -139,7 +139,17 @@ const Profile = () => {
   }
 
   if (!user) {
-    return <p>Loading...</p>;
+    return (   
+    <div className="flex justify-center items-center h-screen">
+      <Image 
+        src={'/loadingPage.jpeg'}
+        width={150}
+        height={150}
+        alt="loading"
+        className="flex justify-center items-center"
+        />
+        </div>
+        );
   }
 
   return (

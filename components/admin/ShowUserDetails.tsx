@@ -415,173 +415,176 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               </div>
             )}
             {showEditUserForm && (
-              <div className="fixed inset-0 grid  gap-4 items-center bg-gray-800 bg-opacity-50   justify-center z-50 overflow-y-auto ">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                  <h3 className="text-lg font-semibold text-center ">تعديل بيانات المستخدم </h3>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleUpdateUser();
-                    }}
-                    className="space-y-4"
-                  >
-                    <label>
-                      الاسم الاول:
+              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
+              <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+                <h3 className="text-xl font-bold text-gray-800 text-center mb-6">تعديل بيانات المستخدم</h3>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleUpdateUser();
+                  }}
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="block">
+                      <span className="text-gray-700"> : الاسم الاول</span>
                       <input
                         type="text"
                         value={updatedUser?.FirstName || user.FirstName}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, FirstName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full text-end  "
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      اسم الاب :
+                    <label className="block">
+                      <span className="text-gray-700"> : اسم الاب</span>
                       <input
                         type="text"
                         value={updatedUser?.FatherName || user.FatherName}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, FatherName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full text-end"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      اسم الجد  :
+                    <label className="block">
+                      <span className="text-gray-700"> : اسم الجد</span>
                       <input
                         type="text"
                         value={updatedUser?.GrandFatherName || user.GrandFatherName}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, GrandFatherName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full text-end"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      اسم العائلة:
+                    <label className="block">
+                      <span className="text-gray-700"> : اسم العائلة</span>
                       <input
                         type="text"
                         value={updatedUser?.FamilyName || user.FamilyName}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, FamilyName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full text-end"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      اسم المستخدم:
-                      <input
-                        type="text"
-                        value={updatedUser?.username || user.username}
-                        onChange={(e) =>
-                          setUpdatedUser((prev) => ({ ...prev, username: e.target.value }))
-                        }
-                        className="border p-2 rounded mt-1 block w-full text-end"
-                      />
-                    </label>
-                    <label>
-                      الجيميل:
-                      <input
-                        type="email"
-                        value={updatedUser?.email || user.email}
-                        onChange={(e) =>
-                          setUpdatedUser((prev) => ({ ...prev, email: e.target.value }))
-                        }
-                        className="border p-2 rounded mt-1 block w-full text-end"
-                      />
-                    </label>
-                    <label>
-                        الرقم الوطني:
-                      <input
-                        type="text"
-                        value={updatedUser?.NationalID || user.NationalID}
-                        onChange={(e) =>
-                          setUpdatedUser((prev) => ({ ...prev, NationalID: e.target.value }))
-                        }
-                        className="border p-2 rounded mt-1 block w-full"
-                      />
-                    </label>
-                    <label>
-                   تاريخ الميلاد:
+                  </div>
+                  <label className="block">
+                    <span className="text-gray-700"> : اسم المستخدم</span>
                     <input
-                        className="border p-2 rounded mt-1 block w-full"                        type="date"
-                        defaultValue={user.BDate.split("T")[0]}
-                        onChange={(e) => setUpdatedUser((prev) => ({ ...prev, BDate: new Date(e.target.value).toISOString() }))}
+                      type="text"
+                      value={updatedUser?.username || user.username}
+                      onChange={(e) =>
+                        setUpdatedUser((prev) => ({ ...prev, username: e.target.value }))
+                      }
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                     />
-                    </label>
-
-                      <label>
-                       رقم الهاتف:
-                      <input
-                        type="text"
-                        value={updatedUser?.MobileNumber || user.MobileNumber}
-                        onChange={(e) =>
-                          setUpdatedUser((prev) => ({ ...prev, MobileNumber: e.target.value }))
-                        }
-                        className="border p-2 rounded mt-1 block w-full"
-                      />
-                    </label>
-                    <label>
-                       رمز السويفت:
+                  </label>
+                  <label className="block">
+                    <span className="text-gray-700"> : البريد الإلكتروني</span>
+                    <input
+                      type="email"
+                      value={updatedUser?.email || user.email}
+                      onChange={(e) =>
+                        setUpdatedUser((prev) => ({ ...prev, email: e.target.value }))
+                      }
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-gray-700"> : الرقم الوطني</span>
+                    <input
+                      type="text"
+                      value={updatedUser?.NationalID || user.NationalID}
+                      onChange={(e) =>
+                        setUpdatedUser((prev) => ({ ...prev, NationalID: e.target.value }))
+                      }
+                      className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-gray-700">  : تاريخ الميلاد</span>
+                    <input
+                      type="date"
+                      defaultValue={user.BDate.split("T")[0]}
+                      onChange={(e) =>
+                        setUpdatedUser((prev) => ({
+                          ...prev,
+                          BDate: new Date(e.target.value).toISOString(),
+                        }))
+                      }
+                      className="mt-1 block w-full text-end border-gray-300 rounded-md shadow-sm p-2 "
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-gray-700"> : رقم الهاتف  </span>
+                    <input
+                      type="text"
+                      value={updatedUser?.MobileNumber || user.MobileNumber}
+                      onChange={(e) =>
+                        setUpdatedUser((prev) => ({ ...prev, MobileNumber: e.target.value }))
+                      }
+                      className="mt-1 block w-full text-end border-gray-300 rounded-md shadow-sm p-2 "
+                    />
+                  </label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <label className="block">
+                      <span className="text-gray-700"> : رمز السويفت </span>
                       <input
                         type="text"
                         value={updatedUser?.swiftCode || user.swiftCode}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, swiftCode: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      رقم الآيبان:
+                    <label className="block">
+                      <span className="text-gray-700"> : رقم الآيبان</span>
                       <input
                         type="text"
                         value={updatedUser?.IBAN || user.IBAN}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, IBAN: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full"
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                       />
                     </label>
-                    <label>
-                      اسم البنك:
+                    <label className="block  ">
+                      <span className="text-gray-700 "> : اسم البنك</span>
                       <input
                         type="text"
                         value={updatedUser?.bankName || user.bankName}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({ ...prev, bankName: e.target.value }))
                         }
-                        className="border p-2 rounded mt-1 block w-full"
+                        className="mt-1 block w-full item border-gray-300 rounded-md shadow-sm text-end p-2  "
                       />
                     </label>
-                    <label>
-                       رقم الحساب البنكي:
-                      <input
-                        type="text"
-                        value={updatedUser?.accountId || user.accountId}
-                        onChange={(e) =>
-                          setUpdatedUser((prev) => ({ ...prev, accountId: e.target.value }))
-                        }
-                        className="border p-2 rounded mt-1 block w-full"
-                      />
-                    </label>
-                    <div className="flex justify-between mt-4">
-                      <Button type="submit">حفظ التعديلات</Button>
-                      <Button
-                        onClick={() => setShowEditUserForm(false)}
-                        variant="outline"
-                      >
-                        الغاء
-                      </Button>
-                    </div>
-                  </form>
-                </div>
+                  </div>
+                  <div className="flex justify-between mt-6">
+                    <Button type="submit" className=" text-white p-2 rounded-md shadow">
+                      حفظ التعديلات
+                    </Button>
+                    <Button
+                      onClick={() => setShowEditUserForm(false)}
+                      variant="outline"
+                      className="bg-gray-200 p-2 rounded-md shadow"
+                    >
+                      الغاء
+                    </Button>
+                  </div>
+                </form>
               </div>
-            )}
+            </div>
+                        )}
           </div>
         ) : (
-          <div>Loading...</div>
+          <div >
+            <p>جاري التحميل ...</p>
+            </div>
         )}
       </div>
     </div>

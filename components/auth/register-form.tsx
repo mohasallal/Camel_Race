@@ -475,27 +475,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-              name="accountId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                    : أدخل رقم الحساب البنكي
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                      placeholder=" أدخل رقم الحساب البنكي"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+             
             </div>
             <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
               <FormField
