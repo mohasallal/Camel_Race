@@ -35,7 +35,7 @@ interface UserProfile {
 
 interface Camel {
   id: string;
-  age: number;
+  age: string;
   sex: string;
   camelID: string;
   name: string;
@@ -139,17 +139,68 @@ const Profile = () => {
   }
 
   if (!user) {
-    return (   
-    <div className="flex justify-center items-center h-screen">
-      <Image 
-        src={'/loadingPage.jpeg'}
-        width={150}
-        height={150}
-        alt="loading"
-        className="flex justify-center items-center"
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Image
+          src={"/loadingPage.jpeg"}
+          width={150}
+          height={150}
+          alt="loading"
+          className="flex justify-center items-center"
         />
-        </div>
-        );
+      </div>
+    );
+  }
+
+  function translateAge(Age: string) {
+    switch (Age) {
+      case "GradeOne":
+        return "مفرد";
+        break;
+      case "GradeTwo":
+        return "حقايق";
+        break;
+      case "GradeThree":
+        return "لقايا";
+        break;
+      case "GradeFour":
+        return "جذاع";
+        break;
+      case "GradeFive":
+        return "ثنايا";
+        break;
+      case "GradeSixMale":
+        return "زمول";
+        break;
+      case "GradeSixFemale":
+        return "حيل";
+    }
+  }
+
+  function translateSex(sex: string) {
+    switch (sex) {
+      case "Male":
+        return "قعدان";
+        break;
+      case "Female":
+        return "بكار";
+        break;
+      default:
+        return "";
+    }
+  }
+
+  function translateTime(time: string) {
+    switch (time) {
+      case "Morning":
+        return "صباحي";
+        break;
+      case "Evening":
+        return "مسائي";
+        break;
+      default:
+        return "";
+    }
   }
 
   return (
@@ -320,7 +371,7 @@ const Profile = () => {
             {camels.map((camel) => (
               <TableRow key={camel.id}>
                 <TableCell className="font-medium w-[33%]">
-                  {camel.age} \ {camel.sex}
+                  {translateAge(camel.age)} \ {translateSex(camel.sex)}
                 </TableCell>
                 <TableCell>{camel.camelID}</TableCell>
                 <TableCell>{camel.name}</TableCell>

@@ -70,6 +70,57 @@ export const RegisteredCamelsTable = () => {
 
   if (error) return <p>{error}</p>;
 
+  function translateAge(Age: string) {
+    switch (Age) {
+      case "GradeOne":
+        return "مفرد";
+        break;
+      case "GradeTwo":
+        return "حقايق";
+        break;
+      case "GradeThree":
+        return "لقايا";
+        break;
+      case "GradeFour":
+        return "جذاع";
+        break;
+      case "GradeFive":
+        return "ثنايا";
+        break;
+      case "GradeSixMale":
+        return "زمول";
+        break;
+      case "GradeSixFemale":
+        return "حيل";
+    }
+  }
+
+  function translateSex(sex: string) {
+    switch (sex) {
+      case "Male":
+        return "قعدان";
+        break;
+      case "Female":
+        return "بكار";
+        break;
+      default:
+        return "";
+    }
+  }
+
+  function translateTime(time: string) {
+    switch (time) {
+      case "Morning":
+        return "صباحي";
+        break;
+      case "Evening":
+        return "مسائي";
+        break;
+      default:
+        return "";
+    }
+  }
+
   return (
     <div className="w-full">
       <div className="flex gap-4 mb-4">
@@ -78,7 +129,7 @@ export const RegisteredCamelsTable = () => {
           value={selectedEvent || ""}
           onChange={(e) => setSelectedEvent(e.target.value)}
         >
-          <option value="">Select Event</option>
+          <option value="">اختر فعالية</option>
           {events.map((event) => (
             <option key={event.id} value={event.id}>
               {event.name}
@@ -92,10 +143,10 @@ export const RegisteredCamelsTable = () => {
             value={selectedLoop || ""}
             onChange={(e) => setSelectedLoop(e.target.value)}
           >
-            <option value="">Select Loop</option>
+            <option value="">اختر شوط</option>
             {loops.map((loop) => (
               <option key={loop.id} value={loop.id}>
-                {loop.age + "/" + loop.sex}
+                {translateAge(loop.age) + "/" + translateSex(loop.sex)}
               </option>
             ))}
           </select>
@@ -116,7 +167,7 @@ export const RegisteredCamelsTable = () => {
             <TableRow key={camel.id}>
               <TableCell className="text-right">{camel.name}</TableCell>
               <TableCell className="text-right">
-                {camel.age + "/" + camel.sex}
+                {translateAge(camel.age) + "/" + translateSex(camel.sex)}
               </TableCell>
               <TableCell className="text-right">{camel.owner}</TableCell>{" "}
               {/* Display owner name */}

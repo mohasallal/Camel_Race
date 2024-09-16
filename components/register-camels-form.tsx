@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
@@ -159,20 +159,71 @@ export default function RegisterCamelForm({
     }
   };
 
+  function translateAge(Age: string) {
+    switch (Age) {
+      case "GradeOne":
+        return "مفرد";
+        break;
+      case "GradeTwo":
+        return "حقايق";
+        break;
+      case "GradeThree":
+        return "لقايا";
+        break;
+      case "GradeFour":
+        return "جذاع";
+        break;
+      case "GradeFive":
+        return "ثنايا";
+        break;
+      case "GradeSixMale":
+        return "زمول";
+        break;
+      case "GradeSixFemale":
+        return "حيل";
+    }
+  }
+
+  function translateSex(sex: string) {
+    switch (sex) {
+      case "Male":
+        return "قعدان";
+        break;
+      case "Female":
+        return "بكار";
+        break;
+      default:
+        return "";
+    }
+  }
+
+  function translateTime(time: string) {
+    switch (time) {
+      case "Morning":
+        return "صباحي";
+        break;
+      case "Evening":
+        return "مسائي";
+        break;
+      default:
+        return "";
+    }
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg relative w-full max-w-[500px]">
-        <h2 className="text-xl mb-4">Register Camel for Race</h2>
+        <h2 className="text-xl mb-4"> تسجيل المطية في السباق</h2>
         {message && <p className="mb-4">{message}</p>}
 
         <div className="mb-4">
-          <label className="block mb-2">Select Event</label>
+          <label className="block mb-2 text-right">اختر فعالية</label>
           <select
             className="w-full border rounded p-2"
             value={selectedEvent || ""}
             onChange={(e) => setSelectedEvent(e.target.value)}
           >
-            <option value="">-- Select Event --</option>
+            <option value="">-- اختر فعالية --</option>
             {events.map((event) => (
               <option key={event.id} value={event.id}>
                 {event.name}
@@ -183,16 +234,17 @@ export default function RegisterCamelForm({
 
         {selectedEvent && (
           <div className="mb-4">
-            <label className="block mb-2">Select Loop</label>
+            <label className="block mb-2 text-right">اختر شوط</label>
             <select
               className="w-full border rounded p-2"
               value={selectedLoop || ""}
               onChange={(e) => setSelectedLoop(e.target.value)}
             >
-              <option value="">-- Select Loop --</option>
+              <option value="">-- اختر شوط --</option>
               {loops.map((loop) => (
                 <option key={loop.id} value={loop.id}>
-                  {loop.age} - {loop.sex} ({loop.time})
+                  {translateAge(loop.age)} - {translateSex(loop.sex)} (
+                  {translateTime(loop.time)})
                 </option>
               ))}
             </select>
@@ -201,16 +253,17 @@ export default function RegisterCamelForm({
 
         {selectedLoop && availableCamels.length >= 0 && (
           <div className="mb-4">
-            <label className="block mb-2">Select Camel</label>
+            <label className="block mb-2 text-right">اختر مطية</label>
             <select
               className="w-full border rounded p-2"
               value={selectedCamel || ""}
               onChange={(e) => setSelectedCamel(e.target.value)}
             >
-              <option value="">-- Select Camel --</option>
+              <option value="">-- اختر مطية --</option>
               {availableCamels.map((camel) => (
                 <option key={camel.id} value={camel.id}>
-                  {camel.name} (ID: {camel.camelID}, Age: {camel.age})
+                  {camel.name} (رقم الشريحة: {camel.camelID}, الصف:{" "}
+                  {translateAge(camel.age)})
                 </option>
               ))}
             </select>
@@ -218,10 +271,10 @@ export default function RegisterCamelForm({
         )}
         <div className="flex justify-between items-center">
           <Button onClick={handleRegister} disabled={!selectedCamel}>
-            Register
+            تسجيل
           </Button>
           <Button className="block text-white p-2 rounded" onClick={onClose}>
-            Close
+            اغلاق
           </Button>
         </div>
       </div>

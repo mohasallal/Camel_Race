@@ -151,16 +151,67 @@ const Profile = ({ userId }: { userId: string }) => {
     }
   };
 
+  function translateAge(Age: string) {
+    switch (Age) {
+      case "GradeOne":
+        return "مفرد";
+        break;
+      case "GradeTwo":
+        return "حقايق";
+        break;
+      case "GradeThree":
+        return "لقايا";
+        break;
+      case "GradeFour":
+        return "جذاع";
+        break;
+      case "GradeFive":
+        return "ثنايا";
+        break;
+      case "GradeSixMale":
+        return "زمول";
+        break;
+      case "GradeSixFemale":
+        return "حيل";
+    }
+  }
+
+  function translateSex(sex: string) {
+    switch (sex) {
+      case "Male":
+        return "قعدان";
+        break;
+      case "Female":
+        return "بكار";
+        break;
+      default:
+        return "";
+    }
+  }
+
+  function translateTime(time: string) {
+    switch (time) {
+      case "Morning":
+        return "صباحي";
+        break;
+      case "Evening":
+        return "مسائي";
+        break;
+      default:
+        return "";
+    }
+  }
+
   return (
     <div className="p-6 container">
-      <h2 className="text-xl mb-4">Registered Camels for Loop</h2>
+      <h2 className="text-xl mb-4 text-right">المطايا المسجلة في السباق</h2>
       {message && <p className="mb-4">{message}</p>}
 
       <div className="mb-4">
-        <label className="block mb-2">Select Event</label>
+        <label className="block mb-2 text-right">اختر فعالية</label>
         <Select onValueChange={setSelectedEvent} value={selectedEvent || ""}>
           <SelectTrigger className="w-full border rounded p-2">
-            <SelectValue placeholder="Select Event" />
+            <SelectValue placeholder="اختر فعالية" />
           </SelectTrigger>
           <SelectContent>
             {events.map((event) => (
@@ -174,15 +225,16 @@ const Profile = ({ userId }: { userId: string }) => {
 
       {selectedEvent && (
         <div className="mb-4">
-          <label className="block mb-2">Select Loop</label>
+          <label className="block mb-2 text-right">اختر شوط / سباق</label>
           <Select onValueChange={setSelectedLoop} value={selectedLoop || ""}>
             <SelectTrigger className="w-full border rounded p-2">
-              <SelectValue placeholder="Select Loop" />
+              <SelectValue placeholder="اختر شوط / سباق" />
             </SelectTrigger>
             <SelectContent>
               {loops.map((loop) => (
                 <SelectItem key={loop.id} value={loop.id}>
-                  {loop.age} - {loop.sex} ({loop.time})
+                  {translateAge(loop.age)} - {translateSex(loop.sex)} (
+                  {translateTime(loop.time)})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -192,23 +244,29 @@ const Profile = ({ userId }: { userId: string }) => {
 
       {selectedLoop && (
         <div className="mb-4">
-          <h3 className="text-lg mb-2">Registered Camels</h3>
+          <h3 className="text-lg mb-2 text-center font-semibold">
+            المطايا المسجلة
+          </h3>
           {registeredCamels.length > 0 ? (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Age</TableHead>
-                  <TableHead>Sex</TableHead>
-                  <TableHead>Action</TableHead>
+                  <TableHead>الاسم</TableHead>
+                  <TableHead>الصف</TableHead>
+                  <TableHead>الجنس</TableHead>
+                  <TableHead>العمليات</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {registeredCamels.map((camel) => (
                   <TableRow key={camel.id}>
                     <TableCell className="text-right">{camel.name}</TableCell>
-                    <TableCell className="text-right">{camel.age}</TableCell>
-                    <TableCell className="text-right">{camel.sex}</TableCell>
+                    <TableCell className="text-right">
+                      {translateAge(camel.age)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {translateSex(camel.sex)}
+                    </TableCell>
                     <TableCell className="text-right">
                       <button
                         className="px-4 py-2 bg-red-500 text-white rounded"
@@ -217,7 +275,7 @@ const Profile = ({ userId }: { userId: string }) => {
                           setIsDialogOpen(true);
                         }}
                       >
-                        Remove
+                        ازالة
                       </button>
                     </TableCell>
                   </TableRow>
@@ -225,7 +283,7 @@ const Profile = ({ userId }: { userId: string }) => {
               </TableBody>
             </Table>
           ) : (
-            <p>No registered camels</p>
+            <p className="text-center">لم يتم العثور على مطايا مسجلة</p>
           )}
         </div>
       )}

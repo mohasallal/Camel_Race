@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { useState, useEffect } from "react";
 import {
   IconArrowLeft,
@@ -11,7 +11,6 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/side-bar";
-import { FaFileAlt } from "react-icons/fa";
 import { MdInsertDriveFile } from "react-icons/md";
 
 interface UserProfile {
