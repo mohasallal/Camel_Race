@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ConfirmationDialog from "../Forms/CDCFL";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: string;
@@ -41,7 +42,9 @@ interface Camel {
   sex: string;
 }
 
-const Profile = ({ userId }: { userId: string }) => {
+const RegisterCamelsUsers = () => {
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null);
   const [events, setEvents] = useState<Event[]>([]);
   const [loops, setLoops] = useState<Loop[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
@@ -50,6 +53,36 @@ const Profile = ({ userId }: { userId: string }) => {
   const [message, setMessage] = useState<string>("");
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [camelToRemove, setCamelToRemove] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          router.push("/auth/login");
+          return;
+        }
+
+        const response = await fetch("/api/user/profile", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user profile.");
+        }
+
+        const userData = await response.json();
+        setUserId(userData.id);
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        router.push("/auth/login");
+      }
+    };
+
+    fetchUserProfile();
+  }, [router]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -88,7 +121,7 @@ const Profile = ({ userId }: { userId: string }) => {
   }, [selectedEvent]);
 
   useEffect(() => {
-    if (selectedLoop) {
+    if (selectedLoop && userId) {
       const fetchRegisteredCamels = async () => {
         try {
           const response = await fetch(
@@ -101,11 +134,6 @@ const Profile = ({ userId }: { userId: string }) => {
           }
           const registeredData = await response.json();
           setRegisteredCamels(registeredData);
-          if (registeredData.length === 0) {
-            setMessage("");
-          } else {
-            setMessage("");
-          }
         } catch (error) {
           console.error("Error fetching registered camels:", error);
         }
@@ -116,7 +144,7 @@ const Profile = ({ userId }: { userId: string }) => {
   }, [selectedLoop, selectedEvent, userId]);
 
   const handleRemoveCamel = async () => {
-    if (!camelToRemove || !selectedEvent || !selectedLoop) return;
+    if (!camelToRemove || !selectedEvent || !selectedLoop || !userId) return;
 
     try {
       const response = await fetch(
@@ -130,9 +158,6 @@ const Profile = ({ userId }: { userId: string }) => {
         }
       );
 
-      console.log("Response Status:", response.status);
-      console.log("Response Body:", await response.text());
-
       if (response.ok) {
         setRegisteredCamels((prev) =>
           prev.filter((camel) => camel.id !== camelToRemove)
@@ -140,7 +165,6 @@ const Profile = ({ userId }: { userId: string }) => {
         setMessage("Camel removed successfully");
         setCamelToRemove(null);
       } else {
-        console.error("Failed to remove camel");
         setMessage("Failed to remove camel");
       }
     } catch (error) {
@@ -155,24 +179,20 @@ const Profile = ({ userId }: { userId: string }) => {
     switch (Age) {
       case "GradeOne":
         return "مفرد";
-        break;
       case "GradeTwo":
         return "حقايق";
-        break;
       case "GradeThree":
         return "لقايا";
-        break;
       case "GradeFour":
         return "جذاع";
-        break;
       case "GradeFive":
         return "ثنايا";
-        break;
       case "GradeSixMale":
         return "زمول";
-        break;
       case "GradeSixFemale":
         return "حيل";
+      default:
+        return "";
     }
   }
 
@@ -180,10 +200,8 @@ const Profile = ({ userId }: { userId: string }) => {
     switch (sex) {
       case "Male":
         return "قعدان";
-        break;
       case "Female":
         return "بكار";
-        break;
       default:
         return "";
     }
@@ -193,108 +211,114 @@ const Profile = ({ userId }: { userId: string }) => {
     switch (time) {
       case "Morning":
         return "صباحي";
-        break;
       case "Evening":
         return "مسائي";
-        break;
       default:
         return "";
     }
   }
 
   return (
-    <div className="p-6 container">
-      <h2 className="text-xl mb-4 text-right">المطايا المسجلة في السباق</h2>
-      {message && <p className="mb-4">{message}</p>}
+    <div className="bg-[url('/desert.jpg')] h-screen bg-center bg-no-repeat bg-cover flex items-center justify-center">
+      <div className="p-6 container bg-white rounded-lg">
+        <h2 className="text-3xl mb-4 text-center font-semibold">
+          المطايا المسجلة في السباق
+        </h2>
+        {message && <p className="mb-4">{message}</p>}
 
-      <div className="mb-4">
-        <label className="block mb-2 text-right">اختر فعالية</label>
-        <Select onValueChange={setSelectedEvent} value={selectedEvent || ""}>
-          <SelectTrigger className="w-full border rounded p-2">
-            <SelectValue placeholder="اختر فعالية" />
-          </SelectTrigger>
-          <SelectContent>
-            {events.map((event) => (
-              <SelectItem key={event.id} value={event.id}>
-                {event.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {selectedEvent && (
         <div className="mb-4">
-          <label className="block mb-2 text-right">اختر شوط / سباق</label>
-          <Select onValueChange={setSelectedLoop} value={selectedLoop || ""}>
+          <label className="block mb-2 text-right">اختر فعالية</label>
+          <Select onValueChange={setSelectedEvent} value={selectedEvent || ""}>
             <SelectTrigger className="w-full border rounded p-2">
-              <SelectValue placeholder="اختر شوط / سباق" />
+              <SelectValue placeholder="اختر فعالية" />
             </SelectTrigger>
             <SelectContent>
-              {loops.map((loop) => (
-                <SelectItem key={loop.id} value={loop.id}>
-                  {translateAge(loop.age)} - {translateSex(loop.sex)} (
-                  {translateTime(loop.time)})
+              {events.map((event) => (
+                <SelectItem key={event.id} value={event.id}>
+                  {event.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-      )}
 
-      {selectedLoop && (
-        <div className="mb-4">
-          <h3 className="text-lg mb-2 text-center font-semibold">
-            المطايا المسجلة
-          </h3>
-          {registeredCamels.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>الاسم</TableHead>
-                  <TableHead>الصف</TableHead>
-                  <TableHead>الجنس</TableHead>
-                  <TableHead>العمليات</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {registeredCamels.map((camel) => (
-                  <TableRow key={camel.id}>
-                    <TableCell className="text-right">{camel.name}</TableCell>
-                    <TableCell className="text-right">
-                      {translateAge(camel.age)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {translateSex(camel.sex)}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <button
-                        className="px-4 py-2 bg-red-500 text-white rounded"
-                        onClick={() => {
-                          setCamelToRemove(camel.id);
-                          setIsDialogOpen(true);
-                        }}
-                      >
-                        ازالة
-                      </button>
-                    </TableCell>
-                  </TableRow>
+        {selectedEvent && (
+          <div className="mb-4">
+            <label className="block mb-2 text-right">اختر شوط / سباق</label>
+            <Select onValueChange={setSelectedLoop} value={selectedLoop || ""}>
+              <SelectTrigger className="w-full border rounded p-2">
+                <SelectValue placeholder="اختر شوط / سباق" />
+              </SelectTrigger>
+              <SelectContent>
+                {loops.map((loop) => (
+                  <SelectItem key={loop.id} value={loop.id}>
+                    {translateAge(loop.age)} - {translateSex(loop.sex)} (
+                    {translateTime(loop.time)})
+                  </SelectItem>
                 ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <p className="text-center">لم يتم العثور على مطايا مسجلة</p>
-          )}
-        </div>
-      )}
-      <ConfirmationDialog
-        isOpen={isDialogOpen}
-        onConfirm={handleRemoveCamel}
-        onCancel={() => setIsDialogOpen(false)}
-        message="Are you sure you want to remove this camel from this loop?"
-      />
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {selectedLoop && (
+          <div className="mb-4">
+            <h3 className="text-lg mb-2 text-center font-semibold">
+              المطايا المسجلة
+            </h3>
+            {registeredCamels.length > 0 ? (
+              <div className="max-h-[300px] overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>الاسم</TableHead>
+                      <TableHead>الصف</TableHead>
+                      <TableHead>الجنس</TableHead>
+                      <TableHead>العمليات</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {registeredCamels.map((camel) => (
+                      <TableRow key={camel.id}>
+                        <TableCell className="text-right">
+                          {camel.name}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {translateAge(camel.age)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          {translateSex(camel.sex)}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <button
+                            className="px-4 py-2 bg-red-500 text-white rounded"
+                            onClick={() => {
+                              setCamelToRemove(camel.id);
+                              setIsDialogOpen(true);
+                            }}
+                          >
+                            إزالة
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ) : (
+              <p className="text-center">لا توجد مطايا مسجلة.</p>
+            )}
+          </div>
+        )}
+        <ConfirmationDialog
+          isOpen={isDialogOpen}
+          onConfirm={handleRemoveCamel}
+          onClose={() => setIsDialogOpen(false)}
+          message="Are you sure you want to remove this camel from this loop?"
+        />
+      </div>
     </div>
   );
 };
 
-export default Profile;
+export default RegisterCamelsUsers;

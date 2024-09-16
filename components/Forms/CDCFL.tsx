@@ -1,36 +1,39 @@
-import React from 'react';
+import React from "react";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
-  onConfirm: () => void;
-  onCancel: () => void;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
   message: string;
 }
 
 const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
   isOpen,
+  onClose,
   onConfirm,
-  onCancel,
-  message
+  message,
 }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-500 bg-opacity-50">
       <div className="bg-white p-6 rounded shadow-lg">
-        <p className="mb-4">{message}</p>
-        <div className="flex justify-end">
+        <p>{message}</p>
+        <div className="flex justify-end mt-4">
           <button
-            className="px-4 py-2 bg-red-500 text-white rounded mr-2"
-            onClick={onConfirm}
+            className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
+            onClick={onClose}
           >
-            Yes
+            Cancel
           </button>
           <button
-            className="px-4 py-2 bg-gray-300 rounded"
-            onClick={onCancel}
+            className="px-4 py-2 bg-red-500 text-white rounded"
+            onClick={async () => {
+              await onConfirm();
+              onClose();
+            }}
           >
-            No
+            Confirm
           </button>
         </div>
       </div>

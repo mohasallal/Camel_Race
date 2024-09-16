@@ -52,7 +52,7 @@ export default function RegisterCamelForm({
         const data = await response.json();
         setEvents(data);
       } catch (error) {
-        console.error("Error fetching events:", error);
+        console.error(": حدث خطأ اثناء تحميل الفعالية", error);
       }
     };
 
@@ -67,7 +67,7 @@ export default function RegisterCamelForm({
           const data = await response.json();
           setLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent));
         } catch (error) {
-          console.error("Error fetching loops:", error);
+          console.error(": حدث خطأ اثناء تحميل السباق", error);
         }
       };
 
@@ -100,9 +100,7 @@ export default function RegisterCamelForm({
             setRegisteredCamels(registeredData);
 
             if (registeredData.length >= selectedLoopDetails.capacity) {
-              setMessage(
-                "This loop has reached its capacity. Registration is not allowed."
-              );
+              setMessage("! هذا السباق وصل الحد الاقصى في التسجيل");
               setAvailableCamels([]);
             } else {
               const availableCamels = filteredCamels.filter(
@@ -115,7 +113,7 @@ export default function RegisterCamelForm({
             }
           }
         } catch (error) {
-          console.error("Error fetching user's camels:", error);
+          console.error(": حدث خطأ اثناء تحميل الهجن", error);
         }
       };
 
@@ -130,6 +128,33 @@ export default function RegisterCamelForm({
     }
 
     try {
+      const selectedLoopDetails = loops.find(
+        (loop) => loop.id === selectedLoop
+      );
+      if (!selectedLoopDetails) {
+        setMessage("حدث خطأ أثناء تحميل تفاصيل الشوط");
+        return;
+      }
+
+      const now = new Date();
+
+      const startRegisterDate = new Date(
+        selectedLoopDetails.startRegister
+      ).toLocaleDateString("ar-EG");
+      const endRegisterDate = new Date(
+        selectedLoopDetails.endRegister
+      ).toLocaleDateString("ar-EG");
+
+      if (
+        now < new Date(selectedLoopDetails.startRegister) ||
+        now > new Date(selectedLoopDetails.endRegister)
+      ) {
+        setMessage(
+          `لا يمكنك التسجيل خارج فترة التسجيل المحددة. فترة التسجيل تبدأ من ${startRegisterDate} وتنتهي في ${endRegisterDate}.`
+        );
+        return;
+      }
+
       const res = await fetch(
         `/api/events/${selectedEvent}/getLoops/${selectedLoop}/register`,
         {
@@ -144,18 +169,18 @@ export default function RegisterCamelForm({
       const data = await res.json();
 
       if (res.ok) {
-        setMessage("Camel registered successfully!");
+        setMessage("! تم تسجيل المطية في السباق بنجاح");
         const registeredResponse = await fetch(
           `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
         );
         const registeredData = await registeredResponse.json();
         setRegisteredCamels(registeredData);
       } else {
-        setMessage(data.error || "Failed to register camel.");
+        setMessage(data.error || "فشلت عملية تسجيل المطية");
       }
     } catch (error) {
-      console.error("Error registering camel:", error);
-      setMessage("An error occurred while registering camel.");
+      console.error(": حدث خطأ اثناء تسجيل المطية", error);
+      setMessage("حدث خطأ اثناء تسجيل المطية");
     }
   };
 

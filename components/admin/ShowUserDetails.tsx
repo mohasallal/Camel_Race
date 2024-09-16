@@ -301,7 +301,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               )}
             </div>
             <div className="flex items-center justify-between mt-6">
-              <h3 className="text-lg font-semibold">المطايا الخاص بي</h3>
+              <h3 className="text-lg font-semibold text-right w-full">
+                المطايا الخاص بي
+              </h3>
             </div>
             <Table className="container text-right mt-4" id="myCamels">
               <TableHeader>

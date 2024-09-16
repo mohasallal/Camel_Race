@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import { Age, Camel, Sex } from "@prisma/client";
 import { Input } from "../ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Button } from "../ui/button";
 
 interface Props {
@@ -18,7 +24,7 @@ interface Props {
     age: Age;
     sex: Sex;
     ownerId: string;
-  } | null; // يضمن وجود ownerId أو null
+  } | null;
 }
 
 const AddCamelsForm: React.FC<Props> = ({
@@ -33,8 +39,8 @@ const AddCamelsForm: React.FC<Props> = ({
     name: "",
     camelID: "",
     ownerId: userId,
-    age: "GradeOne",
-    sex: "Male",
+    age: "GradeOne" as Age,
+    sex: "Male" as Sex,
   });
 
   const [errors, setErrors] = useState({
@@ -49,7 +55,7 @@ const AddCamelsForm: React.FC<Props> = ({
       setCamelDetails({
         name: editingCamel.name || "",
         camelID: editingCamel.camelID.toString() || "",
-        ownerId: editingCamel.ownerId || userId, // التأكد من أن ownerId موجود
+        ownerId: editingCamel.ownerId || userId,
         age: editingCamel.age || "GradeOne",
         sex: editingCamel.sex || "Male",
       });
@@ -110,7 +116,7 @@ const AddCamelsForm: React.FC<Props> = ({
         const result = await response.json();
         if (response.ok) {
           onAddCamel(result);
-        } 
+        }
       }
       onClose();
     } catch (error) {
@@ -163,7 +169,7 @@ const AddCamelsForm: React.FC<Props> = ({
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select Sex" />
               </SelectTrigger>
-              <SelectContent >
+              <SelectContent>
                 <SelectItem value="Male">قعدان</SelectItem>
                 <SelectItem value="Female">بكار</SelectItem>
               </SelectContent>
@@ -193,13 +199,11 @@ const AddCamelsForm: React.FC<Props> = ({
             {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
           </div>
 
-         
-
           <Button type="submit" className="mr-2">
-            {editingCamel ? "Update Camel" : "Add Camel"}
+            {editingCamel ? "تحديث البيانات" : "أضف المطية"}
           </Button>
           <Button type="button" onClick={onClose}>
-            Cancel
+            الغاء
           </Button>
         </form>
       </div>

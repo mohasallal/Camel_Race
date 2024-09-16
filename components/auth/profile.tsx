@@ -1,5 +1,4 @@
 "use client";
-
 import { AiOutlineCamera } from "react-icons/ai";
 import Image from "next/image";
 import { Button } from "../ui/button";
@@ -15,7 +14,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
 import Nav from "../Navigation/Nav";
-import RegisterCamelUser from "../Tabels/RegisteredCamelsUsers";
 import RegisterCamelForm from "../Forms/register-camels-form";
 
 interface UserProfile {
@@ -383,7 +381,6 @@ const Profile = () => {
       {camelRegister && (
         <RegisterCamelForm userId={user.id} onClose={handleRegisterForm} />
       )}
-      <RegisterCamelUser userId={user.id} />
     </>
   );
 };

@@ -51,10 +51,10 @@ const NavLinks = ({ className, enablescroll, hide }: Props) => {
       {hide && token && (
         <>
           <li onClick={enablescroll}>
-            <Link href="/profile">الملف الشخصي</Link>
+            <Link href="/profile/myCamels">المطايا المسجلة</Link>
           </li>
           <li onClick={enablescroll}>
-            <Link href="/profile/myCamels">المطايا المسجلة</Link>
+            <Link href="/profile">الملف الشخصي</Link>
           </li>
         </>
       )}
