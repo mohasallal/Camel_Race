@@ -1,5 +1,5 @@
 "use client";
-import { RegisteredCamelsTable } from "@/components/RegisteredCamelsTabel";
+import { RegisteredCamelsTable } from "@/components/Tabels/RegisteredCamelsTabel";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import * as XLSX from "xlsx";

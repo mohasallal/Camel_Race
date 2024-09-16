@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 interface Props {
   className?: string;
+  hide: boolean;
   enablescroll?: () => void;
 }
 
@@ -11,7 +12,7 @@ interface UserProfile {
   role: string;
 }
 
-const NavLinks = ({ className, enablescroll }: Props) => {
+const NavLinks = ({ className, enablescroll, hide }: Props) => {
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
 
@@ -37,18 +38,23 @@ const NavLinks = ({ className, enablescroll }: Props) => {
 
   return (
     <ul className={className || `flex items-center gap-5 max-lg:hidden`}>
-      {user && (user.role === "ADMIN" || user.role === "SUPERVISOR") && (
-        <li onClick={enablescroll}>
-          <Link href="/admin/dashboard">لائحة المسؤول</Link>
-        </li>
-      )}
+      {hide &&
+        user &&
+        (user.role === "ADMIN" || user.role === "SUPERVISOR") && (
+          <li onClick={enablescroll}>
+            <Link href="/admin/dashboard">لائحة المسؤول</Link>
+          </li>
+        )}
       <li onClick={enablescroll}>
         <Link href="mailto:info@jocrc.com">تواصل معنا</Link>
       </li>
-      {token && (
+      {hide && token && (
         <>
           <li onClick={enablescroll}>
             <Link href="/profile">الملف الشخصي</Link>
+          </li>
+          <li onClick={enablescroll}>
+            <Link href="/profile/myCamels">المطايا المسجلة</Link>
           </li>
         </>
       )}

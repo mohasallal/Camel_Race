@@ -12,13 +12,11 @@ export const updateLoop = async (id: string, updatedData: Partial<Loop>) => {
   }
 
   try {
-    // Check if the loop exists
     const loopExists = await db.loop.findUnique({ where: { id } });
     if (!loopExists) {
       throw new Error("Loop not found");
     }
 
-    // Update the loop
     const result = await db.loop.update({
       where: { id },
       data: updatedData,

@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "./ui/select";
+
 import { Age, Camel, Sex } from "@prisma/client";
+import { Input } from "../ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Button } from "../ui/button";
 
 interface Props {
   className?: string;

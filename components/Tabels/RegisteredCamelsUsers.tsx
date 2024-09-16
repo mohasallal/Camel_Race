@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "../ui/table";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import ConfirmationDialog from "./CDCFL";
+import ConfirmationDialog from "../Forms/CDCFL";
 
 interface Event {
   id: string;

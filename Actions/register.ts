@@ -29,7 +29,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     swiftCode,
     IBAN,
     bankName,
-    accountId,
   } = validatedFields.data;
 
   const hashedPassword = await bcryptjs.hash(password, 10);
@@ -58,7 +57,6 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
       swiftCode ,
       IBAN ,
       bankName,
-      accountId,
     },
   });
 

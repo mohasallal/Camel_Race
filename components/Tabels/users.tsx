@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
-import UserDetails from "./admin/ShowUserDetails";
+import UserDetails from "../admin/ShowUserDetails";
 
 interface User {
   id: string;

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import SideMenuButton from "./side-menu";
+import SideMenuButton from "../side-menu";
 import NavLinks from "./nav-links";
 import NavButtons from "./nav-buttons";
 import { FaBars } from "react-icons/fa";
@@ -21,7 +21,7 @@ const Nav = () => {
         </SideMenuButton>
         <NavButtons onSignOut={handleSignOut} />
         <div className="flex items-center gap-5 justify-end">
-          {isNavVisible && <NavLinks />}
+          <NavLinks hide={isNavVisible} />
           <div className="bold text-2xl flex items-center justify-center">
             <Image
               src="/LogoHeader.png"

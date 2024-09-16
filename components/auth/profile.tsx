@@ -14,9 +14,9 @@ import {
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
-import Nav from "../Nav";
-import RegisterCamelForm from "../register-camels-form";
-import RegisterCamelUser from "../RegisteredCamelsUsers";
+import Nav from "../Navigation/Nav";
+import RegisterCamelUser from "../Tabels/RegisteredCamelsUsers";
+import RegisterCamelForm from "../Forms/register-camels-form";
 
 interface UserProfile {
   id: string;

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import CreateLoopForm from "../loop-form";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
 import {
@@ -11,6 +10,7 @@ import {
   TableBody,
   TableCell,
 } from "../ui/table";
+import CreateLoopForm from "../Forms/loop-form";
 
 interface Event {
   id: string;

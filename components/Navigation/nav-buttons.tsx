@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { RedirectButton } from "./auth/redirect-button";
-import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { signOut } from "@/lib/auth";
+import { Button } from "../ui/button";
+import { RedirectButton } from "../auth/redirect-button";
 
 interface Props {
   className?: string;

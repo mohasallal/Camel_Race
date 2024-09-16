@@ -9,13 +9,11 @@ export const updateUser = async (id: string, updatedData: Partial<User>) => {
   }
 
   try {
-    // Check if the user exists
     const userExists = await db.user.findUnique({ where: { id } });
     if (!userExists) {
       throw new Error("User not found");
     }
 
-    // Update the user
     const result = await db.user.update({
       where: { id },
       data: updatedData,

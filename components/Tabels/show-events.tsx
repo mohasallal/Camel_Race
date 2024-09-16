@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import EventDetails from "./event/event-details";
+import EventDetails from "../event/event-details";
 
 interface Event {
   id: string;

@@ -1,8 +1,8 @@
 "use client";
 import SearchBar from "@/components/admin/SearchBar";
 import { RedirectButton } from "@/components/auth/redirect-button";
+import { ShowUsers } from "@/components/Tabels/usersTabel";
 import { Button } from "@/components/ui/button";
-import { ShowUsers } from "@/components/usersTabel";
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import * as XLSX from "xlsx";

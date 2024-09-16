@@ -1,9 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import React from "react";
-import { FaBars } from "react-icons/fa";
-import NavLinks from "./nav-links";
-import NavButtons from "./nav-buttons";
+import NavLinks from "./Navigation/nav-links";
+import NavButtons from "./Navigation/nav-buttons";
 
 interface Props {
   children: React.ReactNode;
@@ -42,6 +41,7 @@ const SideMenuButton = ({ children }: Props) => {
           <NavLinks
             enablescroll={enablescrolling}
             className=" flex flex-col items-center hover:cursor-default justify-center gap-5 relative text-2xl p-4 w-full z-50"
+            hide={true}
           />
           <NavButtons
             enablescroll={enablescrolling}

@@ -9,13 +9,11 @@ export const updateCamel = async (id: number, updatedData: Partial<Camel>) => {
   }
 
   try {
-    // تحقق من وجود الجمل
     const camelExists = await db.camel.findUnique({ where: { id } });
     if (!camelExists) {
       throw new Error("Camel not found");
     }
 
-    // تحديث الجمل
     const result = await db.camel.update({
       where: { id },
       data: updatedData,

@@ -10,8 +10,8 @@ import {
   TableRow,
 } from "../ui/table";
 import { Button } from "../ui/button";
-import AddCamelsForm from "../CamelForm";
 import { IoIosClose } from "react-icons/io";
+import AddCamelsForm from "../Forms/CamelForm";
 
 interface Camel {
   id: number;

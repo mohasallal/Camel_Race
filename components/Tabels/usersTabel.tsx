@@ -2,7 +2,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
-import UserDetails from "./admin/ShowUserDetails";
 import {
   Table,
   TableBody,
@@ -10,7 +9,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "./ui/table";
+} from "@/components/ui/table";
+import UserDetails from "../admin/ShowUserDetails";
 
 interface User {
   id: string;

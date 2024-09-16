@@ -15,16 +15,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
+import { FormError } from "../Forms/form-error";
+import { FormSuccess } from "../Forms/form-success";
 import { login } from "@/Actions/login";
 import { useRouter } from "next/navigation";
 import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
 
 export const LoginForm = () => {
-  const [error, setErrors] = useState<string >("");
-  const [success, setSuccess] = useState<string >("");
+  const [error, setErrors] = useState<string>("");
+  const [success, setSuccess] = useState<string>("");
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const form = useForm<z.infer<typeof LoginSchema>>({
