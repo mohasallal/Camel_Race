@@ -38,7 +38,6 @@ export async function GET(request: Request) {
         swiftCode: true,
         IBAN:true,
         bankName:true,
-        accountId:true,
       },
     });
 

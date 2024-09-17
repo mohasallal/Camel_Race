@@ -17,7 +17,6 @@ interface User {
   swiftCode:string,
   IBAN:string,
   bankName:string,
-  accountId:string,
 }
 
 export const ShowSupers = () => {

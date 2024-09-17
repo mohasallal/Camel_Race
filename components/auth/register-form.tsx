@@ -45,7 +45,6 @@ interface UserProfile {
   swiftCode: string;
   IBAN: string;
   bankName: string;
-  accountId: string;
 }
 
 export const RegisterForm = ({ userId }: { userId?: string }) => {
@@ -92,6 +91,16 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
 
     fetchUserProfile();
   }, [router]);
+
+  useEffect(() => {
+    if (user) {
+      if (user.role === "ADMIN" || user.role === "SUPERVISOR") {
+        router.push("/auth/register");
+      } else {
+        router.push("/auth/login");
+      }
+    }
+  }, [user, router]);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -168,7 +177,9 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
               name="role"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel><p className="text-end">دور المستخدم </p></FormLabel>
+                  <FormLabel>
+                    <p className="text-end">دور المستخدم </p>
+                  </FormLabel>
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
@@ -202,8 +213,8 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
             />
           )}
 
-            {selectedRole =="SUPERVISOR"&&(
-              <>
+          {selectedRole == "SUPERVISOR" && (
+            <>
               <FormField
                 control={form.control}
                 name="username"
@@ -225,78 +236,73 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                   </FormItem>
                 )}
               />
-           
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : البريد الالكتروني
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="email"
-                      {...field}
-                      placeholder="أدخل بريدك الالكتروني"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : كلمة السر
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="password"
-                      {...field}
-                      placeholder="أدخل كلمة المرور"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : تأكيد كلمة السر
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="password"
-                      {...field}
-                      placeholder="تأكيد كلمة المرور"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-          
-          
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : البريد الالكتروني
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="email"
+                        {...field}
+                        placeholder="أدخل بريدك الالكتروني"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : كلمة السر
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="password"
+                        {...field}
+                        placeholder="أدخل كلمة المرور"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : تأكيد كلمة السر
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="password"
+                        {...field}
+                        placeholder="تأكيد كلمة المرور"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </>
-
-            )}
+          )}
           {renderUserFields && (
             <>
               <FormField
@@ -304,27 +310,27 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                 name="FatherName"
                 render={({ field }) => (
                   <FormItem>
-                      <FormField
-                        control={form.control}
-                        name="FirstName"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="flex items-center justify-end">
-                              : الاسم
-                            </FormLabel>
-                            <FormControl>
-                              <Input
-                                disabled={isPending}
-                                type="text"
-                                {...field}
-                                placeholder="الاسم"
-                                className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                    <FormField
+                      control={form.control}
+                      name="FirstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="flex items-center justify-end">
+                            : الاسم
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              disabled={isPending}
+                              type="text"
+                              {...field}
+                              placeholder="الاسم"
+                              className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                     <FormLabel className="flex items-center justify-end">
                       : اسم الأب
                     </FormLabel>
@@ -341,283 +347,283 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                   </FormItem>
                 )}
               />
-            
-            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
-              <FormField
-                control={form.control}
-                name="FamilyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                      : اسم العائلة
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                        placeholder="اسم العائلة"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="GrandFatherName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                      : اسم الجد
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                        placeholder="اسم الجد"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="NationalID"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : الرقم الوطني
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="الرقم الوطني"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="BDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : تاريخ الولادة
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="date"
-                      {...field}
-                      value={
-                        field.value && !isNaN(new Date(field.value).getTime())
-                          ? new Date(field.value).toISOString().split("T")[0]
-                          : ""
-                      }
-                      onChange={(e) => {
-                        const newDate = new Date(e.target.value);
-                        if (!isNaN(newDate.getTime())) {
-                          field.onChange(newDate);
-                        } else {
-                          console.error("Invalid date value");
+              <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+                <FormField
+                  control={form.control}
+                  name="FamilyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : اسم العائلة
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="اسم العائلة"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="GrandFatherName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : اسم الجد
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="اسم الجد"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="NationalID"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : الرقم الوطني
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="الرقم الوطني"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="BDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : تاريخ الولادة
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="date"
+                        {...field}
+                        value={
+                          field.value && !isNaN(new Date(field.value).getTime())
+                            ? new Date(field.value).toISOString().split("T")[0]
+                            : ""
                         }
-                      }}
-                      placeholder="تاريخ الولادة"
-                      className="outline-none border-t-0 border-r-0 border-l-0 flex items-center justify-end focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
-              <FormField
-                control={form.control}
-                name="MobileNumber"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                      : رقم الهاتف
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                        placeholder="رقم الهاتف"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        onChange={(e) => {
+                          const newDate = new Date(e.target.value);
+                          if (!isNaN(newDate.getTime())) {
+                            field.onChange(newDate);
+                          } else {
+                            console.error("Invalid date value");
+                          }
+                        }}
+                        placeholder="تاريخ الولادة"
+                        className="outline-none border-t-0 border-r-0 border-l-0 flex items-center justify-end focus:outline-none focus:ring-0 focus:border-transparent"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                      : اسم المستخدم
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                        placeholder="اسم المستخدم"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : البريد الالكتروني
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="email"
-                      {...field}
-                      placeholder="أدخل بريدك الالكتروني"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+                <FormField
+                  control={form.control}
+                  name="MobileNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : رقم الهاتف
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="رقم الهاتف"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : اسم المستخدم
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="اسم المستخدم"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : كلمة السر
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="password"
-                      {...field}
-                      placeholder="أدخل كلمة المرور"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : تأكيد كلمة السر
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="password"
-                      {...field}
-                      placeholder="تأكيد كلمة المرور"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <h1 className="text-center">المعلومات البنكية</h1>
-            <FormField
-              control={form.control}
-              name="swiftCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : ادخل رقم السويفت
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="ادخل رقم السويفت   "
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          
-          <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
-            <FormField
-              control={form.control}
-              name="IBAN"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    : ادخل رقم الأيبان
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder="  أدخل رقم الايبان"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="bankName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="flex items-center justify-end">
-                    ادخل اسم البنك الخاص بك
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled={isPending}
-                      type="text"
-                      {...field}
-                      placeholder=" .. أدخل اسم البنك الخاص بك"
-                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            </div>
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : البريد الالكتروني
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="email"
+                        {...field}
+                        placeholder="أدخل بريدك الالكتروني"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : كلمة السر
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="password"
+                        {...field}
+                        placeholder="أدخل كلمة المرور"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : تأكيد كلمة السر
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="password"
+                        {...field}
+                        placeholder="تأكيد كلمة المرور"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <h1 className="text-center">المعلومات البنكية</h1>
+              <FormField
+                control={form.control}
+                name="swiftCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : ادخل رقم السويفت
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="ادخل رقم السويفت   "
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+                <FormField
+                  control={form.control}
+                  name="IBAN"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : ادخل رقم الأيبان
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="  أدخل رقم الايبان"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bankName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        ادخل اسم البنك الخاص بك
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder=" .. أدخل اسم البنك الخاص بك"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </>
           )}
 

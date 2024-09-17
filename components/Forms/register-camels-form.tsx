@@ -44,6 +44,7 @@ export default function RegisterCamelForm({
   const [selectedCamel, setSelectedCamel] = useState<string | null>(null);
   const [availableCamels, setAvailableCamels] = useState<Camel[]>([]);
   const [message, setMessage] = useState("");
+  const [loopRegistrations, setLoopRegistrations] = useState<Record<string, number>>({});
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -66,6 +67,17 @@ export default function RegisterCamelForm({
           const response = await fetch(`/api/events/${selectedEvent}/getLoops`);
           const data = await response.json();
           setLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent));
+
+          // Fetch registered camels count for each loop
+          const registrationCounts: Record<string, number> = {};
+          for (const loop of data) {
+            const registeredResponse = await fetch(
+              `/api/events/${selectedEvent}/getLoops/${loop.id}/registeredCamels`
+            );
+            const registeredData = await registeredResponse.json();
+            registrationCounts[loop.id] = registeredData.length;
+          }
+          setLoopRegistrations(registrationCounts);
         } catch (error) {
           console.error(": حدث خطأ اثناء تحميل السباق", error);
         }
@@ -188,24 +200,20 @@ export default function RegisterCamelForm({
     switch (Age) {
       case "GradeOne":
         return "مفرد";
-        break;
       case "GradeTwo":
         return "حقايق";
-        break;
       case "GradeThree":
         return "لقايا";
-        break;
       case "GradeFour":
         return "جذاع";
-        break;
       case "GradeFive":
         return "ثنايا";
-        break;
       case "GradeSixMale":
         return "زمول";
-        break;
       case "GradeSixFemale":
         return "حيل";
+      default:
+        return "";
     }
   }
 
@@ -213,10 +221,8 @@ export default function RegisterCamelForm({
     switch (sex) {
       case "Male":
         return "قعدان";
-        break;
       case "Female":
         return "بكار";
-        break;
       default:
         return "";
     }
@@ -226,10 +232,8 @@ export default function RegisterCamelForm({
     switch (time) {
       case "Morning":
         return "صباحي";
-        break;
       case "Evening":
         return "مسائي";
-        break;
       default:
         return "";
     }
@@ -269,7 +273,9 @@ export default function RegisterCamelForm({
               {loops.map((loop) => (
                 <option key={loop.id} value={loop.id}>
                   {translateAge(loop.age)} - {translateSex(loop.sex)} (
-                  {translateTime(loop.time)})
+                  {translateTime(loop.time)}) - {
+                    loopRegistrations[loop.id]
+                  }/{loop.capacity}
                 </option>
               ))}
             </select>
