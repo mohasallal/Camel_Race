@@ -33,18 +33,18 @@ import ImageUpload from "../image-upload";
 interface UserProfile {
   id?: string;
   role: string;
-  firstName: string;
-  fatherName: string;
-  grandFatherName: string;
-  familyName: string;
+  firstName?: string;
+  fatherName?: string;
+  grandFatherName?: string;
+  familyName?: string;
   username: string;
   email: string;
-  nationalID: string;
-  BDate: Date;
-  mobileNumber: string;
-  swiftCode: string;
-  IBAN: string;
-  bankName: string;
+  nationalID?: string;
+  BDate?: Date;
+  mobileNumber?: string;
+  swiftCode?: string;
+  IBAN?: string;
+  bankName?: string;
 }
 
 export const RegisterForm = ({ userId }: { userId?: string }) => {
@@ -53,7 +53,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
   const [isPending, startTransition] = useTransition();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [selectedRole, setSelectedRole] = useState<string>("USER"); // الحالة الجديدة
+  const [selectedRole, setSelectedRole] = useState<string>("USER");
 
   const router = useRouter();
 
@@ -105,20 +105,20 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      FirstName: "",
-      FatherName: "",
-      GrandFatherName: "",
-      FamilyName: "",
+      FirstName: undefined,
+      FatherName: undefined,
+      GrandFatherName: undefined,
+      FamilyName: undefined,
       username: "",
       email: "",
-      NationalID: "",
-      BDate: new Date(),
-      MobileNumber: "",
+      NationalID: undefined,
+      BDate: undefined,
+      MobileNumber: undefined,
       password: "",
       confirmPassword: "",
-      swiftCode: "",
-      IBAN: "",
-      bankName: "",
+      swiftCode: undefined,
+      IBAN: undefined,
+      bankName: undefined,
     },
   });
 
@@ -149,13 +149,11 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
     });
   };
 
-  // يتم تحديث حالة selectedRole عند تغيير الدور في القائمة
   const handleRoleChange = (value: string) => {
     setSelectedRole(value);
   };
 
-  const renderUserFields = selectedRole === "USER"; // نستخدم selectedRole بدلاً من user?.role
-  const renderSuperVisorFields = selectedRole === "SUPERVISOR"; // نستخدم selectedRole بدلاً من user?.role
+  const renderUserFields = selectedRole === "USER";
 
   return (
     <CardWrapper
@@ -183,7 +181,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                   <Select
                     onValueChange={(value) => {
                       field.onChange(value);
-                      handleRoleChange(value); // تحديث selectedRole عند تغيير الدور
+                      handleRoleChange(value);
                     }}
                     defaultValue={field.value}
                   >
