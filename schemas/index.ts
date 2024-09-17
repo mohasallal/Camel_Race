@@ -17,28 +17,28 @@ export const RegisterSchema = z
       })
       .min(1, {
         message: "الاسم مطلوب",
-      }),
+      }).optional(),
     FatherName: z
       .string({
         message: "اسم الاب مطلوب",
       })
       .min(1, {
         message: "اسم الاب مطلوب",
-      }),
+      }).optional(),
     GrandFatherName: z
       .string({
         message: "اسم الجد مطلوب",
       })
       .min(1, {
         message: "اسم الجد مطلوب",
-      }),
+      }).optional(),
     FamilyName: z
       .string({
         message: "اسم العائلة مطلوب",
       })
       .min(1, {
         message: "اسم العائلة مطلوب",
-      }),
+      }).optional(),
     username: z
       .string({
         message: "اسم المستخدم مطلوب",
@@ -60,14 +60,14 @@ export const RegisterSchema = z
       })
       .regex(/^\d+$/, {
         message: "الرقم الوطني يجب أن يتكون من أرقام فقط",
-      }),
+      }).optional(),
     BDate: z
       .date({
         message: "تاريخ الميلاد مطلوب",
       })
       .refine((date) => date < new Date(), {
         message: "تاريخ الميلاد يجب أن يكون في الماضي",
-      }),
+      }).optional(),
     MobileNumber: z
       .string()
       .min(9, {
@@ -78,7 +78,7 @@ export const RegisterSchema = z
       })
       .regex(/^\+?[0-9]\d{1,14}$/, {
         message: "صيغة رقم الهاتف غير صحيحة",
-      }),
+      }).optional(),
     role: z.enum(["USER", "ADMIN", "SUPERVISOR"]).default("USER"),
     password: z.string().min(6, {
       message: "الطول 6 حروف على الاقل",
@@ -90,19 +90,19 @@ export const RegisterSchema = z
       .string()
        .length(8, {
        message: "رمز SWIFT يجب أن يكون 8 أحرف",
-       }),
+       }).optional(),
        IBAN: z
        .string()
        .length(30, {
         message: "رقم IBAN يجب أن يكون 30 حرفًا",
-       }),
+       }).optional(),
        bankName: z
        .string({
          message: "اسم البنك مطلوب",
        })
        .min(1, {
          message: "اسم البنك مطلوب",
-       }),
+       }).optional(),
 
   }).refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
@@ -125,7 +125,6 @@ export const RegisterSchema = z
     swiftCode: z.string().optional(),
     IBAN: z.string().optional(),
     bankName: z.string().optional(),
-    accountId: z.string().optional(),
   });
 
 export const EventsSchema = z

@@ -69,7 +69,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center flex-col items-center h-screen">
     <Image 
       src={'/loadingPage.jpeg'}
       width={150}
@@ -77,6 +77,18 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       alt="loading"
       className="flex justify-center items-center"
       />
+      <div className="flex gap-3 items-center">
+        
+      <h1>رياضة الهجن الأردنية</h1>
+       <Image
+       src={'/jo.WEBP'}
+       width={30}
+       height={30}
+       alt="alt"
+        className="mr-2 inline"
+       />
+       
+        </div>
       </div>
       );
   }

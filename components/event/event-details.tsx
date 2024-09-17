@@ -158,6 +158,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       }
     } catch (error: any) {
       console.error("Error updating event:", error);
+     
     }
   };
   const handleUpdateLoop = async (loopId: string, loopData: Loop) => {
@@ -187,60 +188,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     }
   };
 
-  function translateAge(Age: string) {
-    switch (Age) {
-      case "GradeOne":
-        return "مفرد";
-        break;
-      case "GradeTwo":
-        return "حقايق";
-        break;
-      case "GradeThree":
-        return "لقايا";
-        break;
-      case "GradeFour":
-        return "جذاع";
-        break;
-      case "GradeFive":
-        return "ثنايا";
-        break;
-      case "GradeSixMale":
-        return "زمول";
-        break;
-      case "GradeSixFemale":
-        return "حيل";
-    }
-  }
-
-  function translateSex(sex: string) {
-    switch (sex) {
-      case "Male":
-        return "قعدان";
-        break;
-      case "Female":
-        return "بكار";
-        break;
-      default:
-        return "";
-    }
-  }
-
-  function translateTime(time: string) {
-    switch (time) {
-      case "Morning":
-        return "صباحي";
-        break;
-      case "Evening":
-        return "مسائي";
-        break;
-      default:
-        return "";
-    }
-  }
-
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4 flex justify-between text-end">
           تفاصيل الحدث
           <div className="flex space-x-2">
@@ -248,7 +198,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
               onClick={() => setIsEditEventModalOpen(true)}
               variant="outline"
             >
-              <MdEdit className="mr-2" size={18} /> تعديل الحدث
+              <MdEdit className="mr-2 " size={18} /> تعديل الحدث
             </Button>
             <Button
               onClick={() => setConfirmDeleteEvent(true)}
@@ -288,12 +238,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 {loops.length > 0 ? (
                   loops.map((loop) => (
                     <TableRow key={loop.id}>
-                      <TableCell className="font-medium">
-                        {translateAge(loop.age)}
-                      </TableCell>
+                      <TableCell className="font-medium">{loop.age}</TableCell>
                       <TableCell>{loop.capacity}</TableCell>
-                      <TableCell>{translateSex(loop.sex)}</TableCell>
-                      <TableCell>{translateTime(loop.time)}</TableCell>
+                      <TableCell>{loop.sex}</TableCell>
+                      <TableCell>{loop.time}</TableCell>
                       <TableCell>
                         {new Date(loop.startRegister).toLocaleDateString()}
                       </TableCell>

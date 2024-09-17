@@ -54,6 +54,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
   const [isPending, startTransition] = useTransition();
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [selectedRole, setSelectedRole] = useState<string>("USER"); // الحالة الجديدة
 
   const router = useRouter();
 
@@ -91,16 +92,6 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
 
     fetchUserProfile();
   }, [router]);
-
-  useEffect(() => {
-    if (user) {
-      if (user.role === "ADMIN" || user.role === "SUPERVISOR") {
-        router.push("/auth/register");
-      } else {
-        router.push("/auth/login");
-      }
-    }
-  }, [user, router]);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -149,6 +140,14 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
     });
   };
 
+  // يتم تحديث حالة selectedRole عند تغيير الدور في القائمة
+  const handleRoleChange = (value: string) => {
+    setSelectedRole(value);
+  };
+
+  const renderUserFields = selectedRole === "USER"; // نستخدم selectedRole بدلاً من user?.role
+  const renderSuperVisorFields = selectedRole === "SUPERVISOR"; // نستخدم selectedRole بدلاً من user?.role
+
   return (
     <CardWrapper
       heading="🐪 إنشاء حساب جديد"
@@ -163,13 +162,169 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
       </RedirectButton>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4 text-right">
-            <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
+          {user?.role === "ADMIN" && (
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel><p className="text-end">دور المستخدم </p></FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      handleRoleChange(value); // تحديث selectedRole عند تغيير الدور
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="flex flex-row-reverse">
+                        <SelectValue placeholder="اختار دور المستخدم" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem
+                        className="flex flex-row-reverse"
+                        value="SUPERVISOR"
+                      >
+                        مشرف
+                      </SelectItem>
+                      <SelectItem
+                        className="flex flex-row-reverse"
+                        value="USER"
+                      >
+                        مستخدم
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
+            {selectedRole =="SUPERVISOR"&&(
+              <>
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center justify-end">
+                      : اسم المستخدم
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        disabled={isPending}
+                        type="text"
+                        {...field}
+                        placeholder="اسم المستخدم"
+                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+           
+            
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : البريد الالكتروني
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="email"
+                      {...field}
+                      placeholder="أدخل بريدك الالكتروني"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : كلمة السر
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="password"
+                      {...field}
+                      placeholder="أدخل كلمة المرور"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="flex items-center justify-end">
+                    : تأكيد كلمة السر
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isPending}
+                      type="password"
+                      {...field}
+                      placeholder="تأكيد كلمة المرور"
+                      className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+          
+          
+            </>
+
+            )}
+          {renderUserFields && (
+            <>
               <FormField
                 control={form.control}
                 name="FatherName"
                 render={({ field }) => (
                   <FormItem>
+                      <FormField
+                        control={form.control}
+                        name="FirstName"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="flex items-center justify-end">
+                              : الاسم
+                            </FormLabel>
+                            <FormControl>
+                              <Input
+                                disabled={isPending}
+                                type="text"
+                                {...field}
+                                placeholder="الاسم"
+                                className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                     <FormLabel className="flex items-center justify-end">
                       : اسم الأب
                     </FormLabel>
@@ -186,28 +341,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="FirstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="flex items-center justify-end">
-                      : الاسم
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        disabled={isPending}
-                        type="text"
-                        {...field}
-                        placeholder="الاسم"
-                        className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+            
             <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
               <FormField
                 control={form.control}
@@ -352,42 +486,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                 )}
               />
             </div>
-            {user?.role === "ADMIN" && (
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>: دور المستخدم</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger className="flex flex-row-reverse">
-                          <SelectValue placeholder="اختار دور المستخدم" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem
-                          className="flex flex-row-reverse"
-                          value="SUPERVISOR"
-                        >
-                          مشرف
-                        </SelectItem>
-                        <SelectItem
-                          className="flex flex-row-reverse"
-                          value="USER"
-                        >
-                          مستخدم
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            )}
+            
             <FormField
               control={form.control}
               name="email"
@@ -474,7 +573,7 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                 </FormItem>
               )}
             />
-          </div>
+          
           <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
             <FormField
               control={form.control}
@@ -518,22 +617,10 @@ export const RegisterForm = ({ userId }: { userId?: string }) => {
                 </FormItem>
               )}
             />
-          </div>
+            </div>
+            </>
+          )}
 
-          <div className="m-2 text-center">
-            <label>
-              حمّل الصورة الشخصية
-              <ImageUpload />
-            </label>
-            <label>
-              حمّل صورة جواز السفر
-              <ImageUpload />
-            </label>
-            <label>
-              حمّل صورة الهوية
-              <ImageUpload />
-            </label>
-          </div>
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
             <Button disabled={isPending} type="submit" className="w-full">
               انشاء حساب
