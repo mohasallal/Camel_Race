@@ -26,19 +26,15 @@ export const ourFileRouter = {
       // Renaming the file by appending "محمد" before the file extension
       const fileNameParts = file.name.split(".");
       const fileExtension = fileNameParts.pop(); // Get file extension
-      const newName = `Mohammad.${fileExtension}`; // New name with "محمد"
 
       console.log("Upload complete for userId:", metadata.userId);
       console.log("Old file url:", file.url);
 
       // Optionally, update file URL logic if you store files locally or use a custom storage
-      const newFileUrl = file.url.replace(file.name, newName);
 
-      console.log("New file name:", newName);
-      console.log("New file url:", newFileUrl);
 
       // Return metadata with the new file name or URL
-      return { uploadedBy: metadata.userId, newFileName: newName, newFileUrl };
+      return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;
 

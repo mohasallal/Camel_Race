@@ -622,6 +622,9 @@ export const RegisterForm = () => {
                   )}
                 />
               </div>
+              <ImageUpload/>
+              <ImageUpload/>
+              <ImageUpload/>
             </>
           )}
 

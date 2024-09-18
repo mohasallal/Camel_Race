@@ -477,27 +477,22 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 </div>
               </div>
             )}
-            {confirmDeleteUser && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                  <h3 className="text-lg font-semibold">
-                    تأكيد حذف المستخدم ؟{" "}
-                  </h3>
-                  <p>هل أنت متاكد من حذف المستخدم ؟</p>
-                  <div className="flex justify-between mt-4">
-                    <Button onClick={handleDeleteUser} variant="destructive">
-                      نعم
-                    </Button>
-                    <Button
-                      onClick={() => setConfirmDeleteUser(false)}
-                      variant="outline"
-                    >
-                      لا
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
+              {confirmDeleteUser && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+            <h3 className="text-lg font-semibold">تأكيد حذف المستخدم ؟</h3>
+            <p>هل أنت متاكد من حذف المستخدم ؟</p>
+            <div className="flex justify-between mt-4">
+              <Button onClick={handleDeleteUser} variant="destructive">
+                نعم
+              </Button>
+              <Button onClick={() => setConfirmDeleteUser(false)} variant="outline">
+                لا
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
             {showEditUserForm && (
               <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
