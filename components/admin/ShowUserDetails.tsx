@@ -431,8 +431,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       <Button
                         onClick={() => {
                           alert("تم تحديث الجمل بنجاح الرجاء الخروج");
-                          setShowEditCamelForm(false);
-                          setEditingCamel(null);
                         }}
                         type="submit"
                         className="bg-gray-800 text-white "

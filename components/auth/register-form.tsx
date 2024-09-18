@@ -47,7 +47,7 @@ interface UserProfile {
   bankName?: string;
 }
 
-export const RegisterForm = ({ userId }: { userId?: string }) => {
+export const RegisterForm = () => {
   const [error, setErrors] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
