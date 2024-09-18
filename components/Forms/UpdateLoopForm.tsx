@@ -1,5 +1,4 @@
-"use client";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 
 interface Loop {
@@ -13,131 +12,79 @@ interface Loop {
   endRegister: Date;
 }
 
-interface CreateLoopFormProps {
-  eventId: string;
+interface UpdateLoopFormProps {
+  loopData: Loop | null;
   onClose: () => void;
-  onAddLoop: (newLoop: Loop) => void;
-  onUpdateLoop: (updatedLoop: Loop) => void;
-  editingLoop: Loop | null;
+  onLoopUpdated: () => void;
 }
 
-const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
-  eventId,
+const UpdateLoopForm: React.FC<UpdateLoopFormProps> = ({
+  loopData,
   onClose,
-  onAddLoop,
-  onUpdateLoop,
-  editingLoop,
+  onLoopUpdated,
 }) => {
-  const [capacity, setCapacity] = useState<number>(0);
-  const [age, setAge] = useState<string>("GradeOne");
-  const [sex, setSex] = useState<string>("Male");
-  const [time, setTime] = useState<string>("Morning");
-  const [startRegister, setStartRegister] = useState<string>("");
-  const [endRegister, setEndRegister] = useState<string>("");
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [capacity, setCapacity] = useState(loopData?.capacity || 0);
+  const [age, setAge] = useState(loopData?.age || "");
+  const [sex, setSex] = useState(loopData?.sex || "");
+  const [time, setTime] = useState(loopData?.time || "");
+  const [startRegister, setStartRegister] = useState(
+    loopData?.startRegister ? loopData.startRegister.toString().split("T")[0] : ""
+  );
+  const [endRegister, setEndRegister] = useState(
+    loopData?.endRegister ? loopData.endRegister.toString().split("T")[0] : ""
+  );
 
   useEffect(() => {
-    if (editingLoop) {
-      setCapacity(editingLoop.capacity);
-      setAge(editingLoop.age);
-      setSex(editingLoop.sex);
-      setTime(editingLoop.time);
-      setStartRegister(editingLoop.startRegister.toISOString().split("T")[0]);
-      setEndRegister(editingLoop.endRegister.toISOString().split("T")[0]);
+    if (loopData) {
+      setCapacity(loopData.capacity);
+      setAge(loopData.age);
+      setSex(loopData.sex);
+      setTime(loopData.time);
+      setStartRegister(loopData.startRegister.toString().split("T")[0]);
+      setEndRegister(loopData.endRegister.toString().split("T")[0]);
     }
-  }, [editingLoop]);
+  }, [loopData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Validate that all fields are filled
-    if (!capacity || !age || !sex || !time || !startRegister || !endRegister) {
-      setError("جميع الحقول مطلوبة.");
-      return;
-    }
-
-    const startDate = new Date(startRegister);
-    const endDate = new Date(endRegister);
-    const today = new Date();
-
-    // Validate that the start date and end date are in the future
-    if (startDate <= today) {
-      setError("يجب أن يكون تاريخ البدء في المستقبل.");
-      return;
-    }
-
-    if (endDate <= startDate) {
-      setError("يجب أن يكون تاريخ النهاية بعد تاريخ البدء.");
-      return;
-    }
-
-    const loopData: Loop = {
-      id: editingLoop ? editingLoop.id : "",
-      eventId,
-      capacity,
-      age,
-      sex,
-      time,
-      startRegister: startDate,
-      endRegister: endDate,
-    };
-
-    console.log("Submitting loop data:", loopData); // Debugging log
-
-    setIsLoading(true);
-
-    try {
-      const url = editingLoop
-        ? `/api/events/${eventId}/getLoops/${editingLoop.id}/updateLoop`
-        : `/api/events/${eventId}/loops`;
-
-      const method = editingLoop ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loopData),
-      });
-
-      if (response.ok) {
-        onClose();
+    e.preventDefault(); // منع إعادة تحميل الصفحة
+    if (loopData) {
+      try {
+        const response = await fetch(
+          `/api/events/${loopData.eventId}/getLoops/${loopData.id}/updateLoop`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              capacity,
+              age,
+              sex,
+              time,
+              startRegister: new Date(startRegister),
+              endRegister: new Date(endRegister),
+            }),
+          }
+        );
+        if (response.ok) {
+          onLoopUpdated();
+          onClose();
+        } else {
+          const error = await response.json();
+          alert(`Error: ${error.error}`);
+        }
+      } catch (error) {
+        console.error("Error updating loop:", error);
       }
-
-      const data = await response.json();
-      console.log("Response from server:", data); // Debugging log
-
-      if (editingLoop) {
-        onUpdateLoop(data); // Update the loop
-      } else {
-        onAddLoop(data); // Add the new loop
-      }
-
-      // Close the popup on success
-      onClose(); // Close the popup and update the UI
-    } catch (error: any) {
-      console.error("Error submitting loop:", error); // Debugging log
-      setError(error.message || "حدث خطأ أثناء إرسال البيانات.");
-    } finally {
-      setIsLoading(false);
     }
-  };
-
-  const handleClose = () => {
-    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          {editingLoop ? "تحديث شوط" : "إنشاء شوط"}
-        </h2>
-        {isLoading && <div className="mb-4">جاري إرسال البيانات...</div>}
+        <h2 className="text-xl font-bold mb-6 text-end ">تحديث الشوط</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4 text-end">
+        <div className="mb-4 text-end">
             <label htmlFor="capacity" className="block text-sm font-bold mb-1">
               سعة الشوط
             </label>
@@ -184,7 +131,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
               <option value="Female">بكار</option>
             </select>
           </div>
-          <div className="mb-4">
+          <div className="mb-4 text-end">
             <label htmlFor="time" className="block text-sm font-bold mb-1">
               الوقت
             </label>
@@ -232,11 +179,11 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
               aria-required="true"
             />
           </div>
-          <div className="flex justify-between">
-          <Button className="bg-[#0F172A] text-white px-4 py-1 rounded-md " >
-              إنشاء
+          <div className="flex justify-between space-x-1 items-center ">
+          <Button className="bg-[#0F172A] text-white px-4 py-1 rounded-md">
+              تحديث
             </Button>
-            <Button variant="outline" onClick={handleClose}>
+            <Button onClick={onClose} variant="outline" >
               إغلاق
             </Button>
           </div>
@@ -246,4 +193,4 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
   );
 };
 
-export default CreateLoopForm;
+export default UpdateLoopForm;

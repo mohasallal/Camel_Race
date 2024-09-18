@@ -42,15 +42,9 @@ export const CreateEventForm = ({
       const event = await createEventAction(values);
       console.log("Event created successfully:", event);
       setMessage("Event created successfully!");
-
       onEventAdded();
-
-      setTimeout(() => {
-        onClose(); // Close the form after a delay
-      }, 1000); // Delay of 1 second
-    } catch (error) {
-      console.error("Error creating event:", error);
-      setMessage("Error creating event.");
+    }catch(error){
+      console.log('error ',error)
     }
   };
 

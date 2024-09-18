@@ -18,20 +18,20 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({ eventAdded, setEventAdde
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchEvents = () => {
-    fetch("/api/events/getEvents")
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setEvents(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching events:", error);
-        setError("An error occurred while fetching events.");
-      });
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch("/api/events/getEvents");
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setEvents(data);
+        setError(null); // Reset error state if fetch is successful
+      }
+    } catch (err) {
+      console.error("Error fetching events:", err);
+      setError("An error occurred while fetching events.");
+    }
   };
 
   useEffect(() => {
@@ -53,10 +53,10 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({ eventAdded, setEventAdde
     setSelectedEventId(null);
   };
 
-  function formatDate(dateString: string) {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString();
-  }
+  };
 
   if (error) return <p>{error}</p>;
 
@@ -72,7 +72,7 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({ eventAdded, setEventAdde
             <div className="flex flex-col text-right">
               <span className="font-semibold">{event.name}</span>
               <span className="text-sm">
-              {formatDate(event.StartDate)} - {formatDate(event.EndDate)}
+                {formatDate(event.StartDate)} - {formatDate(event.EndDate)}
               </span>
             </div>
           </div>

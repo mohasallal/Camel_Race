@@ -199,18 +199,6 @@ const Profile = () => {
       default:
         return "";
     }
-    return (   
-      <div className="loading-container">
-      <Image 
-        src={'/loadingPage.jpeg'}
-        width={150}
-        height={150}
-        alt="loading"
-        className="loading-image"
-      />
-      علّا علم بلادي 
-    </div>
-        );
   }
 
   return (

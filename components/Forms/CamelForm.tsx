@@ -130,7 +130,7 @@ const AddCamelsForm: React.FC<Props> = ({
     >
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">
-          {editingCamel ? "Edit Camel" : "Add Camel"}
+          {editingCamel ? " تعديل جمل" : "إضافة جمل "}
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-2">

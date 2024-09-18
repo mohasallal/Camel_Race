@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { CreateEventForm } from "../event/EventsForm";
-import { ShowSupers } from "../Tabels/getSuper";
 import { FaPlus } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { RedirectButton } from "../auth/redirect-button";
 import SearchBar from "./SearchBar";
 import { ShowUsers } from "../Tabels/users";
 import { ShowEvents } from "../Tabels/show-events";
+import ShowSupers from "../Tabels/getSuper";
 
 interface DashboardProps {
   role: string;
