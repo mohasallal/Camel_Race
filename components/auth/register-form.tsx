@@ -449,27 +449,6 @@ export const RegisterForm = () => {
               <div className="max-sm:space-y-2 flex items-center justify-center gap-2 max-sm:block">
                 <FormField
                   control={form.control}
-                  name="MobileNumber"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="flex items-center justify-end">
-                        : رقم الهاتف
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          disabled={isPending}
-                          type="text"
-                          {...field}
-                          placeholder="رقم الهاتف"
-                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="username"
                   render={({ field }) => (
                     <FormItem>
@@ -482,6 +461,27 @@ export const RegisterForm = () => {
                           type="text"
                           {...field}
                           placeholder="اسم المستخدم"
+                          className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="MobileNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="flex items-center justify-end">
+                        : رقم الهاتف
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          disabled={isPending}
+                          type="text"
+                          {...field}
+                          placeholder="رقم الهاتف"
                           className="outline-none border-t-0 border-r-0 border-l-0 text-right focus:outline-none focus:ring-0 focus:border-transparent"
                         />
                       </FormControl>
@@ -627,7 +627,6 @@ export const RegisterForm = () => {
               <ImageUpload/>
             </>
           )}
-
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
             <Button disabled={isPending} type="submit" className="w-full">
               انشاء حساب

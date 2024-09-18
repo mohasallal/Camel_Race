@@ -156,9 +156,6 @@ export const CreateEventForm = ({
             <Button type="submit">إنشاء الفعالية</Button>
           </form>
         </Form>
-        {message && (
-          <div className="mt-4 text-center text-gray-700">{message}</div>
-        )}
       </div>
     </div>
   );

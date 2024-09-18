@@ -79,7 +79,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       />
       <div className="flex gap-3 items-center">
         
-      <h1>رياضة الهجن الأردنية</h1>
+      <h1 className="h1-loading">رياضـة الـهـجـن الأردنـيـة</h1>
        <Image
        src={'/jo.WEBP'}
        width={30}

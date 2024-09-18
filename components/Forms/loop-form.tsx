@@ -17,16 +17,12 @@ interface CreateLoopFormProps {
   eventId: string;
   onClose: () => void;
   onAddLoop: (newLoop: Loop) => void;
-  onUpdateLoop: (updatedLoop: Loop) => void;
-  editingLoop: Loop | null;
 }
 
 const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
   eventId,
   onClose,
   onAddLoop,
-  onUpdateLoop,
-  editingLoop,
 }) => {
   const [capacity, setCapacity] = useState<number>(0);
   const [age, setAge] = useState<string>("GradeOne");
@@ -36,17 +32,6 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
   const [endRegister, setEndRegister] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (editingLoop) {
-      setCapacity(editingLoop.capacity);
-      setAge(editingLoop.age);
-      setSex(editingLoop.sex);
-      setTime(editingLoop.time);
-      setStartRegister(editingLoop.startRegister.toISOString().split("T")[0]);
-      setEndRegister(editingLoop.endRegister.toISOString().split("T")[0]);
-    }
-  }, [editingLoop]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,7 +58,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
     }
 
     const loopData: Loop = {
-      id: editingLoop ? editingLoop.id : "",
+      id: "",
       eventId,
       capacity,
       age,
@@ -88,53 +73,37 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
     setIsLoading(true);
 
     try {
-      const url = editingLoop
-        ? `/api/events/${eventId}/getLoops/${editingLoop.id}/updateLoop`
-        : `/api/events/${eventId}/loops`;
-
-      const method = editingLoop ? "PUT" : "POST";
-
-      const response = await fetch(url, {
-        method,
+      const response = await fetch(`/api/events/${eventId}/loops`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(loopData),
       });
 
-      if (response.ok) {
-        onClose();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "خطأ غير معروف.");
       }
 
       const data = await response.json();
-      console.log("Response from server:", data); // Debugging log
-
-      if (editingLoop) {
-        onUpdateLoop(data); // Update the loop
-      } else {
-        onAddLoop(data); // Add the new loop
-      }
-
-      // Close the popup on success
-      onClose(); // Close the popup and update the UI
+      onAddLoop(data);
+      onClose();
     } catch (error: any) {
-      console.error("Error submitting loop:", error); // Debugging log
-      setError(error.message || "حدث خطأ أثناء إرسال البيانات.");
+      setError(error.message || "حدث خطأ أثناء الإرسال.");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleClose = () => {
+    setError(null);
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4 text-center">
-          {editingLoop ? "تحديث شوط" : "إنشاء شوط"}
-        </h2>
         {isLoading && <div className="mb-4">جاري إرسال البيانات...</div>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4 text-end">
@@ -148,7 +117,6 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
               onChange={(e) => setCapacity(parseInt(e.target.value, 10) || 0)}
               className="w-full p-2 border rounded"
               required
-              aria-required="true"
             />
           </div>
           <div className="mb-4 text-end">
@@ -199,46 +167,34 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
             </select>
           </div>
           <div className="mb-4 text-end">
-            <label
-              htmlFor="startRegister"
-              className="block text-sm font-bold mb-1"
-            >
+            <label htmlFor="startRegister" className="block text-sm font-bold mb-1">
               تاريخ البدء للتسجيل
             </label>
             <input
               id="startRegister"
               type="date"
-              value={startRegister}
+              value={startRegister.split('T')}
               onChange={(e) => setStartRegister(e.target.value)}
               className="w-full p-2 border rounded"
               required
-              aria-required="true"
             />
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="endRegister"
-              className="block text-sm font-bold mb-1 text-right"
-            >
+          <div className="mb-4 text-end">
+            <label htmlFor="endRegister" className="block text-sm font-bold mb-1">
               تاريخ النهاية للتسجيل
             </label>
             <input
               id="endRegister"
               type="date"
-              value={endRegister}
+              value={endRegister.split('T')}
               onChange={(e) => setEndRegister(e.target.value)}
               className="w-full p-2 border rounded"
               required
-              aria-required="true"
             />
           </div>
           <div className="flex justify-between">
-          <Button className="bg-[#0F172A] text-white px-4 py-1 rounded-md " >
-              إنشاء
-            </Button>
-            <Button variant="outline" onClick={handleClose}>
-              إغلاق
-            </Button>
+            <Button  type="submit">إنشاء</Button>
+            <Button variant="outline" onClick={handleClose}>إغلاق</Button>
           </div>
         </form>
       </div>

@@ -18,7 +18,7 @@ export const createEventAction = async (values: z.infer<typeof EventsSchema>) =>
     where: { name, StartDate, EndDate },
   });
   if (existingEvent) {
-    return { error: "الحدث موجود بالفعل" };
+    return { error: "فعالية موجود بالفعل" };
   }
 
   await db.event.create({
