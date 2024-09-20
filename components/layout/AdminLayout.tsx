@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import {
   IconArrowLeft,
@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { Sidebar, SidebarBody, SidebarLink } from "@/components/side-bar";
 import { MdInsertDriveFile } from "react-icons/md";
+import { GrCertificate } from "react-icons/gr";
 
 interface UserProfile {
   id: string;
@@ -70,27 +71,25 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   if (!user) {
     return (
       <div className="flex justify-center flex-col items-center h-screen">
-    <Image 
-      src={'/loadingPage.jpeg'}
-      width={150}
-      height={150}
-      alt="loading"
-      className="flex justify-center items-center"
-      />
-      <div className="flex gap-3 items-center">
-        
-      <h1 className="h1-loading">رياضـة الـهـجـن الأردنـيـة</h1>
-       <Image
-       src={'/jo.WEBP'}
-       width={30}
-       height={30}
-       alt="alt"
-        className="mr-2 inline"
-       />
-       
+        <Image
+          src={"/loadingPage.jpeg"}
+          width={150}
+          height={150}
+          alt="loading"
+          className="flex justify-center items-center"
+        />
+        <div className="flex gap-3 items-center">
+          <h1>رياضة الهجن الأردنية</h1>
+          <Image
+            src={"/jo.WEBP"}
+            width={30}
+            height={30}
+            alt="alt"
+            className="mr-2 inline"
+          />
         </div>
       </div>
-      );
+    );
   }
 
   if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {
@@ -127,6 +126,13 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
       href: "/admin/registeredCamels/",
       icon: (
         <MdInsertDriveFile className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "النتائج",
+      href: "/admin/Results/",
+      icon: (
+        <GrCertificate className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {

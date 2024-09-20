@@ -17,28 +17,32 @@ export const RegisterSchema = z
       })
       .min(1, {
         message: "الاسم مطلوب",
-      }).optional(),
+      })
+      .optional(),
     FatherName: z
       .string({
         message: "اسم الاب مطلوب",
       })
       .min(1, {
         message: "اسم الاب مطلوب",
-      }).optional(),
+      })
+      .optional(),
     GrandFatherName: z
       .string({
         message: "اسم الجد مطلوب",
       })
       .min(1, {
         message: "اسم الجد مطلوب",
-      }).optional(),
+      })
+      .optional(),
     FamilyName: z
       .string({
         message: "اسم العائلة مطلوب",
       })
       .min(1, {
         message: "اسم العائلة مطلوب",
-      }).optional(),
+      })
+      .optional(),
     username: z
       .string({
         message: "اسم المستخدم مطلوب",
@@ -60,14 +64,16 @@ export const RegisterSchema = z
       })
       .regex(/^\d+$/, {
         message: "الرقم الوطني يجب أن يتكون من أرقام فقط",
-      }).optional(),
+      })
+      .optional(),
     BDate: z
       .date({
         message: "تاريخ الميلاد مطلوب",
       })
       .refine((date) => date < new Date(), {
         message: "تاريخ الميلاد يجب أن يكون في الماضي",
-      }).optional(),
+      })
+      .optional(),
     MobileNumber: z
       .string()
       .min(9, {
@@ -78,7 +84,8 @@ export const RegisterSchema = z
       })
       .regex(/^\+?[0-9]\d{1,14}$/, {
         message: "صيغة رقم الهاتف غير صحيحة",
-      }).optional(),
+      })
+      .optional(),
     role: z.enum(["USER", "ADMIN", "SUPERVISOR"]).default("USER"),
     password: z.string().min(6, {
       message: "الطول 6 حروف على الاقل",
@@ -86,46 +93,49 @@ export const RegisterSchema = z
     confirmPassword: z.string().min(6, {
       message: "الطول 6 حروف على الاقل",
     }),
-     swiftCode: z
+    swiftCode: z
       .string()
-       .length(8, {
-       message: "رمز SWIFT يجب أن يكون 8 أحرف",
-       }).optional(),
-       IBAN: z
-       .string()
-       .length(30, {
+      .length(8, {
+        message: "رمز SWIFT يجب أن يكون 8 أحرف",
+      })
+      .optional(),
+    IBAN: z
+      .string()
+      .length(30, {
         message: "رقم IBAN يجب أن يكون 30 حرفًا",
-       }).optional(),
-       bankName: z
-       .string({
-         message: "اسم البنك مطلوب",
-       })
-       .min(1, {
-         message: "اسم البنك مطلوب",
-       }).optional(),
-
-  }).refine((data) => data.password === data.confirmPassword, {
+      })
+      .optional(),
+    bankName: z
+      .string({
+        message: "اسم البنك مطلوب",
+      })
+      .min(1, {
+        message: "اسم البنك مطلوب",
+      })
+      .optional(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     path: ["confirmPassword"],
     message: "كلمة المرور وتأكيد كلمة المرور غير متطابقين",
   });
 
-  export const UpdateUserSchema = z.object({
-    id: z.string(),
-    FirstName: z.string().optional(),
-    FatherName: z.string().optional(),
-    GrandFatherName: z.string().optional(),
-    FamilyName: z.string().optional(),
-    username: z.string().optional(),
-    email: z.string().email().optional(),
-    NationalID: z.string().optional(),
-    BDate: z.string().optional(),
-    MobileNumber: z.string().optional(),
-    role: z.string().optional(),
-    password: z.string().optional(),
-    swiftCode: z.string().optional(),
-    IBAN: z.string().optional(),
-    bankName: z.string().optional(),
-  });
+export const UpdateUserSchema = z.object({
+  id: z.string(),
+  FirstName: z.string().optional(),
+  FatherName: z.string().optional(),
+  GrandFatherName: z.string().optional(),
+  FamilyName: z.string().optional(),
+  username: z.string().optional(),
+  email: z.string().email().optional(),
+  NationalID: z.string().optional(),
+  BDate: z.string().optional(),
+  MobileNumber: z.string().optional(),
+  role: z.string().optional(),
+  password: z.string().optional(),
+  swiftCode: z.string().optional(),
+  IBAN: z.string().optional(),
+  bankName: z.string().optional(),
+});
 
 export const EventsSchema = z
   .object({
@@ -212,4 +222,16 @@ export const createLoopSchema = z
 export const registerCamelSchema = z.object({
   camelId: z.coerce.number().min(1),
   loopId: z.string().min(1),
+});
+
+export const raceResultSchema = z.object({
+  rank: z.number().min(1),
+  eventId: z.string(),
+  ownerId: z.string(),
+  camelId: z.number(),
+  loopId: z.string(),
+  IBAN: z.string(),
+  bankName: z.string(),
+  swiftCode: z.string(),
+  ownerName: z.string(),
 });

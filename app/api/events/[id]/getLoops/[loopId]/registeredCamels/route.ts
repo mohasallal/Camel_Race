@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-
 export async function GET(
   req: Request,
   { params }: { params: { eventId: string; loopId: string } }
@@ -25,10 +24,14 @@ export async function GET(
             include: {
               owner: {
                 select: {
+                  id: true,
                   FirstName: true,
                   FatherName: true,
                   GrandFatherName: true,
                   FamilyName: true,
+                  IBAN: true,
+                  bankName: true,
+                  swiftCode: true,
                 },
               },
             },
@@ -45,10 +48,14 @@ export async function GET(
             include: {
               owner: {
                 select: {
+                  id: true,
                   FirstName: true,
                   FatherName: true,
                   GrandFatherName: true,
                   FamilyName: true,
+                  IBAN: true,
+                  bankName: true,
+                  swiftCode: true,
                 },
               },
             },
@@ -62,7 +69,11 @@ export async function GET(
       name: camelLoop.camel.name,
       age: camelLoop.camel.age,
       sex: camelLoop.camel.sex,
-      owner: `${camelLoop.camel.owner.FirstName} ${camelLoop.camel.owner.FatherName} ${camelLoop.camel.owner.GrandFatherName} ${camelLoop.camel.owner.FamilyName}`,
+      IBAN: camelLoop.camel.owner?.IBAN || "N/A",
+      bankName: camelLoop.camel.owner?.bankName || "N/A",
+      ownerId: camelLoop.camel.owner?.id || "N/A",
+      swiftCode: camelLoop.camel.owner?.swiftCode || "N/A",
+      ownerName: `${camelLoop.camel.owner.FirstName} ${camelLoop.camel.owner.FatherName} ${camelLoop.camel.owner.GrandFatherName} ${camelLoop.camel.owner.FamilyName}`,
     }));
 
     return NextResponse.json(camels);

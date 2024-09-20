@@ -1,15 +1,12 @@
-"use client"
-import { useState } from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import * as XLSX from "xlsx";
-import { RaceResult } from "@prisma/client";
 import { ReportForm } from "@/components/Tabels/CamelsResultsTabe";
 
 const Page = () => {
   const [error, setError] = useState<string | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
-  const [editingResult, setEditingResult] = useState<RaceResult | null>(null);
-
+  const [Events, setEvents] = useState([]);
   const exportToExcel = () => {
     const table = document.getElementById("ResultsTabel");
     if (!table) {
@@ -26,15 +23,15 @@ const Page = () => {
     }
   };
 
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setEditingResult(null);
-  };
-
-  const handleSubmitForm = (data: RaceResult) => {
-    console.log("Form submitted:", data);
-    handleCloseForm(); 
-  };
+  useEffect(() => {
+    fetch("/api/events/getEvents")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setEvents(data);
+      })
+      .catch((error) => setError("Error fetching events"));
+  }, []);
 
   return (
     <div className="flex flex-1 h-screen">
@@ -43,23 +40,12 @@ const Page = () => {
           <div className="h-full w-full rounded-lg bg-gray-100 dark:bg-neutral-800 flex flex-col py-1 px-4">
             <div className="flex flex-row-reverse items-center justify-between">
               <h2 className="w-full flex justify-end text-3xl font-semibold my-2">
-                : الهجن المسجلة
+                : النتائج
               </h2>
-              <Button className="mr-5" onClick={exportToExcel}>
-                طباعة البيانات
-              </Button>
-              <Button className="mr-5" onClick={() => setIsFormOpen(true)}>
-                إضافة نتيجة
-              </Button>
             </div>
+
             <div className="w-full h-full bg-gray-200 rounded-lg p-2 overflow-y-auto">
-              {isFormOpen && (
-                <ReportForm
-                  onClose={handleCloseForm}
-                  onSubmit={handleSubmitForm}
-                  editingResult={editingResult}
-                />
-              )}
+              {Events.length > 0 && <ReportForm />}
             </div>
           </div>
         </div>

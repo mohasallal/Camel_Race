@@ -1,5 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -8,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -18,11 +19,15 @@ import {
 } from "../ui/select";
 
 interface Camel {
+  ownerId: string;
   id: string;
   name: string;
   age: string;
   sex: string;
-  owner: string;
+  IBAN: string;
+  bankName: string;
+  ownerName: string;
+  swiftCode: string;
 }
 
 interface Loop {
@@ -30,6 +35,8 @@ interface Loop {
   id: string;
   age: string;
   sex: string;
+  name?: string;
+  capacity: number;
 }
 
 interface Event {
@@ -39,17 +46,17 @@ interface Event {
 
 interface ReportData {
   rank: number;
-  camelId: string;
+  camelId: number;
+  camelName: string;
   loopId: string;
+  loopName: string;
   eventId: string;
+  eventName: string;
   IBAN: string;
   bankName: string;
-}
-
-interface UserProfile {
-  IBAN: string;
-  bankName: string;
-  username: string;
+  swiftCode: string;
+  ownerName: string;
+  ownerId: string;
 }
 
 export const ReportForm = () => {
@@ -60,22 +67,16 @@ export const ReportForm = () => {
   const [camels, setCamels] = useState<Camel[]>([]);
   const [selectedCamel, setSelectedCamel] = useState<string | null>(null);
   const [rank, setRank] = useState<number>(1);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [ownerName, setOwnerName] = useState<string | null>(null);
+  const [results, setResults] = useState<ReportData[]>([]);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch("/api/user/profile")
-      .then((response) => response.json())
-      .then((data: UserProfile) => setUserProfile(data))
-      .catch((error) => setError("Error fetching user profile"));
-  }, []);
 
   useEffect(() => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
-      .then((data) => setEvents(data))
-      .catch((error) => setError("Error fetching events"));
+      .then((data) => {
+        setEvents(data);
+      })
+      .catch(() => setError("Error fetching events"));
   }, []);
 
   useEffect(() => {
@@ -83,74 +84,35 @@ export const ReportForm = () => {
       fetch(`/api/events/${selectedEvent}/getLoops`)
         .then((response) => response.json())
         .then((data) => {
-          const filteredLoops = data.filter(
-            (loop: Loop) => loop.eventId === selectedEvent
-          );
-          setLoops(filteredLoops);
+          setLoops(data);
         })
-        .catch((error) => setError("Error fetching loops"));
+        .catch(() => setError("Error fetching loops"));
     }
   }, [selectedEvent]);
 
   useEffect(() => {
-    if (selectedLoop) {
+    if (selectedLoop && selectedEvent) {
       fetch(
         `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
       )
         .then((response) => response.json())
-        .then((data) => setCamels(data))
-        .catch((error) => setError("Error fetching camels"));
+        .then((data) => {
+          const formattedCamels = data.map((camel: any) => ({
+            id: camel.id,
+            name: camel.name,
+            age: camel.age,
+            sex: camel.sex,
+            IBAN: camel.IBAN ?? "N/A",
+            bankName: camel.bankName ?? "N/A",
+            swiftCode: camel.swiftCode ?? "N/A",
+            ownerName: camel.ownerName ?? "N/A",
+            ownerId: camel.ownerId ?? "N/A",
+          }));
+          setCamels(formattedCamels);
+        })
+        .catch(() => setError("Error fetching camels"));
     }
-  }, [selectedLoop]);
-
-  useEffect(() => {
-    if (selectedCamel) {
-      const camel = camels.find((camel) => camel.id === selectedCamel);
-      if (camel) setOwnerName(camel.owner);
-    }
-  }, [selectedCamel, camels]);
-
-  const handleSubmit = () => {
-    if (
-      !selectedCamel ||
-      !selectedLoop ||
-      !selectedEvent ||
-      !userProfile?.IBAN ||
-      !userProfile?.bankName
-    ) {
-      setError("All fields are required.");
-      return;
-    }
-
-    const reportData: ReportData = {
-      rank,
-      camelId: selectedCamel,
-      loopId: selectedLoop,
-      eventId: selectedEvent,
-      IBAN: userProfile.IBAN,
-      bankName: userProfile.bankName,
-    };
-
-    fetch("/api/results", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(reportData),
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Error submitting report");
-        return response.json();
-      })
-      .then(() => {
-        alert("Report submitted successfully!");
-        setSelectedCamel(null);
-        setSelectedLoop(null);
-        setSelectedEvent(null);
-        setRank(1);
-      })
-      .catch((error) => setError("Error submitting report"));
-  };
-
-  if (error) return <p>{error}</p>;
+  }, [selectedLoop, selectedEvent]);
 
   function translateAge(age: string) {
     switch (age) {
@@ -184,6 +146,99 @@ export const ReportForm = () => {
     }
   }
 
+  const handleAddReport = () => {
+    if (!selectedCamel || !selectedLoop || !selectedEvent) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (results.some((report) => report.camelId === Number(selectedCamel))) {
+      setError("The camel is already added.");
+      return;
+    }
+
+    if (results.some((report) => report.rank === rank)) {
+      setError("Duplicate rank not allowed.");
+      return;
+    }
+
+    const event = events.find((event) => event.id === selectedEvent);
+    const loop = loops.find((loop) => loop.id === selectedLoop);
+    const camel = camels.find((camel) => camel.id === selectedCamel);
+
+    if (!camel) {
+      setError("Camel not found.");
+      return;
+    }
+
+    const reportData: ReportData = {
+      rank,
+      camelId: Number(selectedCamel),
+      camelName: camel.name || "Unknown Camel",
+      loopId: selectedLoop,
+      loopName: loop
+        ? `${translateAge(loop.age)} - ${translateSex(loop.sex)}`
+        : "Unknown Loop",
+      eventId: selectedEvent,
+      eventName: event?.name || "Unknown Event",
+      IBAN: camel?.IBAN || "N/A",
+      bankName: camel?.bankName || "N/A",
+      swiftCode: camel?.swiftCode || "N/A",
+      ownerName: camel?.ownerName || "N/A",
+      ownerId: camel?.ownerId || "N/A",
+    };
+
+    setResults((prevResults) => {
+      const newResults = [...prevResults, reportData];
+      newResults.sort((a, b) => a.rank - b.rank);
+      return newResults;
+    });
+
+    setSelectedCamel(null);
+    setRank(1);
+    setError(null);
+  };
+
+  const handleRemoveReport = (camelId: number) => {
+    setResults((prevResults) =>
+      prevResults.filter((report) => report.camelId !== camelId)
+    );
+  };
+
+  const handlePublish = () => {
+    if (results.length === 0) {
+      setError("No results to publish.");
+      return;
+    }
+
+    fetch("/api/results/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(results),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Error publishing results");
+        return response.json();
+      })
+      .then(() => {
+        alert("Results published successfully!");
+        setResults([]);
+      })
+      .catch(() => setError("Error publishing results"));
+  };
+
+  const handleExportToExcel = () => {
+    if (results.length === 0) {
+      setError("No results to export.");
+      return;
+    }
+
+    const worksheet = XLSX.utils.json_to_sheet(results);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
+    XLSX.writeFile(workbook, "camel_race_results.xlsx");
+  };
+
   return (
     <div className="w-full space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -202,7 +257,6 @@ export const ReportForm = () => {
           </Select>
         </div>
 
-        {/* Loop Select */}
         {selectedEvent && (
           <div className="w-full">
             <Select value={selectedLoop || ""} onValueChange={setSelectedLoop}>
@@ -210,17 +264,21 @@ export const ReportForm = () => {
                 <SelectValue placeholder="اختر شوط" />
               </SelectTrigger>
               <SelectContent>
-                {loops.map((loop) => (
-                  <SelectItem key={loop.id} value={loop.id}>
-                    {translateAge(loop.age)}/{translateSex(loop.sex)}
-                  </SelectItem>
-                ))}
+                {loops
+                  .filter(
+                    (loop) =>
+                      !results.some((result) => result.loopId === loop.id)
+                  )
+                  .map((loop) => (
+                    <SelectItem key={loop.id} value={loop.id}>
+                      {translateAge(loop.age)} - {translateSex(loop.sex)}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
           </div>
         )}
 
-        {/* Camel Select */}
         {selectedLoop && (
           <div className="w-full">
             <Select
@@ -242,49 +300,94 @@ export const ReportForm = () => {
         )}
       </div>
 
-      {/* Table with Camel Data */}
       {selectedCamel && (
-        <div className="overflow-x-auto">
-          <Table className="min-w-full bg-white shadow-md rounded-lg">
-            <TableHeader className="bg-gray-100">
-              <TableRow>
-                <TableHead>Camel Name</TableHead>
-                <TableHead>Owner</TableHead>
-                <TableHead>Rank</TableHead>
-                <TableHead>IBAN</TableHead>
-                <TableHead>Bank Name</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow className="text-right">
-                <TableCell>
-                  {camels.find((camel) => camel.id === selectedCamel)?.name}
-                </TableCell>
-                <TableCell>{ownerName}</TableCell>
-                <TableCell>
-                  <input
-                    type="number"
-                    className="border p-2 rounded w-[80px] text-center"
-                    value={rank}
-                    onChange={(e) => setRank(Number(e.target.value))}
-                  />
-                </TableCell>
-                <TableCell>{userProfile?.IBAN || "N/A"}</TableCell>
-                <TableCell>{userProfile?.bankName || "N/A"}</TableCell>
-                <TableCell>
-                  <Button
-                    onClick={handleSubmit}
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
-                  >
-                    Submit Report
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            <div>
+              <p>
+                Camel Name:{" "}
+                {camels.find((camel) => camel.id === selectedCamel)?.name}
+              </p>
+            </div>
+            <div>
+              <p>
+                Owner:{" "}
+                {camels.find((camel) => camel.id === selectedCamel)
+                  ?.ownerName || "Unknown"}
+              </p>
+            </div>
+            <div className="w-full">
+              <Select
+                value={rank.toString()}
+                onValueChange={(value) => setRank(Number(value))}
+              >
+                <SelectTrigger className="border p-2 rounded w-full">
+                  <SelectValue placeholder="الترتيب" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: camels.length }, (_, i) => i + 1).map(
+                    (value) => (
+                      <SelectItem key={value} value={value.toString()}>
+                        {value}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <Button onClick={handleAddReport}>اضف نتيجة</Button>
+          </div>
         </div>
       )}
+      <div className="flex items-center gap-2">
+        <Button variant="outline" onClick={handlePublish}>
+          اعلان النتيجة
+        </Button>
+        <Button variant="outline" onClick={handleExportToExcel}>
+          اطبع البيانات
+        </Button>
+      </div>
+
+      {error && <p className="text-red-600">{error}</p>}
+
+      <Table className="mt-8 w-full overflow-x-auto">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Rank</TableHead>
+            <TableHead>Camel</TableHead>
+            <TableHead>Loop</TableHead>
+            <TableHead>Owner</TableHead>
+            <TableHead>IBAN</TableHead>
+            <TableHead>Bank Name</TableHead>
+            <TableHead>Swift Code</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {results.map((report) => (
+            <TableRow className="text-right" key={report.camelId}>
+              <TableCell>{report.rank}</TableCell>
+              <TableCell>{report.camelName}</TableCell>
+              <TableCell>{report.loopName}</TableCell>
+              <TableCell>{report.ownerName}</TableCell>
+              <TableCell>{report.IBAN}</TableCell>
+              <TableCell>{report.bankName}</TableCell>
+              <TableCell>{report.swiftCode}</TableCell>
+              <TableCell>
+                <Button
+                  className="bg-red-500"
+                  onClick={() => handleRemoveReport(report.camelId)}
+                >
+                  Remove
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 };

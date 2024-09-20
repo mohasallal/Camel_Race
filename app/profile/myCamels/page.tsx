@@ -4,7 +4,6 @@ import RegisterCamelsUsers from "@/components/Tabels/RegisteredCamelsUsers"
 const page = () => {
   return (
     <div>
-        
         <Nav/>
         <div>
             <RegisterCamelsUsers />
