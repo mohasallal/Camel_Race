@@ -188,19 +188,6 @@ const Profile = () => {
     }
   }
 
-  function translateTime(time: string) {
-    switch (time) {
-      case "Morning":
-        return "صباحي";
-        break;
-      case "Evening":
-        return "مسائي";
-        break;
-      default:
-        return "";
-    }
-  }
-
   return (
     <>
       <div>

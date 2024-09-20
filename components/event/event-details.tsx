@@ -127,7 +127,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       });
       if (response.ok) {
         setIsEditEventModalOpen(false);
-        await fetchEventData(); // Fetch updated event data
+        await fetchEventData();
       } else {
         const error = await response.json();
         alert(`Error: ${error.error}`);
