@@ -3,7 +3,7 @@ import UserDetails from './ShowUserDetails';
 
 const SearchBar: React.FC = () => {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<{ id: string; username: string; email: string }[]>([]);
+  const [results, setResults] = useState<{ id: string; username: string; email: string; role: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
@@ -13,8 +13,6 @@ const SearchBar: React.FC = () => {
 
   const handleSearch = async () => {
     setError(null);
-
-    // Convert the query to lowercase
     const lowerCaseQuery = query.toLowerCase();
 
     if (lowerCaseQuery.length > 0) {
@@ -48,7 +46,7 @@ const SearchBar: React.FC = () => {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder=" .. ابحث عن المستخدمين أو المسؤولين"
-          className="border p-2 w-full rounded  flex-grow"
+          className="border p-2 w-full rounded flex-grow"
         />
         <button
           onClick={handleSearch}

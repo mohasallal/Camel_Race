@@ -138,15 +138,23 @@ const Profile = () => {
 
   if (!user) {
     return (
-      <div className="flex justify-center items-center h-screen">
-        <Image
-          src={"/loadingPage.jpeg"}
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex justify-center items-center mb-4 transition-transform duration-500 ease-in-out transform hover:scale-110">
+        <Image 
+          src={'/loadingPage.jpeg'}
           width={150}
           height={150}
           alt="loading"
-          className="flex justify-center items-center"
+          className="rounded-full shadow-lg"
         />
       </div>
+      
+      <div className="flex flex-col items-center gap-3">
+        <h1 className="text-3xl font-bold text-gray-800 transition-transform duration-500 ease-in-out hover:translate-x-2">
+          رياضـة الـهـجـن الأردنـيـة
+        </h1>
+      </div>
+    </div>
     );
   }
 

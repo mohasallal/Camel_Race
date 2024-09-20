@@ -49,47 +49,36 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   const [name, setName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
-
   useEffect(() => {
-    const fetchEventData = async () => {
-      try {
-        const eventResponse = await fetch(`/api/events/${eventId}`);
-        if (!eventResponse.ok) {
-          throw new Error(`Event fetch error: ${eventResponse.statusText}`);
-        }
-        const eventData = await eventResponse.json();
-        setEvent(eventData);
-        setName(eventData.name);
-        setStartDate(eventData.StartDate.toString().split('T')[0]);
-        setEndDate(eventData.EndDate.toString().split('T')[0]);
-
-        const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
-        if (!loopsResponse.ok) {
-          throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
-        }
-        const loopsData = await loopsResponse.json();
-        setLoops(loopsData.filter((loop: Loop) => loop.eventId === eventId) || []);
-      } catch (error: any) {
-        setError(`An error occurred while fetching event details: ${error.message}`);
-      }
-    };
-
-    fetchEventData();
+    fetchEventAndLoopsData();
   }, [eventId]);
 
-  const fetchLoops = async () => {
+
+  const fetchEventAndLoopsData = async () => {
     try {
+      const eventResponse = await fetch(`/api/events/${eventId}`);
+      if (!eventResponse.ok) {
+        throw new Error(`Event fetch error: ${eventResponse.statusText}`);
+      }
+      const eventData = await eventResponse.json();
+      setEvent(eventData);
+      setName(eventData.name);
+      setStartDate(eventData.StartDate.toString().split('T')[0]);
+      setEndDate(eventData.EndDate.toString().split('T')[0]);
+
+      // Fetch loops data
       const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
       if (!loopsResponse.ok) {
         throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
       }
       const loopsData = await loopsResponse.json();
+      setLoops(loopsData);
       setLoops(loopsData.filter((loop: Loop) => loop.eventId === eventId) || []);
-    } catch (error) {
-      setError(`An error occurred while fetching loops: ${error}`);
+    } catch (error: any) {
+      setError(`An error occurred while fetching event details: ${error.message}`);
     }
   };
-
+  
   const handleEditLoop = (loop: Loop) => {
     setEditingLoop(loop);
     setIsUpdateLoopModalOpen(true);
@@ -127,7 +116,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       });
       if (response.ok) {
         setIsEditEventModalOpen(false);
-        await fetchEventData();
+        await fetchEventAndLoopsData(); // Fetch updated event and loops data
       } else {
         const error = await response.json();
         alert(`Error: ${error.error}`);
@@ -136,56 +125,20 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       console.error("Error updating event:", error);
     }
   };
-  function translateAge(Age: string) {
-    switch (Age) {
-      case "GradeOne":
-        return "مفرد";
-        break;
-      case "GradeTwo":
-        return "حقايق";
-        break;
-      case "GradeThree":
-        return "لقايا";
-        break;
-      case "GradeFour":
-        return "جذاع";
-        break;
-      case "GradeFive":
-        return "ثنايا";
-        break;
-      case "GradeSixMale":
-        return "زمول";
-        break;
-      case "GradeSixFemale":
-        return "حيل";
-    }
-  }
 
-  function translateSex(sex: string) {
-    switch (sex) {
-      case "Male":
-        return "قعدان";
-        break;
-      case "Female":
-        return "بكار";
-        break;
-      default:
-        return "";
+  const fetchLoops = async () => {
+    try {
+      const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
+      if (!loopsResponse.ok) {
+        throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
+      }
+      const loopsData = await loopsResponse.json();
+      setLoops(loopsData.filter((loop: Loop) => loop.eventId === eventId) || []);
+    } catch (error) {
+      setError(`An error occurred while fetching loops: ${error}`);
     }
-  }
+  };
 
-  function translateTime(time: string) {
-    switch (time) {
-      case "Morning":
-        return "صباحي";
-        break;
-      case "Evening":
-        return "مسائي";
-        break;
-      default:
-        return "";
-    }
-  }
   const handleDeleteLoop = async (loopId: string) => {
     try {
       const response = await fetch(`/api/events/${eventId}/getLoops/${loopId}/deleteLoop`, {
@@ -193,7 +146,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       });
       if (response.ok) {
         setConfirmDeleteLoop(null);
-        await fetchLoops(); // Fetch updated loops
+        await fetchEventAndLoopsData(); // Fetch updated loops
       } else {
         const error = await response.json();
         alert(`Error: ${error.error}`);
@@ -203,12 +156,57 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     }
   };
 
+
+
+ 
+  function translateAge(age: string) {
+    switch (age) {
+      case "GradeOne":
+        return "مفرد";
+      case "GradeTwo":
+        return "حقايق";
+      case "GradeThree":
+        return "لقايا";
+      case "GradeFour":
+        return "جذاع";
+      case "GradeFive":
+        return "ثنايا";
+      case "GradeSixMale":
+        return "زمول";
+      case "GradeSixFemale":
+        return "حيل";
+      default:
+        return "";
+    }
+  }
+
+  function translateSex(sex: string) {
+    switch (sex) {
+      case "Male":
+        return "قعدان";
+      case "Female":
+        return "بكار";
+      default:
+        return "";
+    }
+  }
+
+  function translateTime(time: string) {
+    switch (time) {
+      case "Morning":
+        return "صباحي";
+      case "Evening":
+        return "مسائي";
+      default:
+        return "";
+    }
+  }
+
+
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-        
-        <h2 className="text-xl font-bold mb-4 justify-between text-end ">
-          تفاصيل الفعالية
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-[90vh] overflow-auto">
+      <div className="flex justify-between items-center mb-4">
           <div className="flex space-x-2">
             <Button
               onClick={() => setIsEditEventModalOpen(true)}
@@ -223,7 +221,11 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
               <FaTrash className="mr-2" size={18} /> حذف فعالية
             </Button>
           </div>
-        </h2>
+          <h2 className="text-xl font-bold  text-end ">
+          تفاصيل الفعالية 
+          </h2>
+          </div>
+          <hr className="mt-6"/>
 
         {event ? (
           <div className="text-end pb-4 pt-4">
@@ -251,124 +253,116 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-  {loops.length > 0 ? (
-    loops.map((loop) => (
-      <TableRow key={loop.id}>
-        <TableCell>{loop.capacity}</TableCell>
-        <TableCell className="font-medium">
-          {translateAge(loop.age)} {/* ترجمة الفئة */}
-        </TableCell>
-        <TableCell>{translateSex(loop.sex)} {/* ترجمة النوع */}</TableCell>
-        <TableCell>{translateTime(loop.time)} {/* ترجمة الوقت */}</TableCell>
-        <TableCell>{loop.startRegister.toString().split('T')[0]}</TableCell>
-        <TableCell>{loop.endRegister.toString().split('T')[0]}</TableCell>
-        <TableCell>
-          <button
-            onClick={() => handleEditLoop(loop)}
-            className="text-blue-950"
-          >
-            <MdEdit size={20} />
-          </button>
-          <button
-            onClick={() => setConfirmDeleteLoop(loop.id)}
-            className="text-red-500 ml-2"
-          >
-            <MdDelete size={20} />
-          </button>
-        </TableCell>
-      </TableRow>
-    ))
-  ) : (
-    <TableRow>
-      <TableCell colSpan={7} className="text-center">
-        لا يوجد أشواط
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
+                {loops.length > 0 ? (
+                  loops.map((loop) => (
+                    <TableRow key={loop.id}>
+                      <TableCell>{loop.capacity}</TableCell>
+                      <TableCell className="font-medium">
+                        {translateAge(loop.age)}
+                      </TableCell>
+                      <TableCell>{translateSex(loop.sex)} </TableCell>
+                      <TableCell>{translateTime(loop.time)} </TableCell>
+                      <TableCell>{loop.startRegister.toString().split('T')[0]}</TableCell>
+                      <TableCell>{loop.endRegister.toString().split('T')[0]}</TableCell>
 
+                      <TableCell>
+                        <button
+                          onClick={() => handleEditLoop(loop)}
+                          className="text-blue-950"
+                        >
+                          <MdEdit size={20} />
+                        </button>
+                        <button
+                          onClick={() => setConfirmDeleteLoop(loop.id)}
+                          className="text-red-500 ml-2"
+                        >
+                          <MdDelete size={20} />
+                        </button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center">
+                      لا يوجد بيانات
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
             </Table>
-
+            <Button onClick={onClose} variant="outline">
+                إغلاق
+            </Button>
             {confirmDeleteEvent && (
-              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg text-center w-96">
-                  <p className="mb-4 text-lg font-bold">هل أنت متأكد من حذف الفعالية؟</p>
-                  <div className="flex justify-center space-x-4">
-                    <button
-                      onClick={handleDeleteEvent}
-                      className="bg-red-500 text-white px-6 py-2 rounded-md"
+              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+                  <h3 className="text-lg font-semibold mb-4">
+                    هل أنت متأكد من حذف هذه الفعالية؟
+                  </h3>
+                  <div className="flex justify-between">
+                    <Button
+                      onClick={ handleDeleteEvent}
+                      variant="destructive"
                     >
-                      نعم
-                    </button>
-                    <button
-                      onClick={() => setConfirmDeleteEvent(null)}
-                      className="bg-gray-500 text-white px-6 py-2 rounded-md"
-                    >
-                      لا
-                    </button>
+                      حذف
+                    </Button>
+                    <Button onClick={() => setConfirmDeleteEvent(null)}>
+                      إلغاء
+                    </Button>
                   </div>
                 </div>
               </div>
             )}
 
             {confirmDeleteLoop && (
-              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg text-center w-96">
-                  <p className="mb-4">هل أنت متأكد من حذف الشوط؟</p>
-                  <div className="flex justify-center space-x-4">
-                    <button
-                      onClick={() => handleDeleteLoop(confirmDeleteLoop)}
-                      className="bg-red-500 text-white px-4 py-2 rounded-md"
+              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+                  <h3 className="text-lg font-semibold mb-4">
+                    هل أنت متأكد من حذف هذا الشوط؟
+                  </h3>
+                  <div className="flex justify-between">
+                    <Button
+                      onClick={() => confirmDeleteLoop && handleDeleteLoop(confirmDeleteLoop)}
+                      variant="destructive"
                     >
-                      نعم
-                    </button>
-                    <button
-                      onClick={() => setConfirmDeleteLoop(null)}
-                      className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                    >
-                      لا
-                    </button>
+                      حذف
+                    </Button>
+                    <Button onClick={() => setConfirmDeleteLoop(null)}>
+                      إلغاء
+                    </Button>
                   </div>
                 </div>
               </div>
             )}
-
-            <Button onClick={onClose} variant="outline" className="mt-4">
-              إغلاق
-            </Button>
           </div>
         ) : (
-          <p>...تحميل التفاصيل</p>
+          <p className="text-center">جاري تحميل البيانات...</p>
         )}
 
-        {isCreateLoopModalOpen && event && (
+        {isCreateLoopModalOpen && (
           <CreateLoopForm
             eventId={eventId}
-            loopData={null}
-            isEditing={false}
             onClose={() => setIsCreateLoopModalOpen(false)}
-            onLoopSaved={fetchLoops}
+            onLoopCreated={fetchEventAndLoopsData} // Refresh loops after creation
           />
         )}
-
-        {isUpdateLoopModalOpen && editingLoop && (
+         {isUpdateLoopModalOpen && editingLoop && (
           <UpdateLoopForm
-            loopData={editingLoop}
-            onClose={() => {
-              setIsUpdateLoopModalOpen(false);
-              setEditingLoop(null); // Reset editing loop after closing
-            }}
-            onLoopUpdated={fetchLoops} // Refetch loops after updating
+            loop={editingLoop}
+            onClose={() => setIsUpdateLoopModalOpen(false)}
+            onLoopUpdated={fetchEventAndLoopsData} // Refresh loops after update
           />
         )}
 
         {isEditEventModalOpen && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg text-center w-96">
-              <h3 className="text-lg font-bold mb-4">تعديل الفعالية</h3>
+          <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+              <h3 className="text-lg font-semibold mb-4">تعديل فعالية</h3>
               <form onSubmit={handleUpdateEvent}>
                 <div className="mb-4">
-                  <label className="block text-right">الاسم</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    اسم الفعالية
+                  </label>
                   <input
                     type="text"
                     value={name}
@@ -378,7 +372,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-right">تاريخ البداية</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    تاريخ البداية
+                  </label>
                   <input
                     type="date"
                     value={startDate}
@@ -388,7 +384,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-right">تاريخ النهاية</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    تاريخ النهاية
+                  </label>
                   <input
                     type="date"
                     value={endDate}
@@ -397,19 +395,19 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                     required
                   />
                 </div>
-                <div className="flex justify-between space-x-4">
-                  <button
+                <div className="flex justify-between">
+                <Button
                     type="submit"
-                    className="bg-[#1F2638] text-white px-3 py-2 rounded-md"
+                    
                   >
                     حفظ التعديلات
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setIsEditEventModalOpen(false)}
-                    className="bg-gray-500 text-white px-6 py-2 rounded-md"
+                    variant="outline"
                   >
                     إلغاء
-                  </button>
+                  </Button>
                 </div>
               </form>
             </div>

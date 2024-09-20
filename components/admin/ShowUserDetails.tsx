@@ -275,7 +275,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               <strong> الرقم الوطني : </strong> {user.NationalID}
             </p>
             <p>
-              <strong>تاريخ الميلاد :</strong> {user.BDate.split("T")[0]}
+              <strong>تاريخ الميلاد :</strong> {user.BDate.toString().split("T")[0]}
             </p>
             <p>
               <strong> رقم الهاتف :</strong> {user.MobileNumber}
@@ -494,8 +494,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         </div>
       )}
             {showEditUserForm && (
-              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg">
+              <div className="fixed inset-0 flex items-center  justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mt-20">
                   <h3 className="text-xl font-bold text-gray-800 text-center mb-6">
                     تعديل بيانات المستخدم
                   </h3>
@@ -507,6 +507,21 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                     className="space-y-4"
                   >
                     <div className="grid grid-cols-2 gap-4">
+                     
+                      <label className="block">
+                        <span className="text-gray-700"> : اسم الاب</span>
+                        <input
+                          type="text"
+                          value={updatedUser?.FatherName || user.FatherName}
+                          onChange={(e) =>
+                            setUpdatedUser((prev) => ({
+                              ...prev,
+                              FatherName: e.target.value,
+                            }))
+                          }
+                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
+                        />
+                      </label>
                       <label className="block">
                         <span className="text-gray-700"> : الاسم الاول</span>
                         <input
@@ -521,15 +536,16 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                         />
                       </label>
+                      
                       <label className="block">
-                        <span className="text-gray-700"> : اسم الاب</span>
+                        <span className="text-gray-700"> : اسم العائلة</span>
                         <input
                           type="text"
-                          value={updatedUser?.FatherName || user.FatherName}
+                          value={updatedUser?.FamilyName || user.FamilyName}
                           onChange={(e) =>
                             setUpdatedUser((prev) => ({
                               ...prev,
-                              FatherName: e.target.value,
+                              FamilyName: e.target.value,
                             }))
                           }
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
@@ -546,20 +562,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                             setUpdatedUser((prev) => ({
                               ...prev,
                               GrandFatherName: e.target.value,
-                            }))
-                          }
-                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
-                        />
-                      </label>
-                      <label className="block">
-                        <span className="text-gray-700"> : اسم العائلة</span>
-                        <input
-                          type="text"
-                          value={updatedUser?.FamilyName || user.FamilyName}
-                          onChange={(e) =>
-                            setUpdatedUser((prev) => ({
-                              ...prev,
-                              FamilyName: e.target.value,
                             }))
                           }
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
@@ -615,7 +617,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       <span className="text-gray-700"> : تاريخ الميلاد</span>
                       <input
                         type="date"
-                        defaultValue={user.BDate.split("T")[0]}
+                        defaultValue={user.BDate.toString().split("T")[0]}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({
                             ...prev,
@@ -639,7 +641,22 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                         className="mt-1 block w-full text-end border-gray-300 rounded-md shadow-sm p-2 "
                       />
                     </label>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2  gap-4">
+                    <label className="block">
+                        <span className="text-gray-700"> : رقم الآيبان</span>
+                        <input
+                          type="text"
+                          value={updatedUser?.IBAN || user.IBAN}
+                          onChange={(e) =>
+                            setUpdatedUser((prev) => ({
+                              ...prev,
+                              IBAN: e.target.value,
+                            }))
+                          }
+                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
+                        />
+                      </label>
+                    
                       <label className="block">
                         <span className="text-gray-700"> : رمز السويفت </span>
                         <input
@@ -654,21 +671,9 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                         />
                       </label>
-                      <label className="block">
-                        <span className="text-gray-700"> : رقم الآيبان</span>
-                        <input
-                          type="text"
-                          value={updatedUser?.IBAN || user.IBAN}
-                          onChange={(e) =>
-                            setUpdatedUser((prev) => ({
-                              ...prev,
-                              IBAN: e.target.value,
-                            }))
-                          }
-                          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
-                        />
-                      </label>
-                      <label className="block  ">
+                 
+                    </div>
+                    <label className="block  ">
                         <span className="text-gray-700 "> : اسم البنك</span>
                         <input
                           type="text"
@@ -682,7 +687,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full item border-gray-300 rounded-md shadow-sm text-end p-2  "
                         />
                       </label>
-                    </div>
                     <div className="flex justify-between mt-6">
                       <Button
                         type="submit"

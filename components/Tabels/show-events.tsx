@@ -30,7 +30,7 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({ eventAdded, setEventAdde
       }
     } catch (err) {
       console.error("Error fetching events:", err);
-      setError("An error occurred while fetching events.");
+      setError("حدث خطأ أثناء جلب الفعاليات.");
     }
   };
 

@@ -70,26 +70,24 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
   if (!user) {
     return (
-      <div className="flex justify-center flex-col items-center h-screen">
-        <Image
-          src={"/loadingPage.jpeg"}
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex justify-center items-center mb-4 transition-transform duration-500 ease-in-out transform hover:scale-110">
+        <Image 
+          src={'/loadingPage.jpeg'}
           width={150}
           height={150}
           alt="loading"
-          className="flex justify-center items-center"
+          className="rounded-full shadow-lg"
         />
-        <div className="flex gap-3 items-center">
-          <h1>رياضة الهجن الأردنية</h1>
-          <Image
-            src={"/jo.WEBP"}
-            width={30}
-            height={30}
-            alt="alt"
-            className="mr-2 inline"
-          />
-        </div>
       </div>
-    );
+      
+      <div className="flex flex-col items-center gap-3">
+        <h1 className="text-3xl font-bold text-gray-800 transition-transform duration-500 ease-in-out hover:translate-x-2">
+          رياضـة الـهـجـن الأردنـيـة
+        </h1>
+      </div>
+    </div>
+      );
   }
 
   if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {

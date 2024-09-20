@@ -1,6 +1,5 @@
-"use client";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
+import { useState } from 'react';
+import { Button } from '../ui/button';
 
 interface Loop {
   id: string;
@@ -9,8 +8,8 @@ interface Loop {
   age: string;
   sex: string;
   time: string;
-  startRegister: Date;
-  endRegister: Date;
+  startRegister: string;
+  endRegister: string;
 }
 
 interface CreateLoopFormProps {
@@ -45,10 +44,11 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
     const startDate = new Date(startRegister);
     const endDate = new Date(endRegister);
     const today = new Date();
+    today.setHours(0, 0, 0, 0); // Set time to start of the day for accurate comparison
 
-    // Validate that the start date and end date are in the future
-    if (startDate <= today) {
-      setError("يجب أن يكون تاريخ البدء في المستقبل.");
+    // Validate that the start date is today or in the future
+    if (startDate < today) {
+      setError("يجب أن يكون تاريخ البدء اليوم أو في المستقبل.");
       return;
     }
 
@@ -58,14 +58,14 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
     }
 
     const loopData: Loop = {
-      id: "",
+      id: "", // id will be assigned by the server
       eventId,
       capacity,
       age,
       sex,
       time,
-      startRegister: startDate,
-      endRegister: endDate,
+      startRegister: startDate.toISOString(),
+      endRegister: endDate.toISOString(),
     };
 
     console.log("Submitting loop data:", loopData); // Debugging log
@@ -87,7 +87,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
       }
 
       const data = await response.json();
-      onAddLoop(data);
+      onAddLoop(data); // Assuming `data` contains the new Loop including `id`
       onClose();
     } catch (error: any) {
       setError(error.message || "حدث خطأ أثناء الإرسال.");
@@ -153,14 +153,14 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
             </select>
           </div>
           <div className="mb-4">
-            <label htmlFor="time" className="block text-sm font-bold mb-1">
+            <label htmlFor="time" className="block text-sm font-bold mb-1 text-end">
               الوقت
             </label>
             <select
               id="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded "
             >
               <option value="Morning">صباحي</option>
               <option value="Evening">مسائي</option>
@@ -173,7 +173,7 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
             <input
               id="startRegister"
               type="date"
-              value={startRegister.split('T')}
+              value={startRegister}
               onChange={(e) => setStartRegister(e.target.value)}
               className="w-full p-2 border rounded"
               required
@@ -186,14 +186,14 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
             <input
               id="endRegister"
               type="date"
-              value={endRegister.split('T')}
+              value={endRegister}
               onChange={(e) => setEndRegister(e.target.value)}
               className="w-full p-2 border rounded"
               required
             />
           </div>
           <div className="flex justify-between">
-            <Button  type="submit">إنشاء</Button>
+            <Button type="submit">إنشاء</Button>
             <Button variant="outline" onClick={handleClose}>إغلاق</Button>
           </div>
         </form>
