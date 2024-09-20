@@ -12,6 +12,7 @@ import {
 } from "../ui/table";
 import UpdateLoopForm from "../Forms/UpdateLoopForm";
 import CreateLoopForm from "../Forms/loop-form";
+import { IoIosClose } from "react-icons/io";
 
 interface Event {
   id: string;
@@ -107,11 +108,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       console.error("Error deleting event:", error);
     }
   };
-
-  const handleAddLoop = (newLoop: Loop) => {
-    setLoops((prevLoops) => [...prevLoops, newLoop]); // إضافة الشوط الجديد
-  };
-
+  
   const handleUpdateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -201,32 +198,41 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg max-h-[90vh] overflow-auto">
-      <div className="flex justify-between items-center mb-4">
-          <div className="flex space-x-2">
+      <div className=" items-center mb-4">
+          <div className="flex space-x-2 justify-between items-center">
+          <button
+            onClick={onClose}
+            className="mt-4 bg-gray-500 text-white p-2 rounded mb-5"
+          >
+            <IoIosClose size={24} />
+          </button>
+
+            <div className="flex gap-4">
             <Button
               onClick={() => setIsEditEventModalOpen(true)}
               variant="outline"
             >
               <MdEdit className="mr-2" size={18} /> تعديل فعالية
             </Button>
-            <Button
-              onClick={() => setConfirmDeleteEvent(true)}
-              variant="destructive"
-            >
-              <FaTrash className="mr-2" size={18} /> حذف فعالية
-            </Button>
+        
+            </div>
           </div>
-          <h2 className="text-xl font-bold  text-end ">
+          </div>
+          <hr className="mt-4 mb-4"/>
+          <h2 className="text-xl font-bold  text-center ">
           تفاصيل الفعالية 
           </h2>
-          </div>
-          <hr className="mt-6"/>
+          <hr className="mt-4 mb-4"/>
 
         {event ? (
           <div className="text-end pb-4 pt-4">
-            <h3 className="text-lg font-semibold mb-2">{event.name}</h3>
+            <h3 className="text-xl font-semibold mb-4 text-center ">{event.name}</h3>
+            <div className="flex justify-between items-center">
             <p>تاريخ البداية: {event.StartDate.toString().split('T')[0]}</p>
+            <span className="mx-2">→</span>
             <p>تاريخ النهاية: {event.EndDate.toString().split('T')[0]}</p>
+            </div>
+            <hr  className="mt-4"/>
 
             <Button
               onClick={() => setIsCreateLoopModalOpen(true)}
@@ -234,7 +240,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
             >
               إضافة شوط
             </Button>
-
             <Table className="container text-right mt-4">
               <TableHeader>
                 <TableRow>
@@ -285,9 +290,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 )}
               </TableBody>
             </Table>
-            <Button onClick={onClose} variant="outline">
-                إغلاق
-            </Button>
             {confirmDeleteEvent && (
               <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">

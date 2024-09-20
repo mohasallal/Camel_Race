@@ -153,16 +153,15 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         onClose();
       } else {
         const data = await response.json();
+        console.error("Error deleting user:", data.error);
       }
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
-
   const handleUpdateUser = async () => {
     if (updatedUser && user) {
       if (updatedUser.BDate) {
-        // Validate ISO-8601 date format
         const isValidDate = !isNaN(Date.parse(updatedUser.BDate));
       }
 
@@ -236,20 +235,18 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
             <IoIosClose size={24} />
           </button>
           <div>
-            <Button
-              onClick={() => setConfirmDeleteUser(true)}
-              variant="destructive"
-            >
-              حذف المستخدم
-            </Button>
+          <Button onClick={() => setConfirmDeleteUser(true)} variant="destructive">
+                    حذف المستخدم
+          </Button>
+
             <Button onClick={() => setShowEditUserForm(true)} className="ml-2">
               تعديل بيانات المستخدم
             </Button>
           </div>
         </div>
-        <div className="flex justify-between items-start">
-          <h2 className="text-xl font-bold mb-4">بيانات المستخدم</h2>
-        </div>
+        <hr  />
+          <h2 className="text-xl font-bold mb-4 mt-4 text-center  ">بيانات المستخدم</h2>
+          <hr className="mb-3" />
         {user ? (
           <div className="text-end ">
             <p>
@@ -275,7 +272,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               <strong> الرقم الوطني : </strong> {user.NationalID}
             </p>
             <p>
-              <strong>تاريخ الميلاد :</strong> {user.BDate.toString().split("T")[0]}
+                <strong>تاريخ الميلاد :</strong> {user.BDate ? user.BDate.toString().split('T')[0] : 'لم يتم تحديد تاريخ الميلاد'}
             </p>
             <p>
               <strong> رقم الهاتف :</strong> {user.MobileNumber}
@@ -477,22 +474,22 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 </div>
               </div>
             )}
-              {confirmDeleteUser && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-            <h3 className="text-lg font-semibold">تأكيد حذف المستخدم ؟</h3>
-            <p>هل أنت متاكد من حذف المستخدم ؟</p>
-            <div className="flex justify-between mt-4">
-              <Button onClick={handleDeleteUser} variant="destructive">
+             {confirmDeleteUser && (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+      <h3 className="text-lg font-semibold">تأكيد حذف المستخدم؟</h3>
+      <p>هل أنت متأكد من حذف المستخدم؟</p>
+      <div className="flex justify-between mt-4">
+      <Button onClick={handleDeleteUser} variant="destructive">
                 نعم
               </Button>
               <Button onClick={() => setConfirmDeleteUser(false)} variant="outline">
                 لا
               </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
             {showEditUserForm && (
               <div className="fixed inset-0 flex items-center  justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mt-20">
@@ -671,7 +668,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                         />
                       </label>
-                 
                     </div>
                     <label className="block  ">
                         <span className="text-gray-700 "> : اسم البنك</span>

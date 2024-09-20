@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
+import { IoIosClose } from "react-icons/io";
 interface User {
   id: string;
   FirstName: string;
@@ -168,9 +168,32 @@ const UserDetail: React.FC<UserDetailProps> = ({
 }) => {
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md relative">
-        <button className="absolute top-4 right-4" onClick={onClose}>X</button>
-        <h1 className="text-xl font-semibold mb-4">بيانات المسؤول</h1>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md ">
+        <div className="flex justify-between items-center ">
+        <button
+            onClick={onClose}
+            className="mt-4 bg-gray-500 text-white p-2 rounded mb-5"
+          >
+            <IoIosClose size={24} />
+          </button>   
+          <div className=" flex gap-4">
+        <button
+            className="bg-blue-950 text-white px-4 py-2 rounded"
+            onClick={onEdit}
+          >
+            Edit
+          </button>
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            onClick={onDelete}
+          >
+            Delete
+          </button>
+          </div>
+        </div>
+        <hr className="mb-4" />
+            <h1 className="text-xl font-semibold mb-4 text-center">بيانات المسؤول</h1>
+        <hr />
         <div className="flex items-center gap-4 mb-4">
           <Image
             src={user.image || "/PFP.jpg"}
@@ -183,20 +206,6 @@ const UserDetail: React.FC<UserDetailProps> = ({
             <p><strong>اسم المستخدم:</strong> {user.username}</p>
             <p><strong>البريد الالكتروني:</strong> {user.email}</p>
           </div>
-        </div>
-        <div className="flex gap-4 mt-4">
-          <button
-            className="bg-blue-950 text-white px-4 py-2 rounded"
-            onClick={onEdit}
-          >
-            Edit
-          </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            onClick={onDelete}
-          >
-            Delete
-          </button>
         </div>
         {showEditUserForm && (
           <div className="mt-4">
