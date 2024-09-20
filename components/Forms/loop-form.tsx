@@ -8,8 +8,8 @@ interface Loop {
   age: string;
   sex: string;
   time: string;
-  startRegister: string;
-  endRegister: string;
+  startRegister: Date;
+  endRegister: Date;
 }
 
 interface CreateLoopFormProps {
@@ -34,29 +34,29 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     // Validate that all fields are filled
     if (!capacity || !age || !sex || !time || !startRegister || !endRegister) {
       setError("جميع الحقول مطلوبة.");
       return;
     }
-
+  
     const startDate = new Date(startRegister);
     const endDate = new Date(endRegister);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Set time to start of the day for accurate comparison
-
+  
     // Validate that the start date is today or in the future
     if (startDate < today) {
       setError("يجب أن يكون تاريخ البدء اليوم أو في المستقبل.");
       return;
     }
-
+  
     if (endDate <= startDate) {
       setError("يجب أن يكون تاريخ النهاية بعد تاريخ البدء.");
       return;
     }
-
+  
     const loopData: Loop = {
       id: "", // id will be assigned by the server
       eventId,
@@ -64,14 +64,12 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
       age,
       sex,
       time,
-      startRegister: startDate.toISOString(),
-      endRegister: endDate.toISOString(),
+      startRegister: startDate,
+      endRegister: endDate,
     };
-
-    console.log("Submitting loop data:", loopData); // Debugging log
-
+  
     setIsLoading(true);
-
+  
     try {
       const response = await fetch(`/api/events/${eventId}/loops`, {
         method: "POST",
@@ -80,21 +78,22 @@ const CreateLoopForm: React.FC<CreateLoopFormProps> = ({
         },
         body: JSON.stringify(loopData),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "خطأ غير معروف.");
       }
-
+  
       const data = await response.json();
-      onAddLoop(data); // Assuming `data` contains the new Loop including `id`
-      onClose();
+      onAddLoop(data); // تحديث القائمة بالشوط الجديد
+      onClose(); // إغلاق النموذج مباشرة بعد الإضافة
     } catch (error: any) {
       setError(error.message || "حدث خطأ أثناء الإرسال.");
     } finally {
       setIsLoading(false);
     }
   };
+  
 
   const handleClose = () => {
     setError(null);

@@ -49,10 +49,10 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   const [name, setName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
+
   useEffect(() => {
     fetchEventAndLoopsData();
   }, [eventId]);
-
 
   const fetchEventAndLoopsData = async () => {
     try {
@@ -63,22 +63,30 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       const eventData = await eventResponse.json();
       setEvent(eventData);
       setName(eventData.name);
-      setStartDate(eventData.StartDate.toString().split('T')[0]);
-      setEndDate(eventData.EndDate.toString().split('T')[0]);
-
+      setStartDate(new Date(eventData.StartDate).toISOString().split('T')[0]);
+      setEndDate(new Date(eventData.EndDate).toISOString().split('T')[0]);
+  
       // Fetch loops data
       const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
       if (!loopsResponse.ok) {
         throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
       }
       const loopsData = await loopsResponse.json();
-      setLoops(loopsData);
-      setLoops(loopsData.filter((loop: Loop) => loop.eventId === eventId) || []);
+  
+      // Ensure that startRegister and endRegister are parsed as Date
+      const formattedLoops = loopsData.map((loop: Loop) => ({
+        ...loop,
+        startRegister: new Date(loop.startRegister).toISOString().split('T')[0],
+        endRegister: new Date(loop.endRegister).toISOString().split('T')[0],
+      })).filter((loop: Loop) => loop.eventId === eventId);
+  
+      setLoops(formattedLoops);
     } catch (error: any) {
       setError(`An error occurred while fetching event details: ${error.message}`);
     }
   };
   
+
   const handleEditLoop = (loop: Loop) => {
     setEditingLoop(loop);
     setIsUpdateLoopModalOpen(true);
@@ -100,8 +108,12 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     }
   };
 
+  const handleAddLoop = (newLoop: Loop) => {
+    setLoops((prevLoops) => [...prevLoops, newLoop]); // إضافة الشوط الجديد
+  };
+
   const handleUpdateEvent = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent page reload
+    e.preventDefault();
     try {
       const response = await fetch(`/api/events/${eventId}/updateEvent`, {
         method: "PUT",
@@ -126,19 +138,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     }
   };
 
-  const fetchLoops = async () => {
-    try {
-      const loopsResponse = await fetch(`/api/events/${eventId}/getLoops`);
-      if (!loopsResponse.ok) {
-        throw new Error(`Loops fetch error: ${loopsResponse.statusText}`);
-      }
-      const loopsData = await loopsResponse.json();
-      setLoops(loopsData.filter((loop: Loop) => loop.eventId === eventId) || []);
-    } catch (error) {
-      setError(`An error occurred while fetching loops: ${error}`);
-    }
-  };
-
   const handleDeleteLoop = async (loopId: string) => {
     try {
       const response = await fetch(`/api/events/${eventId}/getLoops/${loopId}/deleteLoop`, {
@@ -156,9 +155,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     }
   };
 
-
-
- 
   function translateAge(age: string) {
     switch (age) {
       case "GradeOne":
@@ -201,7 +197,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
         return "";
     }
   }
-
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
@@ -262,8 +257,8 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                       </TableCell>
                       <TableCell>{translateSex(loop.sex)} </TableCell>
                       <TableCell>{translateTime(loop.time)} </TableCell>
-                      <TableCell>{loop.startRegister.toString().split('T')[0]}</TableCell>
-                      <TableCell>{loop.endRegister.toString().split('T')[0]}</TableCell>
+                      <TableCell>{new Date(loop.startRegister).toLocaleDateString('ar-EG')}</TableCell>
+                      <TableCell>{new Date(loop.endRegister).toLocaleDateString('ar-EG')}</TableCell>
 
                       <TableCell>
                         <button
@@ -340,11 +335,15 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
         )}
 
         {isCreateLoopModalOpen && (
-          <CreateLoopForm
-            eventId={eventId}
-            onClose={() => setIsCreateLoopModalOpen(false)}
-            onLoopCreated={fetchEventAndLoopsData} // Refresh loops after creation
-          />
+        <CreateLoopForm
+        eventId={eventId}
+        onClose={() => setIsCreateLoopModalOpen(false)}
+        onAddLoop={(newLoop: Loop) => {
+          setLoops((prevLoops) => [...prevLoops, newLoop]); // إضافة الشوط الجديد
+          fetchEventAndLoopsData(); // إعادة تحميل البيانات
+        }}
+      />
+      
         )}
          {isUpdateLoopModalOpen && editingLoop && (
           <UpdateLoopForm
