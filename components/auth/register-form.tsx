@@ -165,7 +165,11 @@ export const RegisterForm = () => {
         className="cursor-pointer absolute top-2 left-2"
         path="/admin/dashboard"
       >
-        <IconArrowBack />
+        <IconArrowBack 
+        width={30}
+        height={30}
+        className="text-black mt-4"
+        />
       </RedirectButton>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
