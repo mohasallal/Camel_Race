@@ -1,42 +1,21 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { db } from "@/lib/db";
-import { EventsSchema } from "@/schemas"; 
+import { createEventAction } from "@/Actions/Events";
+import { NextResponse } from "next/server";
 
-export default async function CreateEvent(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "العملية غير مسموح بها" });
-  }
-
-  const validation = EventsSchema.safeParse(req.body);
-
-  if (!validation.success) {
-    return res.status(400).json({
-      error: "فشل التحقق من البيانات",
-      details: validation.error.errors,
-    });
-  }
-
-  const { name, StartDate, EndDate } = validation.data;
-
+export async function POST(request: Request) {
   try {
-    const event = await db.event.create({
-      data: {
-        name,
-        StartDate: new Date(StartDate),
-        EndDate: new Date(EndDate),
-      },
-    });
+    const data = await request.json();
+    const result = await createEventAction(data); // Call the createEvent function with the parsed data
 
-    res.status(201).json({
-      message: "تم إنشاء الفعالية بنجاح",
-      event,
-    });
+    if (result.error) {
+      return NextResponse.json(result, { status: 400 });
+    }
+
+    return NextResponse.json(result, { status: 201 }); // Return 201 status code on success
   } catch (error) {
-    console.error("لم يتم انشاء الفعالية:", error);
-
-    res.status(500).json({ error: "لم يتم انشاء الفعالية" });
+    console.error("Error handling request:", error);
+    return NextResponse.json(
+      { error: "حدث خطأ أثناء معالجة الطلب" }, // Error message in Arabic
+      { status: 500 }
+    );
   }
 }
