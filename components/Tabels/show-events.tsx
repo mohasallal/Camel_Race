@@ -78,7 +78,7 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({
         setShowConfirm(false); // إغلاق نافذة التأكيد بعد الحذف
       } else {
         const data = await response.json();
-        setError(data.error || "Error deleting event.");
+        setError(data.error || "Error deleting eventttttt.");
       }
     } catch (error) {
       console.error("Error deleting event:", error);
