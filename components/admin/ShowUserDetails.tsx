@@ -51,7 +51,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
   const [showEditCamelForm, setShowEditCamelForm] = useState(false);
-  const [editingCamel, setEditingCamel] = useState<Camel |any>();
+  const [editingCamel, setEditingCamel] = useState<Camel | any>();
   const [confirmDeleteCamel, setConfirmDeleteCamel] = useState<number | null>(
     null
   );
@@ -139,7 +139,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     }
   };
 
-
   const handleUpdateUser = async () => {
     if (updatedUser && user) {
       if (updatedUser.BDate) {
@@ -158,7 +157,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         const result = await response.json();
 
         if (response.ok) {
-          setUser((prevUser :any) => ({ ...prevUser, ...updatedUser }));
+          setUser((prevUser: any) => ({ ...prevUser, ...updatedUser }));
           setShowEditUserForm(false);
         }
       } catch (error) {
@@ -215,17 +214,20 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           >
             <IoIosClose size={24} />
           </button>
-         
-            <Button 
+
+          <Button
             variant="outline"
-            onClick={() => setShowEditUserForm(true)} className="ml-2">
-              <MdEdit className="mr-2" size={18} /> تعديل بيانات المستخدم
-            </Button>
-          
+            onClick={() => setShowEditUserForm(true)}
+            className="ml-2"
+          >
+            <MdEdit className="mr-2" size={18} /> تعديل بيانات المستخدم
+          </Button>
         </div>
-        <hr  />
-          <h2 className="text-xl font-bold mb-4 mt-4 text-center  ">بيانات المستخدم</h2>
-          <hr className="mb-3" />
+        <hr />
+        <h2 className="text-xl font-bold mb-4 mt-4 text-center  ">
+          بيانات المستخدم
+        </h2>
+        <hr className="mb-3" />
         {user ? (
           <div className="text-end ">
             <p>
@@ -251,7 +253,10 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
               <strong> الرقم الوطني : </strong> {user.NationalID}
             </p>
             <p>
-                <strong>تاريخ الميلاد :</strong> {user.BDate ? user.BDate.toString().split('T')[0] : 'لم يتم تحديد تاريخ الميلاد'}
+              <strong>تاريخ الميلاد :</strong>{" "}
+              {user.BDate
+                ? user.BDate.toString().split("T")[0]
+                : "لم يتم تحديد تاريخ الميلاد"}
             </p>
             <p>
               <strong> رقم الهاتف :</strong> {user.MobileNumber}
@@ -281,41 +286,43 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 المطايا الخاص بي
               </h3>
             </div>
-            <Table className="container text-right mt-4" id="myCamels">
-              <TableHeader>
-                <TableRow>
-                  <TableHead>اسم الجمل</TableHead>
-                  <TableHead>الجنس</TableHead>
-                  <TableHead>عمر الجمل</TableHead>
-                  <TableHead>العمليات</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {camels.map((camel) => (
-                  <TableRow key={camel.id}>
-                    <TableCell>{camel.name}</TableCell>
-                    <TableCell>{translateSex(camel.sex)}</TableCell>
-                    <TableCell>{translateAge(camel.age)}</TableCell>
-                    <TableCell>
-                      <Button
-                        variant="outline"
-                        className="mr-2"
-                        onClick={() => handleEditCamel(camel)}
-                      >
-                        <MdEdit />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => setConfirmDeleteCamel(camel.id)}
-                      >
-                        <MdDelete />
-                      </Button>
-                    </TableCell>
+            <div className="max-h-80 overflow-y-auto">
+              <Table className="container text-right mt-4" id="myCamels">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>اسم الجمل</TableHead>
+                    <TableHead>الجنس</TableHead>
+                    <TableHead>عمر الجمل</TableHead>
+                    <TableHead>العمليات</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            {/* امكانية الغاءها في حال عدم حل مشكلة اضافة الجمل */}
+                </TableHeader>
+                <TableBody>
+                  {camels.map((camel) => (
+                    <TableRow key={camel.id}>
+                      <TableCell>{camel.name}</TableCell>
+                      <TableCell>{translateSex(camel.sex)}</TableCell>
+                      <TableCell>{translateAge(camel.age)}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="outline"
+                          className="mr-2"
+                          onClick={() => handleEditCamel(camel)}
+                        >
+                          <MdEdit />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          onClick={() => setConfirmDeleteCamel(camel.id)}
+                        >
+                          <MdDelete />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
             {editingCamel && (
               <div className="fixed inset-0 bg-gray-900 bg-opacity-70 flex items-center justify-center z-50 overflow-auto">
                 <div className="bg-white p-8 rounded-lg shadow-xl w-full max-w-lg mx-4 md:mx-0">
@@ -454,7 +461,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 </div>
               </div>
             )}
-            
+
             {showEditUserForm && (
               <div className="fixed inset-0 flex items-center  justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mt-20">
@@ -469,7 +476,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                     className="space-y-4"
                   >
                     <div className="grid grid-cols-2 gap-4">
-                     
                       <label className="block">
                         <span className="text-gray-700"> : اسم الاب</span>
                         <input
@@ -498,7 +504,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                         />
                       </label>
-                      
+
                       <label className="block">
                         <span className="text-gray-700"> : اسم العائلة</span>
                         <input
@@ -604,7 +610,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       />
                     </label>
                     <div className="grid grid-cols-2  gap-4">
-                    <label className="block">
+                      <label className="block">
                         <span className="text-gray-700"> : رقم الآيبان</span>
                         <input
                           type="text"
@@ -618,7 +624,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                           className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
                         />
                       </label>
-                    
+
                       <label className="block">
                         <span className="text-gray-700"> : رمز السويفت </span>
                         <input
@@ -635,19 +641,19 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       </label>
                     </div>
                     <label className="block  ">
-                        <span className="text-gray-700 "> : اسم البنك</span>
-                        <input
-                          type="text"
-                          value={updatedUser?.bankName || user.bankName}
-                          onChange={(e) =>
-                            setUpdatedUser((prev) => ({
-                              ...prev,
-                              bankName: e.target.value,
-                            }))
-                          }
-                          className="mt-1 block w-full item border-gray-300 rounded-md shadow-sm text-end p-2  "
-                        />
-                      </label>
+                      <span className="text-gray-700 "> : اسم البنك</span>
+                      <input
+                        type="text"
+                        value={updatedUser?.bankName || user.bankName}
+                        onChange={(e) =>
+                          setUpdatedUser((prev) => ({
+                            ...prev,
+                            bankName: e.target.value,
+                          }))
+                        }
+                        className="mt-1 block w-full item border-gray-300 rounded-md shadow-sm text-end p-2  "
+                      />
+                    </label>
                     <div className="flex justify-between mt-6">
                       <Button
                         type="submit"
