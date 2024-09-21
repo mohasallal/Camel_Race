@@ -66,6 +66,7 @@ export const RegisteredCamelsTable = () => {
         .then((data) => setCamels(data))
         .catch((error) => setError("Error fetching camels"));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLoop]);
 
   if (error) return <p>{error}</p>;

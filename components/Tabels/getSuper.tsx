@@ -68,7 +68,7 @@ const ShowSupers = () => {
       });
 
       if (response.ok) {
-        setSelectedUser((prevUser) => ({ ...prevUser, ...updatedSupervisor }));
+        setSelectedUser((prevUser:any) => ({ ...prevUser, ...updatedSupervisor }));
         setShowEditUserForm(false);
       }
     } catch (error) {

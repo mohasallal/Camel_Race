@@ -51,7 +51,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [error, setError] = useState<string | null>(null);
   const [showAddCamelForm, setShowAddCamelForm] = useState(false);
   const [showEditCamelForm, setShowEditCamelForm] = useState(false);
-  const [editingCamel, setEditingCamel] = useState<Camel | null>(null);
+  const [editingCamel, setEditingCamel] = useState<Camel |any>();
   const [confirmDeleteCamel, setConfirmDeleteCamel] = useState<number | null>(
     null
   );
@@ -158,7 +158,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         const result = await response.json();
 
         if (response.ok) {
-          setUser((prevUser) => ({ ...prevUser, ...updatedUser }));
+          setUser((prevUser :any) => ({ ...prevUser, ...updatedUser }));
           setShowEditUserForm(false);
         }
       } catch (error) {

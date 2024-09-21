@@ -44,7 +44,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   const [isCreateLoopModalOpen, setIsCreateLoopModalOpen] = useState(false);
   const [isUpdateLoopModalOpen, setIsUpdateLoopModalOpen] = useState(false);
   const [isEditEventModalOpen, setIsEditEventModalOpen] = useState(false);
-  const [editingLoop, setEditingLoop] = useState<Loop | null>(null);
+  const [editingLoop, setEditingLoop] = useState<Loop | any>(null);
   const [confirmDeleteLoop, setConfirmDeleteLoop] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
@@ -52,6 +52,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
 
   useEffect(() => {
     fetchEventAndLoopsData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId]);
 
   const fetchEventAndLoopsData = async () => {
