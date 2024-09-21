@@ -17,7 +17,10 @@ export async function GET(request: Request) {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string };
 
     if (!decoded?.id) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+      return NextResponse.json(
+        { error: "الرجاء تسجيل الدخول" },
+        { status: 401 }
+      );
     }
 
     const user = await db.user.findUnique({
@@ -36,8 +39,8 @@ export async function GET(request: Request) {
         image: true,
         role: true,
         swiftCode: true,
-        IBAN:true,
-        bankName:true,
+        IBAN: true,
+        bankName: true,
       },
     });
 
@@ -48,6 +51,6 @@ export async function GET(request: Request) {
     return NextResponse.json(user, { status: 200 });
   } catch (error) {
     console.error("Error verifying token:", error);
-    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    return NextResponse.json({ error: "الرجاء تسجيل الدخول" }, { status: 401 });
   }
 }

@@ -1,10 +1,9 @@
 import { db } from "@/lib/db";
-import { string } from "zod";
 
 interface UpdateEventData {
   name?: string;
-  StartDate?: string;
-  EndDate?: string;
+  StartDate?: string; // Assuming this is a string in ISO format
+  EndDate?: string;   // Same as above
 }
 
 export const updateEvent = async (id: string, data: UpdateEventData) => {
@@ -25,11 +24,18 @@ export const updateEvent = async (id: string, data: UpdateEventData) => {
       throw new Error("Event with the provided ID does not exist.");
     }
 
-    const updatedData = {
-      ...data,
-      StartDate: data.StartDate ? new Date(data.StartDate).toISOString() :string,
-      EndDate: data.EndDate ? new Date(data.EndDate).toISOString() :string,
-    };
+    const updatedData: any = {}; // Using `any` for flexibility
+
+    // Handle date conversion if present
+    if (data.StartDate) {
+      updatedData.StartDate = new Date(data.StartDate);
+    }
+    if (data.EndDate) {
+      updatedData.EndDate = new Date(data.EndDate);
+    }
+    if (data.name) {
+      updatedData.name = data.name; // Keep the name if provided
+    }
 
     const updatedEvent = await db.event.update({
       where: { id },
