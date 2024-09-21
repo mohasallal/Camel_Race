@@ -1,28 +1,20 @@
-import { db } from "@/lib/db";
+import { createEventAction } from "@/Actions/Events";
 import { NextResponse } from "next/server";
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-
+export async function POST(request: Request) {
   try {
-    const event = await db.event.findUnique({
-      where: {
-        id: id,
-      },
-    });
+    const data = await request.json();
+    const result = await createEventAction(data); // Call the createEvent function with the parsed data
 
-    if (!event) {
-      return NextResponse.json({ error: "Event not found" }, { status: 404 });
+    if (result.error) {
+      return NextResponse.json(result, { status: 400 });
     }
 
-    return NextResponse.json(event, { status: 200 });
+    return NextResponse.json(result, { status: 201 }); // Return 201 status code on success
   } catch (error) {
-    console.error("Error fetching event:", error);
+    console.error("Error handling request:", error);
     return NextResponse.json(
-      { error: "Failed to fetch event" },
+      { error: "حدث خطأ أثناء معالجة الطلب" }, // Error message in Arabic
       { status: 500 }
     );
   }
