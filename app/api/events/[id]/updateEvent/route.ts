@@ -1,6 +1,8 @@
 import { updateEvent } from '@/Actions/updateEvent';
 import { NextRequest, NextResponse } from 'next/server';
-
+// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 export async function PUT(request: NextRequest) {
   const url = new URL(request.url);
   const pathParts = url.pathname.split('/');

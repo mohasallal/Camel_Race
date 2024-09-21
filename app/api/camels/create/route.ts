@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createCamel } from "@/Actions/CreateCamels";
-
+// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 export async function POST(request: Request) {
   try {
     const data = await request.json();

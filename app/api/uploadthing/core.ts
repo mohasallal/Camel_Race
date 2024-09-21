@@ -1,6 +1,8 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-
+// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 const f = createUploadthing();
 
 const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
