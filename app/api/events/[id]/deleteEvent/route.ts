@@ -5,8 +5,7 @@ export async function DELETE(request: Request) {
   const url = new URL(request.url);
   const pathParts = url.pathname.split('/');
   
-  // Extract the ID as a string from the URL
-  const idString = pathParts[pathParts.length - 2]; // Adjust based on URL structure
+  const idString = pathParts[pathParts.length - 2];
   
   console.log('Extracted ID:', idString);
 

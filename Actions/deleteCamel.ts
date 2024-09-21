@@ -1,3 +1,4 @@
+"use server";
 import { db } from "@/lib/db";
 
 // Ensure id is a number and properly handle it

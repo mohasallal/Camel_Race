@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { MdDelete, MdEdit } from "react-icons/md";
 import {
@@ -111,7 +110,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
       });
       if (response.ok) {
         setIsEditEventModalOpen(false);
-        await fetchEventAndLoopsData(); // Fetch updated event and loops data
+        await fetchEventAndLoopsData(); 
       } else {
         const error = await response.json();
         alert(`Error: ${error.error}`);

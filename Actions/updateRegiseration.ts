@@ -1,8 +1,9 @@
+"use server";
 import { db } from "@/lib/db";
 import { User } from "@prisma/client";
 
 export const updateUser = async (id: string, updatedData: Partial<User>) => {
-  console.log('Attempting to update user with ID:', id);
+  console.log("Attempting to update user with ID:", id);
 
   if (typeof id !== "string" || typeof updatedData !== "object") {
     throw new Error("Invalid input: ID or data format is incorrect");

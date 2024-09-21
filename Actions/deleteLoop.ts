@@ -1,4 +1,4 @@
-// Actions/deleteLoop.ts
+"use server";
 import { db } from "@/lib/db";
 
 export const deleteLoop = async (id: string) => {
