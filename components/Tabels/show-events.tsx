@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import EventDetails from "../event/event-details";
+import { Button } from "../ui/button";
 
 interface Event {
   id: string;
@@ -97,23 +98,24 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({
 
   const confirmDeletePopup = () => (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-        <p>هل أنت متأكد أنك تريد حذف هذه الفعالية؟</p>
-        <div className="mt-4 flex justify-center gap-4">
-          <button
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+        <p className="text-lg text-center">هل أنت متأكد أنك تريد حذف هذه الفعالية ؟</p>
+        <div className="flex justify-between mt-4 ">
+          <Button
+            variant="destructive"
             onClick={() => handleDeleteEvent(eventToDelete as string)}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
           >
             نعم، احذف
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleCancelDelete}
             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
           >
             إلغاء
-          </button>
+          </Button>
         </div>
       </div>
+     
     </div>
   );
 
@@ -138,8 +140,8 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({
             </div>
           </div>
           <button
-            className="text-red-500 hover:text-red-700"
-            onClick={(e) => {
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              onClick={(e) => {
               e.stopPropagation();
               handleConfirmDelete(event.id); // طلب تأكيد الحذف بدلاً من الحذف مباشرةً
             }}
@@ -151,7 +153,7 @@ export const ShowEvents: React.FC<ShowEventsProps> = ({
       {selectedEventId && (
         <EventDetails eventId={selectedEventId} onClose={handleCloseEventDetails} />
       )}
-      {showConfirm && confirmDeletePopup()} {/* عرض نافذة التأكيد عند الحاجة */}
+      {showConfirm && confirmDeletePopup()} 
     </>
   );
 };

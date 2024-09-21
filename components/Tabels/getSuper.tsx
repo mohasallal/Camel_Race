@@ -1,6 +1,9 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
+import { Button } from "../ui/button";
+import { MdEdit } from "react-icons/md";
+
 interface User {
   id: string;
   FirstName: string;
@@ -26,6 +29,7 @@ const ShowSupers = () => {
   const [showEditUserForm, setShowEditUserForm] = useState(false);
   const [updatedSupervisor, setUpdatedSupervisor] = useState<Partial<User>>({});
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false); // حالة لتأكيد الحذف
+  const [userToDelete, setUserToDelete] = useState<User | null>(null); // المستخدم الذي سيتم حذفه
 
   useEffect(() => {
     fetch("/api/users/getSuper")
@@ -48,7 +52,6 @@ const ShowSupers = () => {
 
   const handleUpdateSupervisor = async () => {
     if (updatedSupervisor.BDate) {
-      // Validate ISO-8601 date format
       const isValidDate = !isNaN(Date.parse(updatedSupervisor.BDate));
       if (!isValidDate) {
         return;
@@ -74,10 +77,10 @@ const ShowSupers = () => {
   };
 
   const handleDelete = async () => {
-    if (!selectedUser) return;
+    if (!userToDelete) return;
 
     try {
-      const response = await fetch(`/api/users/${selectedUser.id}/deleteUser`, {
+      const response = await fetch(`/api/users/${userToDelete.id}/deleteUser`, {
         method: 'DELETE',
       });
 
@@ -86,9 +89,9 @@ const ShowSupers = () => {
         throw new Error(errorData.error || "Error deleting user.");
       }
 
-      setUsers(users.filter(user => user.id !== selectedUser.id));
-      setSelectedUser(null); // Close the details view after deletion
-      setShowDeleteConfirmation(false); // Close the delete confirmation popup
+      setUsers(users.filter(user => user.id !== userToDelete.id));
+      setUserToDelete(null); // مسح المستخدم المحدد للحذف
+      setShowDeleteConfirmation(false); // اغلاق نافذة التأكيد
     } catch (error) {
       console.error("Error deleting user:", error);
     }
@@ -97,41 +100,52 @@ const ShowSupers = () => {
   return (
     <>
       {error && <p>{error}</p>}
-      {selectedUser ? (
-        <UserDetail 
-          user={selectedUser} 
+      <div>
+        {users.map((user) => (
+          <div
+            className="w-full h-20 flex-shrink-0 mb-2 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
+            key={user.id}
+          >
+            <div
+              className="flex items-center flex-row-reverse gap-2"
+              onClick={() => handleSuperClick(user)}
+            >
+              <Image
+                src={user.image || "/PFP.jpg"}
+                alt="pfp"
+                className="rounded-full h-fit"
+                width={60}
+                height={60}
+              />
+              <span className="font-semibold">{user.username}</span>
+            </div>
+            {/* زر الحذف خارج نافذة التفاصيل */}
+            <button
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              onClick={() => {
+                setUserToDelete(user);
+                setShowDeleteConfirmation(true);
+              }}
+            >
+              حذف
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {selectedUser && (
+        <UserDetail
+          user={selectedUser}
           onClose={() => setSelectedUser(null)}
           onEdit={() => setShowEditUserForm(true)}
-          onDelete={() => setShowDeleteConfirmation(true)} // افتح نافذة التأكيد عند محاولة الحذف
           updatedSupervisor={updatedSupervisor}
           setUpdatedSupervisor={setUpdatedSupervisor}
           handleUpdateSupervisor={handleUpdateSupervisor}
           showEditUserForm={showEditUserForm}
           setShowEditUserForm={setShowEditUserForm}
         />
-      ) : (
-        <div>
-          {users.map((user) => (
-            <div
-              className="w-full h-20 flex-shrink-0 mb-2 bg-white/30 rounded-lg flex flex-row-reverse items-center justify-between px-5 cursor-pointer"
-              key={user.id}
-              onClick={() => handleSuperClick(user)}
-            >
-              <div className="flex items-center flex-row-reverse gap-2">
-                <Image
-                  src={user.image || "/PFP.jpg"}
-                  alt="pfp"
-                  className="rounded-full h-fit"
-                  width={60}
-                  height={60}
-                />
-                <span className="font-semibold">{user.username}</span>
-              </div>
-            </div>
-          ))}
-        </div>
       )}
-      
+
       {showDeleteConfirmation && (
         <DeleteConfirmationPopup
           onConfirm={handleDelete}
@@ -142,12 +156,11 @@ const ShowSupers = () => {
   );
 };
 
-// Component to display user details
+// مكون لعرض تفاصيل المستخدم
 interface UserDetailProps {
   user: User;
   onClose: () => void;
   onEdit: () => void;
-  onDelete: () => void;
   updatedSupervisor: Partial<User>;
   setUpdatedSupervisor: React.Dispatch<React.SetStateAction<Partial<User>>>;
   handleUpdateSupervisor: () => void;
@@ -159,40 +172,31 @@ const UserDetail: React.FC<UserDetailProps> = ({
   user,
   onClose,
   onEdit,
-  onDelete,
   updatedSupervisor,
   setUpdatedSupervisor,
   handleUpdateSupervisor,
   showEditUserForm,
-  setShowEditUserForm
+  setShowEditUserForm,
 }) => {
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md ">
-        <div className="flex justify-between items-center ">
-        <button
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <div className="flex justify-between items-center">
+          <button
             onClick={onClose}
             className="mt-4 bg-gray-500 text-white p-2 rounded mb-5"
           >
             <IoIosClose size={24} />
-          </button>   
-          <div className=" flex gap-4">
-        <button
-            className="bg-blue-950 text-white px-4 py-2 rounded"
-            onClick={onEdit}
-          >
-            Edit
           </button>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            onClick={onDelete}
+          <Button
+          variant={"outline"} 
+          onClick={onEdit}
           >
-            Delete
-          </button>
-          </div>
+            <MdEdit className="mr-2" size={18} /> تعديل 
+          </Button>
         </div>
         <hr className="mb-4" />
-            <h1 className="text-xl font-semibold mb-4 text-center">بيانات المسؤول</h1>
+        <h1 className="text-xl font-semibold mb-4 text-center">بيانات المسؤول</h1>
         <hr />
         <div className="flex items-center gap-4 mb-4">
           <Image
@@ -227,13 +231,13 @@ const UserDetail: React.FC<UserDetailProps> = ({
               className="bg-blue-950 text-white px-4 py-2 rounded"
               onClick={handleUpdateSupervisor}
             >
-              Save Changes
+              حفظ التعديلات
             </button>
             <button
               className="bg-gray-500 text-white px-4 py-2 rounded ml-2"
               onClick={() => setShowEditUserForm(false)}
             >
-              Cancel
+              إلغاء
             </button>
           </div>
         )}
@@ -242,7 +246,7 @@ const UserDetail: React.FC<UserDetailProps> = ({
   );
 };
 
-// Delete confirmation popup component
+// مكون نافذة تأكيد الحذف
 interface DeleteConfirmationPopupProps {
   onConfirm: () => void;
   onCancel: () => void;
@@ -253,17 +257,20 @@ const DeleteConfirmationPopup: React.FC<DeleteConfirmationPopupProps> = ({
   onCancel,
 }) => {
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md text-center">
-        <h2 className="text-xl font-semibold mb-4">تأكيد الحذف</h2>
-        <p className="mb-4">هل أنت متأكد أنك تريد حذف هذا المسؤول؟ لا يمكن التراجع عن هذه العملية.</p>
-        <div className="flex justify-center gap-4">
-          <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={onConfirm}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+        <p className="text-lg text-center">هل أنت متأكد أنك تريد حذف المسؤول ؟</p>
+        <div className="mt-4 flex justify-between ">
+          <Button 
+          variant="destructive" 
+          onClick={onConfirm}>
             نعم، احذف
-          </button>
-          <button className="bg-gray-500 text-white px-4 py-2 rounded" onClick={onCancel}>
+          </Button>
+          <Button
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            onClick={onCancel}>
             إلغاء
-          </button>
+          </Button>
         </div>
       </div>
     </div>

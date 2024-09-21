@@ -55,7 +55,6 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   const [confirmDeleteCamel, setConfirmDeleteCamel] = useState<number | null>(
     null
   );
-  const [confirmDeleteUser, setConfirmDeleteUser] = useState<boolean>(false);
   const [showEditUserForm, setShowEditUserForm] = useState(false);
   const [updatedUser, setUpdatedUser] = useState<Partial<User> | null>(null);
 
@@ -140,25 +139,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
     }
   };
 
-  const handleDeleteUser = async () => {
-    try {
-      const response = await fetch(`/api/users/${userId}/deleteUser`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
 
-      if (response.ok) {
-        onClose();
-      } else {
-        const data = await response.json();
-        console.error("Error deleting user:", data.error);
-      }
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
   const handleUpdateUser = async () => {
     if (updatedUser && user) {
       if (updatedUser.BDate) {
@@ -234,15 +215,13 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           >
             <IoIosClose size={24} />
           </button>
-          <div>
-          <Button onClick={() => setConfirmDeleteUser(true)} variant="destructive">
-                    حذف المستخدم
-          </Button>
-
-            <Button onClick={() => setShowEditUserForm(true)} className="ml-2">
-              تعديل بيانات المستخدم
+         
+            <Button 
+            variant="outline"
+            onClick={() => setShowEditUserForm(true)} className="ml-2">
+              <MdEdit className="mr-2" size={18} /> تعديل بيانات المستخدم
             </Button>
-          </div>
+          
         </div>
         <hr  />
           <h2 className="text-xl font-bold mb-4 mt-4 text-center  ">بيانات المستخدم</h2>
@@ -277,6 +256,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
             <p>
               <strong> رقم الهاتف :</strong> {user.MobileNumber}
             </p>
+            <hr className="m-4" />
             <div className="mt-4">
               <Button onClick={() => setShowAddCamelForm(true)}>
                 إضافة جمل
@@ -474,22 +454,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                 </div>
               </div>
             )}
-             {confirmDeleteUser && (
-  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-      <h3 className="text-lg font-semibold">تأكيد حذف المستخدم؟</h3>
-      <p>هل أنت متأكد من حذف المستخدم؟</p>
-      <div className="flex justify-between mt-4">
-      <Button onClick={handleDeleteUser} variant="destructive">
-                نعم
-              </Button>
-              <Button onClick={() => setConfirmDeleteUser(false)} variant="outline">
-                لا
-              </Button>
-      </div>
-    </div>
-  </div>
-)}
+            
             {showEditUserForm && (
               <div className="fixed inset-0 flex items-center  justify-center bg-gray-800 bg-opacity-50 z-50 overflow-y-auto pt-5">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-lg mt-20">

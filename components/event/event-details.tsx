@@ -45,7 +45,6 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
   const [isUpdateLoopModalOpen, setIsUpdateLoopModalOpen] = useState(false);
   const [isEditEventModalOpen, setIsEditEventModalOpen] = useState(false);
   const [editingLoop, setEditingLoop] = useState<Loop | null>(null);
-  const [confirmDeleteEvent, setConfirmDeleteEvent] = useState<boolean | null>(null);
   const [confirmDeleteLoop, setConfirmDeleteLoop] = useState<string | null>(null);
   const [name, setName] = useState<string>('');
   const [startDate, setStartDate] = useState<string>('');
@@ -93,21 +92,7 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
     setIsUpdateLoopModalOpen(true);
   };
 
-  const handleDeleteEvent = async () => {
-    try {
-      const response = await fetch(`/api/events/${eventId}/deleteEvent`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        onClose();
-      } else {
-        const error = await response.json();
-        alert(`Error: ${error.error}`);
-      }
-    } catch (error) {
-      console.error("Error deleting event:", error);
-    }
-  };
+  
   
   const handleUpdateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -290,31 +275,12 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                 )}
               </TableBody>
             </Table>
-            {confirmDeleteEvent && (
-              <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                  <h3 className="text-lg font-semibold mb-4">
-                    هل أنت متأكد من حذف هذه الفعالية؟
-                  </h3>
-                  <div className="flex justify-between">
-                    <Button
-                      onClick={ handleDeleteEvent}
-                      variant="destructive"
-                    >
-                      حذف
-                    </Button>
-                    <Button onClick={() => setConfirmDeleteEvent(null)}>
-                      إلغاء
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
+            
 
             {confirmDeleteLoop && (
               <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
                 <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-                  <h3 className="text-lg font-semibold mb-4">
+                  <h3 className="text-lg text-center mb-4">
                     هل أنت متأكد من حذف هذا الشوط؟
                   </h3>
                   <div className="flex justify-between">
@@ -324,7 +290,9 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
                     >
                       حذف
                     </Button>
-                    <Button onClick={() => setConfirmDeleteLoop(null)}>
+                    <Button 
+                    className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    onClick={() => setConfirmDeleteLoop(null)}>
                       إلغاء
                     </Button>
                   </div>
