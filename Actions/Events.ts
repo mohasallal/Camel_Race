@@ -4,7 +4,6 @@ import { db } from "@/lib/db";
 import { EventsSchema } from "@/schemas";
 
 export const createEventAction = async (values: z.infer<typeof EventsSchema>) => {
-  console.log(values);
 
   const validatedFields = EventsSchema.safeParse(values);
 

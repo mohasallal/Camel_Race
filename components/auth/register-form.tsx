@@ -126,7 +126,6 @@ export const RegisterForm = () => {
     setErrors("");
     setSuccess("");
     startTransition(() => {
-      console.log("Submitting values:", values);
 
       register(values)
         .then((data) => {

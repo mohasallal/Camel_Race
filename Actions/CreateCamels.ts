@@ -7,7 +7,6 @@ export const createCamel = async (values: z.infer<typeof camelSchema>) => {
   const validatedFields = camelSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    console.log("Validation failed:", validatedFields.error.errors);
     return { error: "! حقل غير صالح", details: validatedFields.error.errors };
   }
 

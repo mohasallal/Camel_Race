@@ -23,7 +23,6 @@ const CalendarContainer = () => {
 
         const data = await response.json();
 
-        console.log("Fetched events data:", data);
 
         if (Array.isArray(data)) {
           setEvents(

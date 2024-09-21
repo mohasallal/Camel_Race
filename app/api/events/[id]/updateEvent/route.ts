@@ -8,7 +8,6 @@ export async function PUT(request: NextRequest) {
   const pathParts = url.pathname.split('/');
   const idString = pathParts[pathParts.length - 2];
 
-  console.log('Extracted ID:', idString);
 
   if (!idString) {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
@@ -27,7 +26,6 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({ message: "Event updated successfully" });
   } catch (error) {
-    console.error("Error updating event:", error);
 
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     

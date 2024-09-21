@@ -11,7 +11,6 @@ export async function DELETE(request: Request) {
   
   const idString = pathParts[pathParts.length - 2];
   
-  console.log('Extracted ID:', idString);
 
   if (!idString || typeof idString !== "string") {
     return NextResponse.json({ error: "Invalid ID" }, { status: 400 });

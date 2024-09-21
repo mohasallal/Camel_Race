@@ -5,7 +5,6 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export async function PUT(request: Request) {
   try {
-    console.log('Received PUT request');
     
     // Extract loopsId directly from request URL pathname
     const url = new URL(request.url);
@@ -15,7 +14,6 @@ export async function PUT(request: Request) {
     const loopsIdIndex = pathParts.findIndex(part => part === 'updateLoop') - 1;
     const loopsId = pathParts[loopsIdIndex];
 
-    console.log('Extracted loopsId:', loopsId);
 
     // Validate loopsId
     if (!loopsId || typeof loopsId !== "string") {
@@ -24,7 +22,6 @@ export async function PUT(request: Request) {
 
     // Parse request body
     const body = await request.json();
-    console.log('Received body:', body);
 
     // Call updateLoop with loopsId and body
     await updateLoop(loopsId, body);

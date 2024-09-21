@@ -9,7 +9,6 @@ export async function PUT(request: NextRequest) {
   const idString = pathParts[pathParts.length - 2]; // Extract the ID from the URL
   const id = idString; // Assuming ID is a string; adjust if it's numeric
 
-  console.log('Extracted ID:', id);
 
   // Validate the ID
   if (!id) {

@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { Camel } from "@prisma/client";
 
 export const updateCamel = async (id: number, updatedData: Partial<Camel>) => {
-  console.log('Attempting to update camel with ID:', id);
 
   if (typeof id !== "number" || typeof updatedData !== "object") {
     throw new Error("Invalid input: ID or data format is incorrect");
@@ -20,7 +19,6 @@ export const updateCamel = async (id: number, updatedData: Partial<Camel>) => {
       data: updatedData,
     });
 
-    console.log("Camel updated successfully:", result);
     return result;
   } catch (error: any) {
     console.error("Error updating camel:", error.message || error);

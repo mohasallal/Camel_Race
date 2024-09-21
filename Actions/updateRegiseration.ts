@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { User } from "@prisma/client";
 
 export const updateUser = async (id: string, updatedData: Partial<User>) => {
-  console.log("Attempting to update user with ID:", id);
 
   if (typeof id !== "string" || typeof updatedData !== "object") {
     throw new Error("Invalid input: ID or data format is incorrect");
@@ -20,7 +19,6 @@ export const updateUser = async (id: string, updatedData: Partial<User>) => {
       data: updatedData,
     });
 
-    console.log("User updated successfully:", result);
     return result;
   } catch (error: any) {
     console.error("Error updating user:", error.message || error);

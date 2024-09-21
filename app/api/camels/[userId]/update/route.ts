@@ -9,7 +9,6 @@ export async function PUT(request: NextRequest) {
   const idString = pathParts[pathParts.length - 2]; // استخراج الـ ID من الـ URL
   const id = parseInt(idString, 10);
 
-  console.log('Extracted ID:', id);
 
   // التحقق من صحة الـ IDz
   if (isNaN(id)) {

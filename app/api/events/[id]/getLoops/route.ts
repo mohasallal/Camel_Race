@@ -10,11 +10,9 @@ export async function GET(
   try {
     const { eventId } = params;
 
-    console.log("Received eventId:", eventId); 
 
     const loops = await db.loop.findMany({ where: { eventId: eventId } });
 
-    console.log("Loops fetched:", loops);
 
     if (loops.length === 0) {
       return NextResponse.json({ error: "No loops found for this event" }, { status: 404 });

@@ -27,7 +27,6 @@ const Page = () => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setEvents(data);
       })
       .catch((error) => setError("Error fetching events"));

@@ -9,7 +9,6 @@ export const registerCamelInLoop = async (values: {
   const validatedFields = registerCamelSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    console.log("Validation failed:", validatedFields.error.errors);
     return { error: "Invalid input", details: validatedFields.error.errors };
   }
 

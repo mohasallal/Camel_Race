@@ -2,7 +2,6 @@
 import { db } from "@/lib/db";
 
 export const deleteEvent = async (id: string) => {
-  console.log('Attempting to delete event with ID:', id);
 
   if (typeof id !== "string") {
     throw new Error("Invalid ID");

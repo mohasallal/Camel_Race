@@ -40,11 +40,8 @@ export const CreateEventForm = ({
   const onSubmit = async (values: z.infer<typeof EventsSchema>) => {
     try {
       const event = await createEventAction(values);
-      console.log("Event created successfully:", event);
-      setMessage("Event created successfully!");
       onEventAdded();
     }catch(error){
-      console.log('error ',error)
     }
   };
 

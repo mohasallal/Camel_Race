@@ -8,8 +8,6 @@ interface UpdateEventData {
 }
 
 export const updateEvent = async (id: string, data: UpdateEventData) => {
-  console.log('Attempting to update event with ID:', id);
-  console.log('Update Data:', data);
 
   if (typeof id !== "string" || !id.trim()) {
     throw new Error("Invalid ID provided");

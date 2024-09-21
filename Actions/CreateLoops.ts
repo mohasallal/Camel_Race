@@ -8,12 +8,10 @@ export const createLoop = async (
   values: z.infer<typeof createLoopSchema>,
   eventId: string
 ) => {
-  console.log("Received values for Loop creation:", values);
 
   // Validate data
   const validatedFields = createLoopSchema.safeParse(values);
   if (!validatedFields.success) {
-    console.error("Validation failed:", validatedFields.error.errors);
     return { error: "Invalid data", details: validatedFields.error.errors };
   }
 

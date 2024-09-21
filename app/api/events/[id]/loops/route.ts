@@ -12,10 +12,8 @@ export async function POST(
   try {
     const eventId = params.id;
     const body = await req.json();
-    console.log("Received body:", body); // Log body to debug
 
     const result = await createLoop(body, eventId);
-    console.log("Result from createLoop:", result);
 
     if (result.error) {
       return NextResponse.json({ error: result.error }, { status: 400 });

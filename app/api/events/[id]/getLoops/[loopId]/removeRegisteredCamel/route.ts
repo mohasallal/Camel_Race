@@ -9,8 +9,7 @@ export async function DELETE(req: NextRequest) {
     const url = new URL(req.url || "", `http://${req.headers.get("host")}`);
     const [_, , , , , loopId] = url.pathname.split("/");
 
-    console.log("Received camelId:", camelId);
-    console.log("Received loopId:", loopId);
+
 
     if (!camelId || !loopId) {
       return NextResponse.json(
@@ -24,14 +23,12 @@ export async function DELETE(req: NextRequest) {
       select: { startRegister: true, endRegister: true },
     });
 
-    console.log("Loop data:", loop);
 
     if (!loop) {
       return NextResponse.json({ message: "Loop not found" }, { status: 404 });
     }
 
     const currentTime = new Date();
-    console.log("Current time:", currentTime);
 
     if (currentTime > loop.endRegister) {
       return NextResponse.json(
@@ -41,7 +38,6 @@ export async function DELETE(req: NextRequest) {
     }
 
     const camelIdNumber = parseInt(camelId, 10);
-    console.log("Parsed camelIdNumber:", camelIdNumber);
 
     await db.camelLoop.deleteMany({
       where: {

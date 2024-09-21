@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  console.log('Received DELETE request'); // Log request receipt
 
   try {
     const { id } = params;
@@ -14,7 +13,6 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     });
 
     if (!user) {
-      console.log('User not found');
       return new NextResponse('User not found', { status: 404 });
     }
 

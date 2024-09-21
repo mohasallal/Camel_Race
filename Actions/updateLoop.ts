@@ -3,8 +3,7 @@ import { db } from "@/lib/db";
 import { Loop } from "@prisma/client";
 
 export const updateLoop = async (id: string, updatedData: Partial<Loop>) => {
-  console.log('Attempting to update loop with ID:', id);
-  console.log('Update Data:', updatedData);
+ 
 
   // التحقق من صحة المدخلات
   if (typeof id !== "string" || typeof updatedData !== "object") {
@@ -28,7 +27,6 @@ export const updateLoop = async (id: string, updatedData: Partial<Loop>) => {
       data: updatedData,
     });
 
-    console.log("Loop updated successfully:", result);
     return result;
   } catch (error:any) {
     console.error("Error updating loop:", error);

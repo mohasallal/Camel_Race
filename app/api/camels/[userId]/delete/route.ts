@@ -11,7 +11,6 @@ export async function DELETE(request: Request) {
     // Extract the camelId from the URL path
     const camelIdStr = pathParts[pathParts.length - 2]; // Adjust based on path
 
-    console.log('Extracted camelId:', camelIdStr);
 
     // Convert camelId to number
     const camelId = parseInt(camelIdStr, 10);

@@ -35,7 +35,6 @@ export async function createRaceResult(data: any) {
         ownerName,
       },
     });
-    console.log("Processing race result:", data);
     return raceResult;
   } catch (error: any) {
     console.error("Error creating race result:", error);

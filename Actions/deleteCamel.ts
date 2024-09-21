@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 
 // Ensure id is a number and properly handle it
 export const deleteCamel = async (id: number) => {
-  console.log('Attempting to delete camel with ID:', id);
 
   try {
     // Check if the camel exists
