@@ -122,10 +122,8 @@ const ResultsTabel = () => {
     switch (time) {
       case "Morning":
         return "صباحي";
-        break;
       case "Evening":
         return "مسائي";
-        break;
       default:
         return "";
     }
@@ -134,7 +132,7 @@ const ResultsTabel = () => {
   return (
     <div className="bg-[url('/desert.jpg')] h-screen bg-center bg-no-repeat bg-cover flex items-center justify-center">
       <div className="container w-full max-w-[600px] p-6 rounded-lg bg-white flex flex-col justify-center gap-2">
-        <h1 className="text-2xl font-bold mb-4">Race Results</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">نتائج السباق</h1>
 
         <div className="mb-4 flex flex-col justify-center gap-2">
           <Select onValueChange={setSelectedEvent} value={selectedEvent || ""}>
@@ -150,46 +148,54 @@ const ResultsTabel = () => {
             </SelectContent>
           </Select>
 
-          <Select onValueChange={setSelectedLoop} value={selectedLoop || ""}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select Loop" />
-            </SelectTrigger>
-            <SelectContent>
-              {loops.map((loop) => (
-                <SelectItem key={loop.id} value={loop.id}>
-                  {translateAge(loop.age) +
-                    ` - ` +
-                    translateSex(loop.sex) +
-                    ` - ` +
-                    translateTime(loop.time)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {selectedEvent && (
+            <Select onValueChange={setSelectedLoop} value={selectedLoop || ""}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Loop" />
+              </SelectTrigger>
+              <SelectContent>
+                {loops.map((loop) => (
+                  <SelectItem key={loop.id} value={loop.id}>
+                    {translateAge(loop.age) +
+                      ` - ` +
+                      translateSex(loop.sex) +
+                      ` - ` +
+                      translateTime(loop.time)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
         </div>
 
-        {results.length > 0 && (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>اسم المطية</TableHead>
-                <TableHead>صاحب المطية</TableHead>
-                <TableHead>المركز</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {results.map((result) => (
-                <TableRow
-                  className="text-right max-h-[300px] overflow-y-auto"
-                  key={result.camelId}
-                >
-                  <TableCell>{result.ownerName}</TableCell>
-                  <TableCell>{result.camelName}</TableCell>
-                  <TableCell>{result.rank}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        {selectedLoop && (
+          <>
+            {results.length > 0 ? (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>اسم المطية</TableHead>
+                    <TableHead>صاحب المطية</TableHead>
+                    <TableHead>المركز</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {results.map((result) => (
+                    <TableRow
+                      className="text-right max-h-[300px] overflow-y-auto"
+                      key={result.camelId}
+                    >
+                      <TableCell>{result.camelName}</TableCell>
+                      <TableCell>{result.ownerName}</TableCell>
+                      <TableCell>{result.rank}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-center mt-4">لم يتم اعلان النتائج بعد</p>
+            )}
+          </>
         )}
 
         {error && <p className="text-red-500">{error}</p>}
