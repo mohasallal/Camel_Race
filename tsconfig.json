@@ -4,14 +4,13 @@
       "dom",
       "dom.iterable",
       "esnext"
-    ],
-    "allowJs": true,
+    ], "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node", 
+    "moduleResolution": "node", // Use "node" instead of "bundler"
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -29,10 +28,8 @@
     "plugins": [
       {
         "name": "next"
-      }
-    ]
-  },
-  "include": [
+      }  ]
+    },"include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
