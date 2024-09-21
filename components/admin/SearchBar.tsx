@@ -45,7 +45,7 @@ const SearchBar: React.FC = () => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder=" .. ابحث عن المستخدمين أو المسؤولين"
+          placeholder=" ... ابحث عن المستخدمين أو المسؤولين"
           className="border p-2 w-full rounded flex-grow"
         />
         <button
