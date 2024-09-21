@@ -1,8 +1,11 @@
 import { db } from "@/lib/db";
 
-// Ensure id is a string or number depending on your event model
 export const deleteEvent = async (id: string) => {
   console.log('Attempting to delete event with ID:', id);
+
+  if (typeof id !== "string") {
+    throw new Error("Invalid ID");
+  }
 
   try {
     // Check if the event exists
