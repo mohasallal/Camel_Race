@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/lib/db";
 import { EventsSchema } from "@/schemas"; 
-
+// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 export async function POST(
   req: NextApiRequest,
   res: NextApiResponse

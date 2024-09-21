@@ -1,6 +1,10 @@
 import { deleteEvent } from "@/Actions/deleteEvent";
 import { NextResponse } from "next/server";
 
+// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function DELETE(request: Request) {
   const url = new URL(request.url);
   const pathParts = url.pathname.split('/');
