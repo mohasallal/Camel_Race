@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { db } from "@/lib/db";
 import { EventsSchema } from "@/schemas"; 
 
-export async function POST(
+export default async function CreateEvent(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
