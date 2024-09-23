@@ -371,7 +371,7 @@ export const ReportForm = () => {
             </TableHeader>
             <TableBody>
               {results.map((report) => (
-                <TableRow key={report.camelId}>
+                <TableRow className="text-right" key={report.camelId}>
                   <TableCell>{report.rank}</TableCell>
                   <TableCell>{report.camelName}</TableCell>
                   <TableCell>{report.loopName}</TableCell>

@@ -13,7 +13,7 @@ interface Camel {
   name: string;
   age: string;
   sex: string;
-  owner: string;
+  ownerName: string;
 }
 
 interface Loop {
@@ -170,7 +170,7 @@ export const RegisteredCamelsTable = () => {
               <TableCell className="text-right">
                 {translateAge(camel.age) + "/" + translateSex(camel.sex)}
               </TableCell>
-              <TableCell className="text-right">{camel.owner}</TableCell>{" "}
+              <TableCell className="text-right">{camel.ownerName}</TableCell>{" "}
               {/* Display owner name */}
             </TableRow>
           ))}
