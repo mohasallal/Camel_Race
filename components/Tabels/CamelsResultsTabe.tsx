@@ -16,7 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 
 interface Camel {
   ownerId: string;
@@ -69,13 +69,15 @@ export const ReportForm = () => {
   const [rank, setRank] = useState<number>(1);
   const [results, setResults] = useState<ReportData[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [confirmPublish, setConfirmPublish] = useState<boolean>(false);
+  const [selectedOwnerName, setSelectedOwnerName] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
-      .then((data) => {
-        setEvents(data);
-      })
+      .then((data) => setEvents(data))
       .catch(() => setError("Error fetching events"));
   }, []);
 
@@ -83,9 +85,7 @@ export const ReportForm = () => {
     if (selectedEvent) {
       fetch(`/api/events/${selectedEvent}/getLoops`)
         .then((response) => response.json())
-        .then((data) => {
-          setLoops(data);
-        })
+        .then((data) => setLoops(data))
         .catch(() => setError("Error fetching loops"));
     }
   }, [selectedEvent]);
@@ -196,6 +196,7 @@ export const ReportForm = () => {
 
     setSelectedCamel(null);
     setRank(1);
+    setSelectedOwnerName(camel.ownerName);
     setError(null);
   };
 
@@ -210,7 +211,10 @@ export const ReportForm = () => {
       setError("No results to publish.");
       return;
     }
+    setConfirmPublish(true);
+  };
 
+  const confirmPublishResults = () => {
     fetch("/api/results/publish", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -223,8 +227,12 @@ export const ReportForm = () => {
       .then(() => {
         alert("Results published successfully!");
         setResults([]);
+        setConfirmPublish(false);
       })
-      .catch(() => setError("Error publishing results"));
+      .catch(() => {
+        setError("Error publishing results");
+        setConfirmPublish(false);
+      });
   };
 
   const handleExportToExcel = () => {
@@ -256,7 +264,6 @@ export const ReportForm = () => {
             </SelectContent>
           </Select>
         </div>
-
         {selectedEvent && (
           <div className="w-full">
             <Select value={selectedLoop || ""} onValueChange={setSelectedLoop}>
@@ -278,7 +285,6 @@ export const ReportForm = () => {
             </Select>
           </div>
         )}
-
         {selectedLoop && (
           <div className="w-full">
             <Select
@@ -342,52 +348,72 @@ export const ReportForm = () => {
           </div>
         </div>
       )}
-      <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={handlePublish}>
-          اعلان النتيجة
-        </Button>
-        <Button variant="outline" onClick={handleExportToExcel}>
-          اطبع البيانات
-        </Button>
-      </div>
 
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <div className="text-red-600">{error}</div>}
 
-      <Table className="mt-8 w-full overflow-x-auto">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Rank</TableHead>
-            <TableHead>Camel</TableHead>
-            <TableHead>Loop</TableHead>
-            <TableHead>Owner</TableHead>
-            <TableHead>IBAN</TableHead>
-            <TableHead>Bank Name</TableHead>
-            <TableHead>Swift Code</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {results.map((report) => (
-            <TableRow className="text-right" key={report.camelId}>
-              <TableCell>{report.rank}</TableCell>
-              <TableCell>{report.camelName}</TableCell>
-              <TableCell>{report.loopName}</TableCell>
-              <TableCell>{report.ownerName}</TableCell>
-              <TableCell>{report.IBAN}</TableCell>
-              <TableCell>{report.bankName}</TableCell>
-              <TableCell>{report.swiftCode}</TableCell>
-              <TableCell>
-                <Button
-                  className="bg-red-500"
-                  onClick={() => handleRemoveReport(report.camelId)}
-                >
-                  Remove
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <Button onClick={handleAddReport}>إضافة النتيجة</Button>
+
+      {results.length > 0 && (
+        <>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>الرتبة</TableHead>
+                <TableHead>اسم الهجن</TableHead>
+                <TableHead>الشوط</TableHead>
+                <TableHead>الفعالية</TableHead>
+                <TableHead>IBAN</TableHead>
+                <TableHead>اسم البنك</TableHead>
+                <TableHead>SWIFT</TableHead>
+                <TableHead>مالك الهجن</TableHead>
+                <TableHead>إجراءات</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {results.map((report) => (
+                <TableRow key={report.camelId}>
+                  <TableCell>{report.rank}</TableCell>
+                  <TableCell>{report.camelName}</TableCell>
+                  <TableCell>{report.loopName}</TableCell>
+                  <TableCell>{report.eventName}</TableCell>
+                  <TableCell>{report.IBAN}</TableCell>
+                  <TableCell>{report.bankName}</TableCell>
+                  <TableCell>{report.swiftCode}</TableCell>
+                  <TableCell>{report.ownerName}</TableCell>
+                  <TableCell>
+                    <Button onClick={() => handleRemoveReport(report.camelId)}>
+                      حذف
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="flex space-x-4 mt-4">
+            <Button onClick={handlePublish}>نشر النتائج</Button>
+            <Button onClick={handleExportToExcel}>
+              تصدير النتائج إلى إكسل
+            </Button>
+          </div>
+        </>
+      )}
+
+      {confirmPublish && (
+        <div className="fixed inset-0 flex items-center justify-center mt-0 bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded">
+            <h3 className="text-lg">هل أنت متأكد من رغبتك بإعلان النتيجة؟</h3>
+            <div className="mt-4 flex justify-end">
+              <Button onClick={confirmPublishResults} className="mr-2">
+                نعم
+              </Button>
+              <Button onClick={() => setConfirmPublish(false)}>لا</Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
+
+export default ReportForm;

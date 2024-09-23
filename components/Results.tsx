@@ -171,27 +171,29 @@ const ResultsTabel = () => {
         {selectedLoop && (
           <>
             {results.length > 0 ? (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>اسم المطية</TableHead>
-                    <TableHead>صاحب المطية</TableHead>
-                    <TableHead>المركز</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {results.map((result) => (
-                    <TableRow
-                      className="text-right max-h-[300px] overflow-y-auto"
-                      key={result.camelId}
-                    >
-                      <TableCell>{result.camelName}</TableCell>
-                      <TableCell>{result.ownerName}</TableCell>
-                      <TableCell>{result.rank}</TableCell>
+              <div className="max-h-80 overflow-y-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>اسم المطية</TableHead>
+                      <TableHead>صاحب المطية</TableHead>
+                      <TableHead>المركز</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {results.map((result) => (
+                      <TableRow
+                        className="text-right max-h-[300px] overflow-y-auto"
+                        key={result.camelId}
+                      >
+                        <TableCell>{result.camelName}</TableCell>
+                        <TableCell>{result.ownerName}</TableCell>
+                        <TableCell>{result.rank}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             ) : (
               <p className="text-center mt-4">لم يتم اعلان النتائج بعد</p>
             )}

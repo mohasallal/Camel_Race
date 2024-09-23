@@ -1,27 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import * as XLSX from "xlsx";
 import { ReportForm } from "@/components/Tabels/CamelsResultsTabe";
 
 const Page = () => {
   const [error, setError] = useState<string | null>(null);
   const [Events, setEvents] = useState([]);
-  const exportToExcel = () => {
-    const table = document.getElementById("ResultsTabel");
-    if (!table) {
-      setError("Table element not found.");
-      return;
-    }
-
-    try {
-      const workbook = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-      XLSX.writeFile(workbook, "users-data.xlsx");
-    } catch (err) {
-      console.error("Error exporting to Excel:", err);
-      setError("An error occurred while exporting to Excel.");
-    }
-  };
 
   useEffect(() => {
     fetch("/api/events/getEvents")

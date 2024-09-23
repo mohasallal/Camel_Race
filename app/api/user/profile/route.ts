@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import jwt from "jsonwebtoken";
-// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 const JWT_SECRET = process.env.JWT_SECRET || "defualt-secret-key";

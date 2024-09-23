@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 export async function DELETE(req: NextRequest) {
