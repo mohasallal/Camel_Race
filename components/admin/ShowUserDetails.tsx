@@ -302,7 +302,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       <TableCell>{camel.name}</TableCell>
                       <TableCell>{translateSex(camel.sex)}</TableCell>
                       <TableCell>{translateAge(camel.age)}</TableCell>
-                      <TableCell>
+                      <TableCell className="flex items-center justify-end gap-0 flex-nowrap">
                         <Button
                           variant="outline"
                           className="mr-2"

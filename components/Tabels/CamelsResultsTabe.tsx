@@ -248,7 +248,7 @@ export const ReportForm = () => {
   };
 
   return (
-    <div className="w-full space-y-8">
+    <div className="w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="w-full">
           <Select value={selectedEvent || ""} onValueChange={setSelectedEvent}>
@@ -351,7 +351,7 @@ export const ReportForm = () => {
 
       {error && <div className="text-red-600">{error}</div>}
 
-      <Button onClick={handleAddReport}>إضافة النتيجة</Button>
+      <Button className="mt-2" onClick={handleAddReport}>إضافة النتيجة</Button>
 
       {results.length > 0 && (
         <>
@@ -400,7 +400,7 @@ export const ReportForm = () => {
       )}
 
       {confirmPublish && (
-        <div className="fixed inset-0 flex items-center justify-center mt-0 bg-black bg-opacity-50">
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center m-0 bg-black bg-opacity-50">
           <div className="bg-white p-4 rounded">
             <h3 className="text-lg">هل أنت متأكد من رغبتك بإعلان النتيجة؟</h3>
             <div className="mt-4 flex justify-end">
