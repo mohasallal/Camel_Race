@@ -49,7 +49,6 @@ interface Event {
 interface ReportData {
   rank: number;
   camelId: number;
-  camelID: string;
   camelName: string;
   loopId: string;
   loopName: string;
@@ -197,7 +196,8 @@ export const ReportForm = () => {
       ownerId: camel?.ownerId || "N/A",
       swiftCode: camel?.swiftCode || "N/A",
       ownerName: camel?.ownerName || "N/A",
-      ownerId: camel?.ownerId || "N/A",
+      camelID: camel.camelID || "N/A", // Adding camelID
+      NationalID: camel.NationalID || "N/A", // Adding NationalID
     };
 
     setResults((prevResults) => {
@@ -291,7 +291,7 @@ export const ReportForm = () => {
                   )
                   .map((loop) => (
                     <SelectItem key={loop.id} value={loop.id}>
-                      {translateAge(loop.age)} - {translateSex(loop.sex)}
+                    {translateAge(loop.age)} - {translateSex(loop.sex)}
                     </SelectItem>
                   ))}
               </SelectContent>
@@ -389,6 +389,8 @@ export const ReportForm = () => {
                   <TableCell>{report.loopName}</TableCell>
                   <TableCell>{report.eventName}</TableCell>
                   <TableCell>{report.ownerName}</TableCell>
+                  <TableCell>{report.camelID}</TableCell>
+                  <TableCell>{report.NationalID.toString()}</TableCell>
                   <TableCell>
                     <Button onClick={() => handleRemoveReport(report.camelId)}>
                       حذف

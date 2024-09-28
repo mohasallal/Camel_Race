@@ -76,6 +76,8 @@ const ResultsTabel = () => {
       fetch(`/api/results/${selectedEvent}/getLoops/${selectedLoop}`)
         .then((response) => response.json())
         .then((data) => {
+          
+          console.log(data); // تحقق من البيانات هنا
           const formattedResults = data.map((result: any) => ({
             rank: result.rank,
             camelId: result.camelId,
