@@ -12,11 +12,12 @@ import {
 import { Button } from "../ui/button";
 import { IoIosClose } from "react-icons/io";
 import AddCamelsForm from "../Forms/CamelForm";
+import bcryptjs from "bcryptjs";
 
 interface Camel {
   id: number;
   name: string;
-  camelID: number;
+  camelID: string;
   age: string;
   sex: string;
 }
@@ -32,6 +33,7 @@ interface User {
   NationalID: string;
   BDate: string;
   MobileNumber: string;
+  password:string;
   image?: string;
   role: string;
   camels?: Camel[];
@@ -68,6 +70,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
           return;
         }
         setUser(userData);
+        setUpdatedUser(userData);
 
         const camelResponse = await fetch(`/api/camels/${userData.id}`);
         const camelData = await camelResponse.json();
@@ -146,12 +149,17 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
       }
 
       try {
+        let hashedPassword = updatedUser.password;
+        if (updatedUser.password && updatedUser.password !== user.password) {
+          hashedPassword = await bcryptjs.hash(updatedUser.password, 10);
+        }
+
         const response = await fetch(`/api/users/${user.id}/update`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(updatedUser),
+          body: JSON.stringify({...updatedUser,password: hashedPassword}),
         });
 
         const result = await response.json();
@@ -205,8 +213,8 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 overflow-auto pt-6">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div className="fixed inset-0 flex items-center justify-center  bg-gray-800 bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[full] max-w-md">
         <div className="flex justify-between items-center">
           <button
             onClick={onClose}
@@ -227,7 +235,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
         <h2 className="text-xl font-bold mb-4 mt-4 text-center  ">
           بيانات المستخدم
         </h2>
-        <hr className="mb-3" />
+        <hr className="mb-3 " />
         {user ? (
           <div className="text-end ">
             <p>
@@ -358,12 +366,12 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                         ID الجمل:
                       </span>
                       <input
-                        type="number"
+                        type="text"
                         value={editingCamel.camelID}
                         onChange={(e) =>
                           setEditingCamel({
                             ...editingCamel,
-                            camelID: +e.target.value,
+                            camelID: e.target.value,
                           })
                         }
                         required
@@ -582,6 +590,20 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       />
                     </label>
                     <label className="block">
+                      <span className="text-gray-700"> : كلمة السر</span>
+                      <input
+                        type="text"
+                        value={updatedUser?.password || user.password}
+                        onChange={(e) =>
+                          setUpdatedUser((prev) => ({
+                            ...prev,
+                            password: e.target.value,
+                          }))
+                        }
+                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-end p-2 "
+                      />
+                    </label>
+                    <label className="block">
                       <span className="text-gray-700"> : تاريخ الميلاد</span>
                       <input
                         type="date"
@@ -685,3 +707,4 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
 };
 
 export default UserDetails;
+

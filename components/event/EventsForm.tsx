@@ -26,7 +26,6 @@ export const CreateEventForm = ({
   onClose: () => void;
   onEventAdded: () => void; 
 }) => {
-  const [message, setMessage] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof EventsSchema>>({
     resolver: zodResolver(EventsSchema),

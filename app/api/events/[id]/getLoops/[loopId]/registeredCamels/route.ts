@@ -37,6 +37,7 @@ export async function GET(
                   IBAN: true,
                   bankName: true,
                   swiftCode: true,
+                  NationalID: true, // إضافة NationalID
                 },
               },
             },
@@ -61,6 +62,7 @@ export async function GET(
                   IBAN: true,
                   bankName: true,
                   swiftCode: true,
+                  NationalID: true, // إضافة NationalID
                 },
               },
             },
@@ -74,10 +76,12 @@ export async function GET(
       name: camelLoop.camel.name,
       age: camelLoop.camel.age,
       sex: camelLoop.camel.sex,
+      camelID: camelLoop.camel.camelID, // إضافة camelID (رقم الشريحة)
       IBAN: camelLoop.camel.owner?.IBAN || "N/A",
       bankName: camelLoop.camel.owner?.bankName || "N/A",
       ownerId: camelLoop.camel.owner?.id || "N/A",
       swiftCode: camelLoop.camel.owner?.swiftCode || "N/A",
+      NationalID: camelLoop.camel.owner?.NationalID || "N/A", // إضافة NationalID (الرقم الوطني)
       ownerName: `${camelLoop.camel.owner.FirstName} ${camelLoop.camel.owner.FatherName} ${camelLoop.camel.owner.GrandFatherName} ${camelLoop.camel.owner.FamilyName}`,
     }));
 

@@ -1,23 +1,34 @@
 import { createRaceResult } from "@/Actions/createResult";
 import { NextResponse } from "next/server";
+
 // تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-
+    console.log("Received data:", data); // Log the incoming data
 
     const raceResults = await Promise.all(
       data.map(async (result: any) => {
-
-        return await createRaceResult(result);
+        try {
+          return await createRaceResult(result);
+        } catch (error) {
+          console.error("Error creating individual race result:", error);
+          return null; // or an error object to handle it later
+        }
       })
     );
 
-    return NextResponse.json({ success: true, raceResults });
-  } catch (error) {
+    // Filter out any null results if needed
+    const successfulResults = raceResults.filter(result => result !== null);
+
+    return NextResponse.json({ success: true, raceResults: successfulResults });
+  } catch (error:any) {
     console.error("Error creating race results:", error);
-    return NextResponse.json({ success: false, error: error }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
+
+

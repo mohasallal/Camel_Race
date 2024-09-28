@@ -21,7 +21,5 @@ export const deleteEvent = async (id: string) => {
 
     return result;
   } catch (error: any) {
-    console.error("Error deleting event:", error.message || error);
-    throw new Error("Error deleting event");
   }
 };

@@ -14,6 +14,7 @@ interface Camel {
   age: string;
   sex: string;
   ownerName: string;
+  camelID: string; // إضافة خاصية رقم الشريحة هنا
 }
 
 interface Loop {
@@ -21,6 +22,7 @@ interface Loop {
   id: string;
   age: string;
   sex: string;
+  camels?: Camel[];
 }
 
 interface Event {
@@ -28,71 +30,82 @@ interface Event {
   name: string;
 }
 
+// المكون الرئيسي للجدول
 export const RegisteredCamelsTable = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [loops, setLoops] = useState<Loop[]>([]);
-  const [selectedLoop, setSelectedLoop] = useState<string | null>(null);
-  const [camels, setCamels] = useState<Camel[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/events/getEvents")
-      .then((response) => response.json())
-      .then((data) => setEvents(data))
-      .catch((error) => setError("Error fetching events"));
+    // جلب الفعاليات
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("/api/events/getEvents");
+        const data = await response.json();
+        setEvents(data);
+      } catch (error) {
+        console.error(": حدث خطأ اثناء تحميل الفعالية", error);
+        setError("حدث خطأ أثناء تحميل الفعاليات.");
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   useEffect(() => {
+    // جلب الأشواط والهجن المسجلة لكل فعالية
     if (selectedEvent) {
-      fetch(`/api/events/${selectedEvent}/getLoops`)
-        .then((response) => response.json())
-        .then((data) => {
-          const filteredLoops = data.filter(
-            (loop: Loop) => loop.eventId === selectedEvent
-          );
-          setLoops(filteredLoops);
-        })
-        .catch((error) => setError("Error fetching loops"));
+      const fetchLoops = async () => {
+        try {
+          const response = await fetch(`/api/events/${selectedEvent}/getLoops`);
+          const data = await response.json();
+          setLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent));
+
+          // Fetch camels registered for each loop
+          for (const loop of data) {
+            const registeredResponse = await fetch(
+              `/api/events/${selectedEvent}/getLoops/${loop.id}/registeredCamels`
+            );
+            const registeredCamels = await registeredResponse.json();
+            setLoops((prevLoops) =>
+              prevLoops.map((prevLoop) =>
+                prevLoop.id === loop.id
+                  ? { ...prevLoop, camels: registeredCamels }
+                  : prevLoop
+              )
+            );
+          }
+        } catch (error) {
+          console.error(": حدث خطأ اثناء تحميل الأشواط", error);
+          setError("حدث خطأ أثناء تحميل الأشواط والهجن المسجلة.");
+        }
+      };
+
+      fetchLoops();
     }
   }, [selectedEvent]);
 
-  useEffect(() => {
-    if (selectedLoop) {
-      fetch(
-        `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
-      )
-        .then((response) => response.json())
-        .then((data) => setCamels(data))
-        .catch((error) => setError("Error fetching camels"));
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedLoop]);
-
   if (error) return <p>{error}</p>;
 
-  function translateAge(Age: string) {
-    switch (Age) {
+  function translateAge(age: string) {
+    switch (age) {
       case "GradeOne":
         return "مفرد";
-        break;
       case "GradeTwo":
         return "حقايق";
-        break;
       case "GradeThree":
         return "لقايا";
-        break;
       case "GradeFour":
         return "جذاع";
-        break;
       case "GradeFive":
         return "ثنايا";
-        break;
       case "GradeSixMale":
         return "زمول";
-        break;
       case "GradeSixFemale":
         return "حيل";
+      default:
+        return age;
     }
   }
 
@@ -100,23 +113,8 @@ export const RegisteredCamelsTable = () => {
     switch (sex) {
       case "Male":
         return "قعدان";
-        break;
       case "Female":
         return "بكار";
-        break;
-      default:
-        return "";
-    }
-  }
-
-  function translateTime(time: string) {
-    switch (time) {
-      case "Morning":
-        return "صباحي";
-        break;
-      case "Evening":
-        return "مسائي";
-        break;
       default:
         return "";
     }
@@ -125,6 +123,7 @@ export const RegisteredCamelsTable = () => {
   return (
     <div className="w-full">
       <div className="flex gap-4 mb-4">
+        {/* اختيار الفعالية */}
         <select
           className="border p-2 rounded w-[300px]"
           value={selectedEvent || ""}
@@ -137,42 +136,46 @@ export const RegisteredCamelsTable = () => {
             </option>
           ))}
         </select>
-
-        {selectedEvent && (
-          <select
-            className="border p-2 rounded w-[300px]"
-            value={selectedLoop || ""}
-            onChange={(e) => setSelectedLoop(e.target.value)}
-          >
-            <option value="">اختر شوط</option>
-            {loops.map((loop) => (
-              <option key={loop.id} value={loop.id}>
-                {translateAge(loop.age) + "/" + translateSex(loop.sex)}
-              </option>
-            ))}
-          </select>
-        )}
       </div>
 
+      {/* جدول الهجن المسجلة */}
       <Table className="w-full" id="RegisteredCamels">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[200px]">Camel Name</TableHead>
-            <TableHead className="w-[200px]">Age / Sex</TableHead>
-            <TableHead className="w-[200px]">Owner</TableHead>{" "}
-            {/* Updated header */}
+            <TableHead className="text-right">#</TableHead>
+            <TableHead className="text-right">رقم الشريحة</TableHead> {/* إضافة عنوان رقم الشريحة */}
+            <TableHead className="text-right">اسم المطية</TableHead>
+            <TableHead className="text-right">النوع</TableHead>
+            <TableHead className="text-right">مالك المطية</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {camels.map((camel) => (
-            <TableRow key={camel.id}>
-              <TableCell className="text-right">{camel.name}</TableCell>
-              <TableCell className="text-right">
-                {translateAge(camel.age) + "/" + translateSex(camel.sex)}
-              </TableCell>
-              <TableCell className="text-right">{camel.ownerName}</TableCell>{" "}
-              {/* Display owner name */}
-            </TableRow>
+          {loops.map((loop) => (
+            <React.Fragment key={loop.id}>
+              {/* عرض كل شوط والجمال المسجلة به */}
+              <TableRow>
+                <TableCell colSpan={5} className="font-bold text-right">
+                  {translateAge(loop.age)} 
+                </TableCell>
+              </TableRow>
+              {loop.camels && loop.camels.length > 0 ? (
+                loop.camels.map((camel, index) => (
+                  <TableRow key={camel.id}>
+                    <TableCell className="text-right">{index + 1}</TableCell>
+                    <TableCell className="text-right">{camel.camelID}</TableCell> {/* عرض رقم الشريحة */}
+                    <TableCell className="text-right">{camel.name}</TableCell>
+                    <TableCell className="text-right">{translateSex(camel.sex)}</TableCell>
+                    <TableCell className="text-right">{camel.ownerName}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="text-center">
+                    لا توجد هجن مسجلة في هذا الشوط
+                  </TableCell>
+                </TableRow>
+              )}
+            </React.Fragment>
           ))}
         </TableBody>
       </Table>

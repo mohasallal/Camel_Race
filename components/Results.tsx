@@ -39,7 +39,9 @@ interface ReportData {
   loopName: string;
   eventId: string;
   eventName: string;
+  camelID: string; // إضافة حقل camelID
 }
+
 
 const ResultsTabel = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -57,13 +59,13 @@ const ResultsTabel = () => {
       })
       .catch(() => setError("Error fetching events"));
   }, []);
-
   useEffect(() => {
     if (selectedEvent) {
-      fetch(`/api/events/${selectedEvent}/getLoops`)
+      fetch(`/api/events/${selectedEvent}/getLoops`) // تأكد أن هذه النقطة تجلب الأشواط الخاصة بالفعالية فقط
         .then((response) => response.json())
         .then((data) => {
-          setLoops(data);
+          const filteredLoops = data.filter((loop: Loop) => loop.eventId === selectedEvent); // فلترة الأشواط حسب eventId
+          setLoops(filteredLoops);
         })
         .catch(() => setError("Error fetching loops"));
     }
@@ -74,17 +76,22 @@ const ResultsTabel = () => {
       fetch(`/api/results/${selectedEvent}/getLoops/${selectedLoop}`)
         .then((response) => response.json())
         .then((data) => {
+          
+          console.log(data); // تحقق من البيانات هنا
           const formattedResults = data.map((result: any) => ({
             rank: result.rank,
             camelId: result.camelId,
             camelName: result.camelName,
             ownerName: result.ownerName,
+            camelID: result.camelID, // تأكد من تضمين camelID
           }));
+          
           setResults(formattedResults);
         })
         .catch(() => setError("Error fetching results"));
     }
   }, [selectedLoop, selectedEvent]);
+  
 
   function translateAge(age: string) {
     switch (age) {
@@ -173,25 +180,28 @@ const ResultsTabel = () => {
             {results.length > 0 ? (
               <div className="max-h-80 overflow-y-auto">
                 <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>اسم المطية</TableHead>
-                      <TableHead>صاحب المطية</TableHead>
-                      <TableHead>المركز</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {results.map((result) => (
-                      <TableRow
-                        className="text-right max-h-[300px] overflow-y-auto"
-                        key={result.camelId}
-                      >
-                        <TableCell>{result.camelName}</TableCell>
-                        <TableCell>{result.ownerName}</TableCell>
-                        <TableCell>{result.rank}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
+                <TableHeader>
+  <TableRow>
+    <TableHead>اسم المطية</TableHead>
+    <TableHead>صاحب المطية</TableHead>
+    <TableHead>المركز</TableHead>
+    <TableHead>رقم الشريحة</TableHead> {/* إضافة عنوان لرقم الشريحة */}
+  </TableRow>
+</TableHeader>
+<TableBody>
+  {results.map((result) => (
+    <TableRow
+      className="text-right max-h-[300px] overflow-y-auto"
+      key={result.camelId}
+    >
+      <TableCell>{result.camelName}</TableCell>
+      <TableCell>{result.ownerName}</TableCell>
+      <TableCell>{result.rank}</TableCell>
+      <TableCell>{result.camelID}</TableCell> {/* إضافة رقم الشريحة */}
+    </TableRow>
+  ))}
+</TableBody>
+
                 </Table>
               </div>
             ) : (
@@ -207,3 +217,4 @@ const ResultsTabel = () => {
 };
 
 export default ResultsTabel;
+

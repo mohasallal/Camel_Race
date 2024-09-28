@@ -135,7 +135,7 @@ export default function RegisterCamelForm({
 
   const handleRegister = async () => {
     if (!selectedCamel || !selectedLoop) {
-      setMessage("Please select a camel and a loop.");
+      setMessage("يرجى اختيار مطية وشوط.");
       return;
     }
 
@@ -187,6 +187,9 @@ export default function RegisterCamelForm({
         );
         const registeredData = await registeredResponse.json();
         setRegisteredCamels(registeredData);
+
+        // Close the popup after successful registration
+        onClose();
       } else {
         setMessage(data.error || "فشلت عملية تسجيل المطية");
       }
@@ -293,22 +296,21 @@ export default function RegisterCamelForm({
               <option value="">-- اختر مطية --</option>
               {availableCamels.map((camel) => (
                 <option key={camel.id} value={camel.id}>
-                  {camel.name} (رقم الشريحة: {camel.camelID}, الصف:{" "}
-                  {translateAge(camel.age)})
+                  {camel.name}
                 </option>
               ))}
             </select>
           </div>
         )}
-        <div className="flex justify-between items-center">
-          <Button onClick={handleRegister} disabled={!selectedCamel}>
-            تسجيل
-          </Button>
-          <Button className="block text-white p-2 rounded" onClick={onClose}>
-            اغلاق
+
+        <div className="flex justify-between">
+          <Button onClick={handleRegister}>تسجيل</Button>
+          <Button onClick={onClose} variant="secondary">
+            إغلاق
           </Button>
         </div>
       </div>
     </div>
   );
 }
+

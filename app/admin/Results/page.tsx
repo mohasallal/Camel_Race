@@ -25,7 +25,6 @@ const Page = () => {
                 : النتائج
               </h2>
             </div>
-
             <div className="w-full h-full bg-gray-200 rounded-lg p-2 overflow-y-auto">
               {Events.length > 0 && <ReportForm />}
             </div>

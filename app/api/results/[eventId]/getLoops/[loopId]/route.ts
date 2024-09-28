@@ -1,9 +1,10 @@
-// /app/api/results/[eventId]/getLoops/[loopId]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+
 // تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
 export async function GET(
   req: NextRequest,
   { params }: { params: { eventId: string; loopId: string } }
@@ -23,9 +24,10 @@ export async function GET(
 
     const formattedResults = results.map((result) => ({
       rank: result.rank,
-      camelId: result.camel.id,
+      camelId: result.camel.id, // استخدم camelId هنا
       camelName: result.camel.name,
       ownerName: result.ownerName,
+      camelID: result.camel.camelID, // تأكد من أن camelID موجود في الكائن camel
     }));
 
     return NextResponse.json(formattedResults, { status: 200 });

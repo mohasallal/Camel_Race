@@ -95,15 +95,9 @@ export const RegisterSchema = z
     }),
     swiftCode: z
       .string()
-      .length(8, {
-        message: "رمز SWIFT يجب أن يكون 8 أحرف",
-      })
       .optional(),
     IBAN: z
       .string()
-      .length(30, {
-        message: "رقم IBAN يجب أن يكون 30 حرفًا",
-      })
       .optional(),
     bankName: z
       .string({
@@ -166,8 +160,8 @@ export const EventsSchema = z
   });
 
 export const camelSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  camelID: z.coerce.number().min(1, "Camel ID is required"),
+  name: z.string().min(1, "اسم الجمل مطلوب"),
+  camelID: z.string().min(1, "رقم الشريحة مطلوب"),
   age: z.enum(
     [
       "GradeOne",
@@ -179,11 +173,10 @@ export const camelSchema = z.object({
       "GradeSixFemale",
     ],
     {
-      invalid_type_error: "Invalid age",
-    }
+      invalid_type_error: "العمر غير صحيح",    }
   ),
   sex: z.enum(["Male", "Female"], {
-    invalid_type_error: "Invalid sex",
+    invalid_type_error: "الجنس غير صحيح",
   }),
   ownerId: z.string().min(1),
 });
@@ -229,9 +222,12 @@ export const raceResultSchema = z.object({
   eventId: z.string(),
   ownerId: z.string(),
   camelId: z.number(),
+  camelID: z.string(), // Adding camelID as a string
   loopId: z.string(),
   IBAN: z.string(),
   bankName: z.string(),
   swiftCode: z.string(),
   ownerName: z.string(),
+  NationalID: z.string().optional(), // NationalID remains optional
+
 });

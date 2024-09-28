@@ -4,20 +4,29 @@ import { Loop } from "@prisma/client";
 
 interface UpdateLoopFormProps {
   loop: Loop;
+  eventEndDate: Date; // Add this line
   onClose: () => void;
   onLoopUpdated: () => void;
 }
 
-const UpdateLoopForm: React.FC<UpdateLoopFormProps> = ({ loop, onClose, onLoopUpdated }) => {
+const UpdateLoopForm: React.FC<UpdateLoopFormProps> = ({ loop, eventEndDate, onClose, onLoopUpdated }) => {
   const [capacity, setCapacity] = useState<number>(loop.capacity);
   const [age, setAge] = useState<string>(loop.age);
   const [sex, setSex] = useState<string>(loop.sex);
   const [time, setTime] = useState<string>(loop.time);
   const [startRegister, setStartRegister] = useState<Date>(new Date(loop.startRegister));
   const [endRegister, setEndRegister] = useState<Date>(new Date(loop.endRegister));
+  const [error, setError] = useState<string | null>(null);
 
   const handleUpdateLoop = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate endRegister date
+    if (new Date(endRegister) > new Date(eventEndDate)) {
+      setError("تاريخ نهاية الشوط لا يمكن أن يتجاوز تاريخ نهاية الفعالية");
+      return;
+    }
+
     try {
       const response = await fetch(`/api/events/${loop.eventId}/getLoops/${loop.id}/updateLoop`, {
         method: "PUT",
@@ -50,7 +59,8 @@ const UpdateLoopForm: React.FC<UpdateLoopFormProps> = ({ loop, onClose, onLoopUp
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
         <h3 className="text-lg font-semibold mb-4">تحديث الشوط</h3>
         <form onSubmit={handleUpdateLoop}>
-        <div className="mb-4 text-end">
+          {error && <p className="text-red-500">{error}</p>}
+          <div className="mb-4 text-end">
             <label htmlFor="capacity" className="block text-sm font-bold mb-1">
               سعة الشوط
             </label>

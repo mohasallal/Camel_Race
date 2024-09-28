@@ -20,7 +20,5 @@ export async function DELETE(request: Request) {
     await deleteEvent(idString);
     return NextResponse.json({ message: "Event deleted successfully" });
   } catch (error) {
-    console.error("Error deleting event:", error);
-    return NextResponse.json({ error: "Error deleting event" }, { status: 500 });
   }
 }

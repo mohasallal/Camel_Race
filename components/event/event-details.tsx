@@ -305,23 +305,25 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
         )}
 
         {isCreateLoopModalOpen && (
-        <CreateLoopForm
-        eventId={eventId}
-        onClose={() => setIsCreateLoopModalOpen(false)}
-        onAddLoop={(newLoop: Loop) => {
-          setLoops((prevLoops) => [...prevLoops, newLoop]); // إضافة الشوط الجديد
-          fetchEventAndLoopsData(); // إعادة تحميل البيانات
-        }}
-      />
+       <CreateLoopForm
+       eventId={eventId}
+       eventEndDate={event.EndDate} // Pass the event end date
+       onClose={() => setIsCreateLoopModalOpen(false)}
+       onAddLoop={(newLoop: Loop) => {
+         setLoops((prevLoops) => [...prevLoops, newLoop]);
+         fetchEventAndLoopsData();
+       }}
+     />
       
         )}
-         {isUpdateLoopModalOpen && editingLoop && (
-          <UpdateLoopForm
-            loop={editingLoop}
-            onClose={() => setIsUpdateLoopModalOpen(false)}
-            onLoopUpdated={fetchEventAndLoopsData} // Refresh loops after update
-          />
-        )}
+     {isUpdateLoopModalOpen && editingLoop && (
+  <UpdateLoopForm
+    loop={editingLoop}
+    eventEndDate={new Date(event.EndDate)} // Pass the event end date
+    onClose={() => setIsUpdateLoopModalOpen(false)}
+    onLoopUpdated={fetchEventAndLoopsData} // Refresh loops after update
+  />
+)}
 
         {isEditEventModalOpen && (
           <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
