@@ -20,7 +20,7 @@ interface Props {
   editingCamel?: {
     id: number;
     name: string;
-    camelID: number;
+    camelID: string;  // Keep as string
     age: Age;
     sex: Sex;
     ownerId: string;
@@ -37,7 +37,7 @@ const AddCamelsForm: React.FC<Props> = ({
 }) => {
   const [camelDetails, setCamelDetails] = useState({
     name: "",
-    camelID: "",
+    camelID: "",  // Ensure this remains a string
     ownerId: userId,
     age: "GradeOne" as Age,
     sex: "Male" as Sex,
@@ -54,7 +54,7 @@ const AddCamelsForm: React.FC<Props> = ({
     if (editingCamel) {
       setCamelDetails({
         name: editingCamel.name || "",
-        camelID: editingCamel.camelID.toString() || "",
+        camelID: editingCamel.camelID || "",  // Ensure this is string
         ownerId: editingCamel.ownerId || userId,
         age: editingCamel.age || "GradeOne",
         sex: editingCamel.sex || "Male",
@@ -72,10 +72,10 @@ const AddCamelsForm: React.FC<Props> = ({
 
   const validateForm = () => {
     const newErrors = {
-      name: camelDetails.name ? "" : "Camel Name is required",
-      camelID: camelDetails.camelID ? "" : "Camel ID is required",
-      age: camelDetails.age ? "" : "Camel Age is required",
-      sex: camelDetails.sex ? "" : "Camel Sex is required",
+      name: camelDetails.name ? "" : "اسم الجمل مطلوب",
+      camelID: camelDetails.camelID ? "" : "رقم الشريحة مطلوب",
+      age: camelDetails.age ? "" : "عمر الجمل مطلوب",
+      sex: camelDetails.sex ? "" : "جنس الجمل مطلوب",
     };
 
     setErrors(newErrors);
@@ -92,8 +92,8 @@ const AddCamelsForm: React.FC<Props> = ({
 
     const camelToSubmit = {
       ...camelDetails,
-      camelID: parseInt(camelDetails.camelID, 10), // تحويل camelID إلى عدد صحيح
       ownerId: userId,
+      camelID: camelDetails.camelID, 
     };
 
     try {
@@ -149,7 +149,7 @@ const AddCamelsForm: React.FC<Props> = ({
           <div className="mb-2">
             <Input
               name="camelID"
-              type="number"
+              type="text" // Ensure this is a text input
               value={camelDetails.camelID}
               onChange={handleChange}
               placeholder="رقم الشريحة"
@@ -212,3 +212,4 @@ const AddCamelsForm: React.FC<Props> = ({
 };
 
 export default AddCamelsForm;
+

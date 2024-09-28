@@ -24,14 +24,14 @@ export async function DELETE(req: NextRequest) {
 
 
     if (!loop) {
-      return NextResponse.json({ message: "Loop not found" }, { status: 404 });
+      return NextResponse.json({ message: "الشوط غير موجود " }, { status: 404 });
     }
 
     const currentTime = new Date();
 
     if (currentTime > loop.endRegister) {
       return NextResponse.json(
-        { message: "Registration period has ended" },
+        { message: "فترة التسجيل انتهت" },
         { status: 403 }
       );
     }
@@ -46,7 +46,7 @@ export async function DELETE(req: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: "Camel removed successfully" },
+      { message: "تم حذف الجمل بنجاح " },
       { status: 200 }
     );
   } catch (error) {

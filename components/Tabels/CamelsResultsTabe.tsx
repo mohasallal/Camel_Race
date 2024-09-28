@@ -28,6 +28,8 @@ interface Camel {
   bankName: string;
   ownerName: string;
   swiftCode: string;
+  camelID: string; // Added camelID
+  NationalID: string; // Added NationalID
 }
 
 interface Loop {
@@ -47,6 +49,7 @@ interface Event {
 interface ReportData {
   rank: number;
   camelId: number;
+  camelID: string;
   camelName: string;
   loopId: string;
   loopName: string;
@@ -57,6 +60,7 @@ interface ReportData {
   swiftCode: string;
   ownerName: string;
   ownerId: string;
+  NationalID: string; // Added NationalID
 }
 
 export const ReportForm = () => {
@@ -83,12 +87,16 @@ export const ReportForm = () => {
 
   useEffect(() => {
     if (selectedEvent) {
-      fetch(`/api/events/${selectedEvent}/getLoops`)
+      fetch(`/api/events/${selectedEvent}/getLoops`) // تأكد أن هذه النقطة تجلب الأشواط الخاصة بالفعالية فقط
         .then((response) => response.json())
-        .then((data) => setLoops(data))
+        .then((data) => {
+          const filteredLoops = data.filter((loop: Loop) => loop.eventId === selectedEvent); // فلترة الأشواط حسب eventId
+          setLoops(filteredLoops);
+        })
         .catch(() => setError("Error fetching loops"));
     }
   }, [selectedEvent]);
+  
 
   useEffect(() => {
     if (selectedLoop && selectedEvent) {
@@ -107,6 +115,8 @@ export const ReportForm = () => {
             swiftCode: camel.swiftCode ?? "N/A",
             ownerName: camel.ownerName ?? "N/A",
             ownerId: camel.ownerId ?? "N/A",
+            camelID: camel.camelID ?? "N/A",
+            NationalID: camel.NationalID ?? "N/A", // Adding NationalID
           }));
           setCamels(formattedCamels);
         })
@@ -186,6 +196,8 @@ export const ReportForm = () => {
       swiftCode: camel?.swiftCode || "N/A",
       ownerName: camel?.ownerName || "N/A",
       ownerId: camel?.ownerId || "N/A",
+      camelID: camel.camelID || "N/A", // Adding camelID
+      NationalID: camel.NationalID || "N/A", // Adding NationalID
     };
 
     setResults((prevResults) => {
@@ -240,8 +252,9 @@ export const ReportForm = () => {
       setError("No results to export.");
       return;
     }
+    const filteredResults = results.map(({camelId, loopId, eventId, ownerId, ...rest }) => rest);
 
-    const worksheet = XLSX.utils.json_to_sheet(results);
+    const worksheet = XLSX.utils.json_to_sheet(filteredResults);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Results");
     XLSX.writeFile(workbook, "camel_race_results.xlsx");
@@ -278,7 +291,7 @@ export const ReportForm = () => {
                   )
                   .map((loop) => (
                     <SelectItem key={loop.id} value={loop.id}>
-                      {translateAge(loop.age)} - {translateSex(loop.sex)}
+                    {translateSex(loop.sex)}
                     </SelectItem>
                   ))}
               </SelectContent>
@@ -362,10 +375,9 @@ export const ReportForm = () => {
                 <TableHead>اسم الهجن</TableHead>
                 <TableHead>الشوط</TableHead>
                 <TableHead>الفعالية</TableHead>
-                <TableHead>IBAN</TableHead>
-                <TableHead>اسم البنك</TableHead>
-                <TableHead>SWIFT</TableHead>
                 <TableHead>مالك الهجن</TableHead>
+                <TableHead>رقم الشريحة </TableHead>
+                <TableHead>الـرقم الوطني للمالك</TableHead>
                 <TableHead>إجراءات</TableHead>
               </TableRow>
             </TableHeader>
@@ -376,10 +388,9 @@ export const ReportForm = () => {
                   <TableCell>{report.camelName}</TableCell>
                   <TableCell>{report.loopName}</TableCell>
                   <TableCell>{report.eventName}</TableCell>
-                  <TableCell>{report.IBAN}</TableCell>
-                  <TableCell>{report.bankName}</TableCell>
-                  <TableCell>{report.swiftCode}</TableCell>
                   <TableCell>{report.ownerName}</TableCell>
+                  <TableCell>{report.camظelID}</TableCell>
+                  <TableCell>{report.NationalID.toString()}</TableCell>
                   <TableCell>
                     <Button onClick={() => handleRemoveReport(report.camelId)}>
                       حذف
@@ -417,3 +428,5 @@ export const ReportForm = () => {
 };
 
 export default ReportForm;
+
+ 

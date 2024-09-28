@@ -314,7 +314,7 @@ const RegisterCamelsUsers = () => {
           isOpen={isDialogOpen}
           onConfirm={handleRemoveCamel}
           onClose={() => setIsDialogOpen(false)}
-          message="Are you sure you want to remove this camel from this loop?"
+          message="?هل انت متأكد من حذف الجمل من هذا الشوط "
         />
       </div>
     </div>

@@ -48,13 +48,18 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
     );
   };
 
-  const isToday = (date: Date) => {
-    const today = new Date();
-    return (
-      date.getDate() === today.getDate() &&
-      date.getMonth() === today.getMonth() &&
-      date.getFullYear() === today.getFullYear()
-    );
+  const getEventStatus = (day: Date, event: CalendarEvent) => {
+    const now = new Date();
+    const startDate = new Date(event.startDate);
+    const endDate = new Date(event.endDate);
+
+    if (endDate < now) {
+      return "ended"; // فعالية منتهية
+    } else if (startDate <= now && endDate >= now && isDateInRange(day, startDate, endDate)) {
+      return "ongoing"; // فعالية حالية
+    } else if (startDate > now) {
+      return "upcoming"; // فعالية قادمة
+    }
   };
 
   return (
@@ -84,9 +89,21 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
         {days.map((day) => {
           const dayKey = day.toISOString().split("T")[0];
           const eventsForDay = getEventsForDay(day);
-          const firstEvent = eventsForDay[0];
           const hasEvents = eventsForDay.length > 0;
-          const isCurrentDay = isToday(day);
+
+          let backgroundColor = "bg-gray-200"; // اللون الافتراضي
+
+          if (hasEvents) {
+            const statusColors = eventsForDay.map((event) => getEventStatus(day, event));
+
+            if (statusColors.includes("ended")) {
+              backgroundColor = "bg-red-500"; // فعالية منتهية
+            } else if (statusColors.includes("ongoing")) {
+              backgroundColor = "bg-green-500"; // فعالية حالية (جميع أيام الفعالية باللون الأخضر)
+            } else if (statusColors.includes("upcoming")) {
+              backgroundColor = "bg-yellow-400"; // فعالية قادمة
+            }
+          }
 
           return (
             <div
@@ -94,16 +111,20 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
               className={cn(
                 "relative p-4 md:p-5 lg:p-6 border rounded-lg text-center cursor-pointer",
                 {
-                  "bg-yellow-100": hasEvents,
-                  "bg-yellow-300": isCurrentDay,
+                  [backgroundColor]: hasEvents,
                 }
               )}
               onClick={() => setSelectedDay(day)}
             >
               <div className="text-base md:text-lg font-semibold">{day.getDate()}</div>
-              {firstEvent && (
-                <div className="absolute bottom-0 left-0 right-0 bg-yellow-500 text-white text-xs p-[2px] rounded-md">
-                  {firstEvent.name}
+              {hasEvents && (
+                <div className=" text-sm text-white">
+                  {eventsForDay.map((event) => (
+                    <div key={event.id}>
+                      <hr className="text-gray-950 mt-1 mb-1"/>
+                      {event.name} {/* عرض اسم الفعالية */}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -112,8 +133,8 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
       </div>
 
       {/* Always-visible div below the calendar showing details */}
-      <div className="mt-6 p-4 border rounded-lg bg-yellow-50">
-        <h2 className="text-lg font-medium mb-2">
+      <div className="mt-4 p-4 border rounded-lg bg-yellow-50">
+        <h2 className="text-lg font-medium ">
           Events on {selectedDay ? selectedDay.toDateString() : "No day selected"}
         </h2>
         <ul>

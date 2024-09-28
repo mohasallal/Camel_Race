@@ -24,7 +24,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
             className="px-4 py-2 bg-gray-500 text-white rounded mr-2"
             onClick={onClose}
           >
-            Cancel
+            الغاء
           </button>
           <button
             className="px-4 py-2 bg-red-500 text-white rounded"
@@ -33,7 +33,7 @@ const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
               onClose();
             }}
           >
-            Confirm
+            نعم , احذف
           </button>
         </div>
       </div>

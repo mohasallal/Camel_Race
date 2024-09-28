@@ -1,9 +1,8 @@
 datasource db {
   provider  = "postgresql"
   url  	    = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL_UNPOOLED")
+   directUrl = env("DATABASE_URL_UNPOOLED")
 }
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -59,13 +58,12 @@ model User {
 model Camel {
   id        Int     @id @default(autoincrement())
   name      String
-  camelID   Int  @unique
+  camelID   String  @unique
   age       Age
   sex       Sex
   ownerId   String  
   owner     User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   loops     CamelLoop[] 
-
   RaceResult RaceResult[]
 }
 

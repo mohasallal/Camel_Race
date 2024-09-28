@@ -1,8 +1,11 @@
+// app/api/camels/[userId]/route.ts
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
+
 // تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const userId = url.pathname.split("/").pop();
@@ -12,10 +15,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const camels = await db.camel.findMany({
-      where: { ownerId: userId },
-    });
-
+    const camels = await fetchCamels(userId);
     return NextResponse.json(camels);
   } catch (error) {
     console.error("Error fetching camels:", error);
@@ -25,3 +25,16 @@ export async function GET(request: Request) {
     );
   }
 }
+
+async function fetchCamels(userId: string) {
+  try {
+    const camels = await db.camel.findMany({
+      where: { ownerId: userId },
+    });
+    return camels;
+  } catch (error) {
+    console.error("Error fetching camels:", error);
+    throw new Error("Error fetching camels");
+  }
+}
+

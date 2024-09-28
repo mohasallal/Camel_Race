@@ -23,10 +23,10 @@ export const registerCamelInLoop = async (values: {
     });
 
     if (!camel) {
-      return { error: "Camel does not exist" };
+      return { error: "الجمل غير موجود" };
     }
     if (!loop) {
-      return { error: "Loop does not exist" };
+      return { error: "الشوط غير موجود" };
     }
 
     if (camel.age !== loop.age || camel.sex !== loop.sex) {
@@ -38,7 +38,7 @@ export const registerCamelInLoop = async (values: {
     });
 
     if (camelLoopCount >= loop.capacity) {
-      return { error: "The loop is full" };
+      return { error: "الشوط ممتلئ" };
     }
 
     const existingRegistration = await db.camelLoop.findFirst({
@@ -49,7 +49,7 @@ export const registerCamelInLoop = async (values: {
     });
 
     if (existingRegistration) {
-      return { error: "Camel is already registered in this loop" };
+      return { error: "الجمل مسجل بالفعل !" };
     }
 
     await db.camelLoop.create({
@@ -59,9 +59,9 @@ export const registerCamelInLoop = async (values: {
       },
     });
 
-    return { success: "Camel registered successfully!" };
+    return { success: "تم تسجيل الجمل بنجاح !" };
   } catch (error) {
-    console.error("Error registering camel:", error);
+    console.error("حدث خطأ في تسحيل الجمل:", error);
     return { error: "An error occurred while registering the camel" };
   }
 };
