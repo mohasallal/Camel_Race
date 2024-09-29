@@ -593,7 +593,7 @@ const UserDetails: React.FC<UserDetailsProps> = ({ userId, onClose }) => {
                       <span className="text-gray-700"> : كلمة السر</span>
                       <input
                         type="text"
-                        value={updatedUser?.password || user.password}
+                        value={""}
                         onChange={(e) =>
                           setUpdatedUser((prev) => ({
                             ...prev,

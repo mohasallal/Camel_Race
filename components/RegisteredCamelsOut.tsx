@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -15,21 +15,23 @@ interface Camel {
   age: string;
   sex: string;
   ownerName: string;
-  camelID: string; 
+  camelID: string;
 }
 
 interface Event {
   EndDate: any;
   id: string;
   name: string;
-  endDate: string; 
+  endDate: string;
 }
 
 interface Loop {
+  sex: string;
+  age: string;
   id: string;
   name: string;
   date: string;
-  eventId: string; 
+  eventId: string;
 }
 
 export const RegisteredCamelsOut = () => {
@@ -45,10 +47,11 @@ export const RegisteredCamelsOut = () => {
   const isEventEnded = (endDate: string): boolean => {
     const currentDate = new Date(); // التاريخ الحالي
     const eventEndDate = new Date(endDate); // تحويل endDate إلى كائن Date
-    console.log(`التاريخ الحالي: ${currentDate}, تاريخ انتهاء الفعالية: ${eventEndDate}`); // سجل لمقارنة التواريخ
+    console.log(
+      `التاريخ الحالي: ${currentDate}, تاريخ انتهاء الفعالية: ${eventEndDate}`
+    ); // سجل لمقارنة التواريخ
     return eventEndDate < currentDate; // تعود True إذا كان تاريخ انتهاء الفعالية قبل التاريخ الحالي
   };
-  
 
   // جلب الفعاليات عند تحميل المكون
   useEffect(() => {
@@ -56,7 +59,9 @@ export const RegisteredCamelsOut = () => {
       .then((response) => response.json())
       .then((data) => {
         console.log("الفعاليات المسترجعة مع تواريخ انتهاء:", data); // سجل الفعاليات وتواريخ الانتهاء
-        const endedEvents = data.filter((event: Event) => isEventEnded(event.endDate)); // تصفية الفعاليات المنتهية فقط
+        const endedEvents = data.filter((event: Event) =>
+          isEventEnded(event.endDate)
+        ); // تصفية الفعاليات المنتهية فقط
         console.log("الفعاليات المنتهية:", endedEvents); // سجل الفعاليات المنتهية للتحقق
         setEvents(endedEvents);
       })
@@ -69,14 +74,14 @@ export const RegisteredCamelsOut = () => {
       .then((data) => {
         const endedEvents = data.filter((event: Event) => {
           if (!event.EndDate) {
-            return false; 
+            return false;
           }
-  
+
           const eventEndDate = new Date(event.EndDate);
           if (isNaN(eventEndDate.getTime())) {
             return false;
           }
-  
+
           return isEventEnded(event.EndDate); // استخدم دالة isEventEnded للتحقق من انتهاء الفعالية
         });
         setEvents(endedEvents);
@@ -84,28 +89,30 @@ export const RegisteredCamelsOut = () => {
       .catch(() => setError("حدث خطأ أثناء جلب الفعاليات"));
   }, []);
   // جلب الأشواط عند اختيار فعالية
-useEffect(() => {
-  if (selectedEvent) {
-    fetch(`/api/events/${selectedEvent}/getLoops`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("الأشواط المسترجعة:", data); // سجل الأشواط المسترجعة
-        setLoops(data); // احفظ الأشواط المسترجعة
-        setFilteredLoops(data.filter((loop: Loop) => loop.eventId === selectedEvent)); // تصفية الأشواط حسب الفعالية
-      })
-      .catch(() => setError("حدث خطأ أثناء جلب الأشواط"));
-  } else {
-    setLoops([]); // إعادة تعيين الأشواط إذا لم يتم اختيار فعالية
-    setFilteredLoops([]);
-  }
-}, [selectedEvent]);
-
-  
+  useEffect(() => {
+    if (selectedEvent) {
+      fetch(`/api/events/${selectedEvent}/getLoops`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("الأشواط المسترجعة:", data); // سجل الأشواط المسترجعة
+          setLoops(data); // احفظ الأشواط المسترجعة
+          setFilteredLoops(
+            data.filter((loop: Loop) => loop.eventId === selectedEvent)
+          ); // تصفية الأشواط حسب الفعالية
+        })
+        .catch(() => setError("حدث خطأ أثناء جلب الأشواط"));
+    } else {
+      setLoops([]); // إعادة تعيين الأشواط إذا لم يتم اختيار فعالية
+      setFilteredLoops([]);
+    }
+  }, [selectedEvent]);
 
   // جلب الجمال عند اختيار فعالية وشوط
   useEffect(() => {
     if (selectedEvent && selectedLoop) {
-      fetch(`/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`)
+      fetch(
+        `/api/events/${selectedEvent}/getLoops/${selectedLoop}/registeredCamels`
+      )
         .then((response) => response.json())
         .then((camelsData) => {
           console.log("الجمال المسترجعة:", camelsData); // سجل الجمال المسترجعة
@@ -163,7 +170,9 @@ useEffect(() => {
   return (
     <div className="bg-[url('/desert.jpg')] h-screen bg-center  bg-no-repeat bg-cover flex items-center justify-center">
       <div className="container w-full max-w-[800px] p-6 rounded-lg  bg-white flex flex-col justify-center gap-4">
-        <h1 className="text-3xl font-bold mb-4 text-center">المطايا المشاركة</h1>
+        <h1 className="text-3xl font-bold mb-4 text-center">
+          المطايا المشاركة
+        </h1>
 
         <div className="flex flex-col gap-4 mb-4">
           {/* اختيار الفعالية */}
@@ -185,25 +194,24 @@ useEffect(() => {
           </select>
 
           {/* اختيار الشوط */}
-         {/* اختيار الشوط */}
-{selectedEvent && (
-  <select
-    className="border p-2 rounded w-full"
-    value={selectedLoop || ""}
-    onChange={(e) => {
-      setSelectedLoop(e.target.value);
-      console.log("الشوط المختار:", e.target.value); // سجل الشوط المختار
-    }}
-  >
-    <option value="">اختر شوط</option>
-    {filteredLoops.map((loop) => (
-      <option key={loop.id} value={loop.id}>
-      {`${camels.map(ca=>(translateAge(ca.age) +" - "+ translateSex(ca.sex)))}`}
-      </option>
-    ))}
-  </select>
-)}
-
+          {/* اختيار الشوط */}
+          {selectedEvent && (
+            <select
+              className="border p-2 rounded w-full"
+              value={selectedLoop || ""}
+              onChange={(e) => {
+                setSelectedLoop(e.target.value);
+                console.log("الشوط المختار:", e.target.value); // سجل الشوط المختار
+              }}
+            >
+              <option value="">اختر شوط</option>
+              {filteredLoops.map((loop) => (
+                <option key={loop.id} value={loop.id}>
+                  {translateAge(loop.age) + ` - ` + translateSex(loop.sex)}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
 
         {/* جدول الجمال المسجلة */}
@@ -224,13 +232,19 @@ useEffect(() => {
                   <TableCell className="text-right">{index + 1}</TableCell>
                   <TableCell className="text-right">{camel.camelID}</TableCell>
                   <TableCell className="text-right">{camel.name}</TableCell>
-                  <TableCell className="text-right">{translateSex(camel.sex)}</TableCell>
-                  <TableCell className="text-right">{camel.ownerName}</TableCell>
+                  <TableCell className="text-right">
+                    {translateSex(camel.sex)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {camel.ownerName}
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center">لا توجد جمال مسجلة</TableCell>
+                <TableCell colSpan={5} className="text-center">
+                  لا توجد جمال مسجلة
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
