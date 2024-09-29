@@ -193,7 +193,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
 export const Logo = () => (
   <Link
-    href="#"
+    href="/"
     className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
   >
     <span className="text-2xl">🐪</span>
@@ -209,7 +209,7 @@ export const Logo = () => (
 
 export const LogoIcon = () => (
   <Link
-    href="#"
+    href="/"
     className="font-normal flex space-x-2 items-center text-sm text-black py-1 relative z-20"
   >
     <span className="text-2xl flex">🐪</span>

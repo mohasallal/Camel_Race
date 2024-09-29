@@ -37,7 +37,7 @@ interface EventDetailsProps {
 }
 
 const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
-  const [event, setEvent] = useState<Event | null>(null);
+  const [event, setEvent] = useState<Event | any>();
   const [loops, setLoops] = useState<Loop[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isCreateLoopModalOpen, setIsCreateLoopModalOpen] = useState(false);
@@ -306,22 +306,21 @@ const EventDetails: React.FC<EventDetailsProps> = ({ eventId, onClose }) => {
 
         {isCreateLoopModalOpen && (
        <CreateLoopForm
-       eventId={eventId}
-       eventEndDate={event.EndDate} // Pass the event end date
-       onClose={() => setIsCreateLoopModalOpen(false)}
-       onAddLoop={(newLoop: Loop) => {
-         setLoops((prevLoops) => [...prevLoops, newLoop]);
-         fetchEventAndLoopsData();
-       }}
-     />
+            eventId={eventId}
+            eventEndDate={event.EndDate}
+            onClose={() => setIsCreateLoopModalOpen(false)}
+            onAddLoop={(newLoop: Loop) => {
+              setLoops((prevLoops) => [...prevLoops, newLoop]);
+              fetchEventAndLoopsData();
+            } } eventStartDate={""}     />
       
         )}
      {isUpdateLoopModalOpen && editingLoop && (
   <UpdateLoopForm
     loop={editingLoop}
-    eventEndDate={new Date(event.EndDate)} // Pass the event end date
+    eventEndDate={new Date(event.EndDate)}
     onClose={() => setIsUpdateLoopModalOpen(false)}
-    onLoopUpdated={fetchEventAndLoopsData} // Refresh loops after update
+    onLoopUpdated={fetchEventAndLoopsData}
   />
 )}
 

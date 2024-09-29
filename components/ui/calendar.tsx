@@ -21,6 +21,19 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
   const [days, setDays] = useState<Date[]>([]);
 
+  // Utility function to normalize the date to "00:00:00" to avoid time-based discrepancies
+  const normalizeDate = (date: Date) => {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  // Utility function to check if a date is within the event range
+  const isDateInRange = (date: Date, startDate: Date, endDate: Date) => {
+    const normalizedDate = normalizeDate(date);
+    const normalizedStartDate = normalizeDate(startDate);
+    const normalizedEndDate = normalizeDate(endDate);
+    return normalizedDate >= normalizedStartDate && normalizedDate <= normalizedEndDate;
+  };
+
   useEffect(() => {
     const generateDaysArray = (month: number, year: number) => {
       const daysInMonth = new Date(year, month, 0).getDate();
@@ -38,13 +51,9 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
     });
   };
 
-  const isDateInRange = (date: Date, startDate: Date, endDate: Date) => {
-    return date >= startDate && date <= endDate;
-  };
-
   const getEventsForDay = (day: Date) => {
     return events.filter((event) =>
-      isDateInRange(day, new Date(event.startDate), new Date(event.endDate))
+      isDateInRange(normalizeDate(day), new Date(event.startDate), new Date(event.endDate))
     );
   };
 
@@ -54,11 +63,11 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
     const endDate = new Date(event.endDate);
 
     if (endDate < now) {
-      return "ended"; // فعالية منتهية
+      return "ended"; // Event has ended
     } else if (startDate <= now && endDate >= now && isDateInRange(day, startDate, endDate)) {
-      return "ongoing"; // فعالية حالية
+      return "ongoing"; // Event is currently ongoing
     } else if (startDate > now) {
-      return "upcoming"; // فعالية قادمة
+      return "upcoming"; // Event is upcoming
     }
   };
 
@@ -91,17 +100,17 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
           const eventsForDay = getEventsForDay(day);
           const hasEvents = eventsForDay.length > 0;
 
-          let backgroundColor = "bg-gray-200"; // اللون الافتراضي
+          let backgroundColor = "bg-gray-200"; // Default color
 
           if (hasEvents) {
             const statusColors = eventsForDay.map((event) => getEventStatus(day, event));
 
             if (statusColors.includes("ended")) {
-              backgroundColor = "bg-red-500"; // فعالية منتهية
+              backgroundColor = "bg-red-500"; // Event has ended
             } else if (statusColors.includes("ongoing")) {
-              backgroundColor = "bg-green-500"; // فعالية حالية (جميع أيام الفعالية باللون الأخضر)
+              backgroundColor = "bg-green-500"; // Ongoing event
             } else if (statusColors.includes("upcoming")) {
-              backgroundColor = "bg-yellow-400"; // فعالية قادمة
+              backgroundColor = "bg-yellow-400"; // Upcoming event
             }
           }
 
@@ -118,11 +127,11 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
             >
               <div className="text-base md:text-lg font-semibold">{day.getDate()}</div>
               {hasEvents && (
-                <div className=" text-sm text-white">
+                <div className="text-sm text-white">
                   {eventsForDay.map((event) => (
                     <div key={event.id}>
                       <hr className="text-gray-950 mt-1 mb-1"/>
-                      {event.name} {/* عرض اسم الفعالية */}
+                      {event.name} {/* Display event name */}
                     </div>
                   ))}
                 </div>
@@ -134,7 +143,7 @@ const Calendar: React.FC<CalendarProps> = ({ events }) => {
 
       {/* Always-visible div below the calendar showing details */}
       <div className="mt-4 p-4 border rounded-lg bg-yellow-50">
-        <h2 className="text-lg font-medium ">
+        <h2 className="text-lg font-medium">
           Events on {selectedDay ? selectedDay.toDateString() : "No day selected"}
         </h2>
         <ul>
