@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import React from "react";
 
 interface Loop {
   eventId: string;
@@ -42,7 +43,6 @@ interface ReportData {
   camelID: string; // إضافة حقل camelID
 }
 
-
 const ResultsTabel = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
@@ -64,7 +64,9 @@ const ResultsTabel = () => {
       fetch(`/api/events/${selectedEvent}/getLoops`) // تأكد أن هذه النقطة تجلب الأشواط الخاصة بالفعالية فقط
         .then((response) => response.json())
         .then((data) => {
-          const filteredLoops = data.filter((loop: Loop) => loop.eventId === selectedEvent); // فلترة الأشواط حسب eventId
+          const filteredLoops = data.filter(
+            (loop: Loop) => loop.eventId === selectedEvent
+          ); // فلترة الأشواط حسب eventId
           setLoops(filteredLoops);
         })
         .catch(() => setError("Error fetching loops"));
@@ -76,8 +78,6 @@ const ResultsTabel = () => {
       fetch(`/api/results/${selectedEvent}/getLoops/${selectedLoop}`)
         .then((response) => response.json())
         .then((data) => {
-          
-          console.log(data); // تحقق من البيانات هنا
           const formattedResults = data.map((result: any) => ({
             rank: result.rank,
             camelId: result.camelId,
@@ -85,13 +85,12 @@ const ResultsTabel = () => {
             ownerName: result.ownerName,
             camelID: result.camelID, // تأكد من تضمين camelID
           }));
-          
+
           setResults(formattedResults);
         })
         .catch(() => setError("Error fetching results"));
     }
   }, [selectedLoop, selectedEvent]);
-  
 
   function translateAge(age: string) {
     switch (age) {
@@ -180,34 +179,35 @@ const ResultsTabel = () => {
             {results.length > 0 ? (
               <div className="max-h-80 overflow-y-auto">
                 <Table>
-                <TableHeader>
-  <TableRow>
-    <TableHead>اسم المطية</TableHead>
-    <TableHead>صاحب المطية</TableHead>
-    <TableHead>المركز</TableHead>
-    <TableHead>رقم الشريحة</TableHead> {/* إضافة عنوان لرقم الشريحة */}
-  </TableRow>
-</TableHeader>
-<TableBody>
-  {results.map((result) => (
-    <TableRow
-      className="text-right max-h-[300px] overflow-y-auto"
-      key={result.camelId}
-    >
-      <TableCell>{result.camelName}</TableCell>
-      <TableCell>{result.ownerName}</TableCell>
-      <TableCell>{result.rank}</TableCell>
-      <TableCell>{result.camelID}</TableCell> {/* إضافة رقم الشريحة */}
-    </TableRow>
-  ))}
-</TableBody>
-
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>اسم المطية</TableHead>
+                      <TableHead>صاحب المطية</TableHead>
+                      <TableHead>المركز</TableHead>
+                      <TableHead>رقم الشريحة</TableHead>{" "}
+                      {/* إضافة عنوان لرقم الشريحة */}
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {results.map((result) => (
+                      <TableRow
+                        className="text-right max-h-[300px] overflow-y-auto"
+                        key={result.camelId}
+                      >
+                        <TableCell>{result.camelName}</TableCell>
+                        <TableCell>{result.ownerName}</TableCell>
+                        <TableCell>{result.rank}</TableCell>
+                        <TableCell>{result.camelID}</TableCell>{" "}
+                        {/* إضافة رقم الشريحة */}
+                      </TableRow>
+                    ))}
+                  </TableBody>
                 </Table>
               </div>
             ) : (
               <p className="text-center mt-4">لم يتم اعلان النتائج بعد</p>
             )}
-          </>
+            </>
         )}
 
         {error && <p className="text-red-500">{error}</p>}
@@ -217,4 +217,3 @@ const ResultsTabel = () => {
 };
 
 export default ResultsTabel;
-

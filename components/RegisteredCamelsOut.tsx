@@ -47,9 +47,6 @@ export const RegisteredCamelsOut = () => {
   const isEventEnded = (endDate: string): boolean => {
     const currentDate = new Date(); // التاريخ الحالي
     const eventEndDate = new Date(endDate); // تحويل endDate إلى كائن Date
-    console.log(
-      `التاريخ الحالي: ${currentDate}, تاريخ انتهاء الفعالية: ${eventEndDate}`
-    ); // سجل لمقارنة التواريخ
     return eventEndDate < currentDate; // تعود True إذا كان تاريخ انتهاء الفعالية قبل التاريخ الحالي
   };
 
@@ -58,11 +55,9 @@ export const RegisteredCamelsOut = () => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
       .then((data) => {
-        console.log("الفعاليات المسترجعة مع تواريخ انتهاء:", data); // سجل الفعاليات وتواريخ الانتهاء
         const endedEvents = data.filter((event: Event) =>
           isEventEnded(event.endDate)
         ); // تصفية الفعاليات المنتهية فقط
-        console.log("الفعاليات المنتهية:", endedEvents); // سجل الفعاليات المنتهية للتحقق
         setEvents(endedEvents);
       })
       .catch(() => setError("حدث خطأ أثناء جلب الفعاليات"));
@@ -94,7 +89,6 @@ export const RegisteredCamelsOut = () => {
       fetch(`/api/events/${selectedEvent}/getLoops`)
         .then((response) => response.json())
         .then((data) => {
-          console.log("الأشواط المسترجعة:", data); // سجل الأشواط المسترجعة
           setLoops(data); // احفظ الأشواط المسترجعة
           setFilteredLoops(
             data.filter((loop: Loop) => loop.eventId === selectedEvent)
@@ -115,7 +109,6 @@ export const RegisteredCamelsOut = () => {
       )
         .then((response) => response.json())
         .then((camelsData) => {
-          console.log("الجمال المسترجعة:", camelsData); // سجل الجمال المسترجعة
           setCamels(camelsData);
         })
         .catch(() => setError("حدث خطأ أثناء جلب الجمال"));
@@ -182,7 +175,6 @@ export const RegisteredCamelsOut = () => {
             onChange={(e) => {
               setSelectedEvent(e.target.value);
               setSelectedLoop(null); // إعادة تعيين الشوط عند تغيير الفعالية
-              console.log("الفعالية المختارة:", e.target.value); // سجل الفعالية المختارة
             }}
           >
             <option value="">اختر فعالية</option>
@@ -201,7 +193,6 @@ export const RegisteredCamelsOut = () => {
               value={selectedLoop || ""}
               onChange={(e) => {
                 setSelectedLoop(e.target.value);
-                console.log("الشوط المختار:", e.target.value); // سجل الشوط المختار
               }}
             >
               <option value="">اختر شوط</option>

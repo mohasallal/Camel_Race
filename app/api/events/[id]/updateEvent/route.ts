@@ -16,7 +16,6 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
 
-    console.log('Request Body:', body); // Log the body
 
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json({ error: "Empty payload" }, { status: 400 });

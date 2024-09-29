@@ -8,7 +8,6 @@ export const revalidate = 0;
 export async function POST(req: Request) {
   try {
     const data = await req.json();
-    console.log("Received data:", data); // Log the incoming data
 
     const raceResults = await Promise.all(
       data.map(async (result: any) => {

@@ -29,6 +29,7 @@ import { RedirectButton } from "./redirect-button";
 import { IconArrowBack } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
 import ImageUpload from "../image-upload";
+import React from "react";
 
 interface UserProfile {
   id?: string;
@@ -126,11 +127,8 @@ export const RegisterForm = () => {
     setErrors("");
     setSuccess("");
     startTransition(() => {
-
       register(values)
         .then((data) => {
-          console.log("Response from server:", data);
-
           if (data && typeof data === "object") {
             if (data.error) {
               setErrors(data.error);
@@ -164,11 +162,7 @@ export const RegisterForm = () => {
         className="cursor-pointer absolute top-2 left-2"
         path="/admin/dashboard"
       >
-        <IconArrowBack 
-        width={30}
-        height={30}
-        className="text-black mt-4"
-        />
+        <IconArrowBack width={30} height={30} className="text-black mt-4" />
       </RedirectButton>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -625,9 +619,9 @@ export const RegisterForm = () => {
                   )}
                 />
               </div>
-              <ImageUpload/>
-              <ImageUpload/>
-              <ImageUpload/>
+              <ImageUpload />
+              <ImageUpload />
+              <ImageUpload />
             </>
           )}
           <div className="flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0 md:space-x-4">
