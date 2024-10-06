@@ -75,7 +75,7 @@ const ResultsTabel = () => {
 
   useEffect(() => {
     if (selectedLoop && selectedEvent) {
-      fetch(`/api/results/${selectedEvent}/getLoops/${selectedLoop}`)
+      fetch(`/api/results/${selectedEvent}/getLoops/${selectedLoop}/getRes`)
         .then((response) => response.json())
         .then((data) => {
           const formattedResults = data.map((result: any) => ({
@@ -83,7 +83,7 @@ const ResultsTabel = () => {
             camelId: result.camelId,
             camelName: result.camelName,
             ownerName: result.ownerName,
-            camelID: result.camelID, // تأكد من تضمين camelID
+            camelID: result.camelID,
           }));
 
           setResults(formattedResults);
@@ -207,7 +207,7 @@ const ResultsTabel = () => {
             ) : (
               <p className="text-center mt-4">لم يتم اعلان النتائج بعد</p>
             )}
-            </>
+          </>
         )}
 
         {error && <p className="text-red-500">{error}</p>}

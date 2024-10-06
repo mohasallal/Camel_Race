@@ -1,3 +1,4 @@
+import React from 'react';
 import Nav from '@/components/Navigation/Nav';
 import { RegisteredCamelsOut } from '@/components/RegisteredCamelsOut';
 const Page = () => {

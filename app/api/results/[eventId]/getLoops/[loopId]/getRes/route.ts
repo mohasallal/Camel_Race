@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
-// تعطيل التخزين المؤقت وجعل الاستجابة ديناميكية
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function GET(
@@ -19,15 +18,20 @@ export async function GET(
       },
       include: {
         camel: true,
+        owner: true,
       },
     });
 
     const formattedResults = results.map((result) => ({
       rank: result.rank,
-      camelId: result.camel.id, // استخدم camelId هنا
+      camelId: result.camel.id,
       camelName: result.camel.name,
       ownerName: result.ownerName,
-      camelID: result.camel.camelID, // تأكد من أن camelID موجود في الكائن camel
+      camelID: result.camel.camelID,
+      IBAN: result.IBAN,
+      SwiftCode: result.swiftCode,
+      bankName: result.bankName,
+      NationalID: result.owner.NationalID,
     }));
 
     return NextResponse.json(formattedResults, { status: 200 });

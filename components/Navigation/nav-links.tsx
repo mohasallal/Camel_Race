@@ -62,16 +62,11 @@ const NavLinks = ({ className, enablescroll, hide }: Props) => {
         <Link href="/Results">النتائج</Link>
       </li>
       <li onClick={enablescroll}>
-        <Link href="/">الصفحة الرئيسية</Link>
-      </li>
-      {hide && (!user || (user.role !== 'USER')) && (
-        <li onClick={enablescroll}>
         <Link href="/registeredCamels">المطايا المشاركة</Link>
       </li>
-)}
-
-          
-        
+      <li onClick={enablescroll}>
+        <Link href="/">الصفحة الرئيسية</Link>
+      </li>
     </ul>
   );
 };

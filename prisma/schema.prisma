@@ -120,5 +120,4 @@ model RaceResult {
   ownerName       String
   NationalID      String?
   camelID         String?
-
 }

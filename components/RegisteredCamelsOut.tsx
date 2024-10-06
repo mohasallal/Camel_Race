@@ -26,6 +26,7 @@ interface Event {
 }
 
 interface Loop {
+  endRegister: string | number | Date;
   sex: string;
   age: string;
   id: string;
@@ -42,66 +43,36 @@ export const RegisteredCamelsOut = () => {
   const [selectedLoop, setSelectedLoop] = useState<string | null>(null);
   const [camels, setCamels] = useState<Camel[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [loopName, setLoopName] = useState<string | null>(null); // حالة لاسم الشوط
-
-  const isEventEnded = (endDate: string): boolean => {
-    const currentDate = new Date(); // التاريخ الحالي
-    const eventEndDate = new Date(endDate); // تحويل endDate إلى كائن Date
-    return eventEndDate < currentDate; // تعود True إذا كان تاريخ انتهاء الفعالية قبل التاريخ الحالي
-  };
-
-  // جلب الفعاليات عند تحميل المكون
-  useEffect(() => {
-    fetch("/api/events/getEvents")
-      .then((response) => response.json())
-      .then((data) => {
-        const endedEvents = data.filter((event: Event) =>
-          isEventEnded(event.endDate)
-        ); // تصفية الفعاليات المنتهية فقط
-        setEvents(endedEvents);
-      })
-      .catch(() => setError("حدث خطأ أثناء جلب الفعاليات"));
-  }, []);
 
   useEffect(() => {
     fetch("/api/events/getEvents")
       .then((response) => response.json())
-      .then((data) => {
-        const endedEvents = data.filter((event: Event) => {
-          if (!event.EndDate) {
-            return false;
-          }
-
-          const eventEndDate = new Date(event.EndDate);
-          if (isNaN(eventEndDate.getTime())) {
-            return false;
-          }
-
-          return isEventEnded(event.EndDate); // استخدم دالة isEventEnded للتحقق من انتهاء الفعالية
-        });
-        setEvents(endedEvents);
-      })
+      .then((data) => setEvents(data))
       .catch(() => setError("حدث خطأ أثناء جلب الفعاليات"));
   }, []);
-  // جلب الأشواط عند اختيار فعالية
+
   useEffect(() => {
     if (selectedEvent) {
       fetch(`/api/events/${selectedEvent}/getLoops`)
         .then((response) => response.json())
         .then((data) => {
-          setLoops(data); // احفظ الأشواط المسترجعة
+          const currentDate = new Date(); 
+          const activeLoops = data.filter((loop: Loop) => {
+            const loopEndRegisterDate = new Date(loop.endRegister);
+            return loopEndRegisterDate < currentDate; 
+          });
+          setLoops(activeLoops);
           setFilteredLoops(
-            data.filter((loop: Loop) => loop.eventId === selectedEvent)
-          ); // تصفية الأشواط حسب الفعالية
+            activeLoops.filter((loop: Loop) => loop.eventId === selectedEvent)
+          );
         })
         .catch(() => setError("حدث خطأ أثناء جلب الأشواط"));
     } else {
-      setLoops([]); // إعادة تعيين الأشواط إذا لم يتم اختيار فعالية
+      setLoops([]); 
       setFilteredLoops([]);
     }
   }, [selectedEvent]);
 
-  // جلب الجمال عند اختيار فعالية وشوط
   useEffect(() => {
     if (selectedEvent && selectedLoop) {
       fetch(
@@ -113,10 +84,9 @@ export const RegisteredCamelsOut = () => {
         })
         .catch(() => setError("حدث خطأ أثناء جلب الجمال"));
     } else {
-      setCamels([]); // إعادة تعيين الجمال إذا لم يتم اختيار فعالية أو شوط
+      setCamels([]); 
     }
   }, [selectedEvent, selectedLoop]);
-
   if (error) return <p>{error}</p>;
 
   function translateSex(sex: string) {
@@ -125,16 +95,6 @@ export const RegisteredCamelsOut = () => {
         return "قعدان";
       case "Female":
         return "بكار";
-      default:
-        return "";
-    }
-  }
-  function translateTime(time: string) {
-    switch (time) {
-      case "Morning":
-        return "صباحي";
-      case "Evening":
-        return "مسائي";
       default:
         return "";
     }
@@ -185,8 +145,6 @@ export const RegisteredCamelsOut = () => {
             ))}
           </select>
 
-          {/* اختيار الشوط */}
-          {/* اختيار الشوط */}
           {selectedEvent && (
             <select
               className="border p-2 rounded w-full"
