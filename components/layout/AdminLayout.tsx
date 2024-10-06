@@ -72,23 +72,23 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="flex justify-center items-center mb-4 transition-transform duration-500 ease-in-out transform hover:scale-110">
-        <Image 
-          src={'/loadingPage.jpeg'}
-          width={150}
-          height={150}
-          alt="loading"
-          className="rounded-full shadow-lg"
-        />
+        <div className="flex justify-center items-center mb-4 transition-transform duration-500 ease-in-out transform hover:scale-110">
+          <Image
+            src={"/loadingPage.jpeg"}
+            width={150}
+            height={150}
+            alt="loading"
+            className="rounded-full shadow-lg"
+          />
+        </div>
+
+        <div className="flex flex-col items-center gap-3">
+          <h1 className="text-3xl font-bold text-gray-800 transition-transform duration-500 ease-in-out hover:translate-x-2">
+            رياضـة الـهـجـن الأردنـيـة
+          </h1>
+        </div>
       </div>
-      
-      <div className="flex flex-col items-center gap-3">
-        <h1 className="text-3xl font-bold text-gray-800 transition-transform duration-500 ease-in-out hover:translate-x-2">
-          رياضـة الـهـجـن الأردنـيـة
-        </h1>
-      </div>
-    </div>
-      );
+    );
   }
 
   if (user.role !== "ADMIN" && user.role !== "SUPERVISOR") {
@@ -134,7 +134,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <GrCertificate className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
-    ,
     {
       label: "عرض النتائج",
       href: "/admin/ShowResults/",
