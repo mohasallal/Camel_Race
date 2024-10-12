@@ -19,19 +19,10 @@ const Footer = () => {
           <h2 className="font-bold text-3xl">تواصل معنا</h2>
           <p>
             <span className="flex items-center gap-2">
-              <a className="underline" href="mailto:info@jocrc.com">
-                info@jocrc.com
+              <a className="underline" href="mailto:info@crfjo.com">
+                info@crfjo.com
               </a>
               : ايميل <FaEnvelope />
-            </span>
-          </p>
-          <p>
-            <span className="flex items-center gap-2">
-              <a className="underline" href="tel:+962796150202">
-                0796150202
-              </a>
-              : اتصل بنا
-              <FaMobileAlt />
             </span>
           </p>
           <div className="flex gap-4">
